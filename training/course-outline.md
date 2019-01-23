@@ -48,7 +48,7 @@ The ability to understand what your user means conversationally and contextually
 ## Module 10: Route messages using the Dispatch tool
 In this tutorial, we demonstrate how to use the Dispatch service to route utterances when there are multiple LUIS models and QnA maker services for different scenarios supported by a bot. 
 
-## Module 11: Deploy bot to Azure
+## Module 11: Deploy your bot to Azure
 After you have created your bot and tested it locally, you can deploy it to Azure to make it accessible from anywhere. Deploying your bot to Azure will involve paying for the services you use.
 
 ## Module 12: Add Channels (optional)
