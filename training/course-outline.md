@@ -37,14 +37,13 @@ A bot is inherently stateless. Once your bot is deployed, it may not run in the 
 In a traditional application, the user interface (UI) is a series of screens. Like apps and websites, bots have a UI, but it is made up of dialogs, rather than screens. In this module, you'll learn to use buttons, cards, and other types of attachments to help users navigate as they converse with your bot. 
 
 ## Module 7: Manage conversations using Dialogs library
-Dialogs enable the bot developer to logically separate various areas of bot functionality and guide conversational flow. 
-Dialogs may or may not have graphical interfaces. They may contain buttons, text, and other elements, or be entirely speech-based. Dialogs also contain actions to perform tasks such as invoking other dialogs or processing user input. Learn how to use the dialogs library to manage conversations.
+Learn to separate various areas of bot functionality and guide conversational flow by using Dialogs library. Dialogs may contain buttons, text, and other elements, or be entirely speech-based. Dialogs also contain actions to perform tasks such as invoking other dialogs or processing user input. Learn how to use the dialogs library to manage conversations.
 
 ## Module 8: Answer user’s questions using QnA Maker
 You can use QnA Maker service to add question and answer support to your bot. In many cases, the questions and answers already exist in content like FAQs or other documentation and can be leverage by QnA Maker service to provide your bot with answers to common questions your bot users might ask.
 
 ## Module 9: Add natural language processing
-The ability to understand what your user means conversationally and contextually can be a difficult task, but can provide your bot a more natural conversation feel. Language Understanding enables you to do just that so that your bot can recognize the intent of user messages, allow for more natural language from your user, and better direct the conversation flow.
+The ability to understand what your user means conversationally and contextually can be a difficult task, but can provide your bot a more natural conversation feel. Use Language Understanding so that your bot can recognize the intent of user messages, allow for more natural language from your user, and better direct the conversation flow.
 
 ## Module 10: Route messages using the Dispatch tool
 In this tutorial, we demonstrate how to use the Dispatch service to route utterances when there are multiple LUIS models and QnA maker services for different scenarios supported by a bot. 
