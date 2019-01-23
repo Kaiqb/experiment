@@ -3,7 +3,7 @@ This two-day course provides introduction to the Bot Framework SDK v4. The cours
 
 ## Course outline:
 * Module 1: Introduction to the world of bots
-* Module 2. System Set up
+* Module 2. System set up
 * Module 3: Run a simple bot
 * Module 4: Greet users
 * Module 5: Store information
@@ -19,32 +19,20 @@ This two-day course provides introduction to the Bot Framework SDK v4. The cours
 
 ## Module 1: Introduction to the world of bots
 Objective: Familiarize participants with the an overview of the world of bots
-### What are bots?
-* 3 minute history lesson
-* The modern bot landscape
 
-### Hands on experience with a few bots.
-* What are great examples of bots people could play with for reals, real time?
-* Would be nice if they were SMS or web enabled so people could use them immediately
-* Maybe we build a fun but simple bot that people can play with a bit? Like one that plays rock paper scissors, or makes meme images or something. 
+In this module, you'll learn what a bot is, play with with a few bots, understand what is involved in making a bot, how do bots work, and what is the Azure Bot Service.
 
-### What is involved in making a bot?
-* What kind of tech is used?
-* What are the different roles and disciplines necessary?
-* What does the buildout of a typical bot look like?
-* What is the ongoing work required in offering a bot?
+## Module 2: System set up
 
-### How do bots work?
-* Messages are received through APIs
-* The message are processed by software. This is where the magic happens.
-* Replies are generated somehow and sent back via APIs
+In this module, you will get your development environment set up to work with the [Azure Bot Service and the Bot Builder SDK.](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0) First, we
+will walk through the tools needed to develop and run a bot locally on your laptop. Then, we'll put together the first pieces
+of a brand new bot.
 
-### Sounds easy! What is the hard part?
-* Isn’t this all about AI magic?
-* Conversational software works differently than other type of apps
-* Hidden complexity
-* Humans talk funny
+## Module 3: Run a simple bot
+In this module, you'll learn how to process incoming message event to access and use the text of the user's message. We'll go over the concepts of an "activity" and how to appropriately respond to the incoming activities from the user to the bot. 
 
-### What is the Azure Bot Service?
-* It’s an integrated set of tools and services that makes it easier to design, build, test, deploy, measure and manage bots.
-* The SDK is available in multiple languages to fit your needs
+## Module 4: Greet users
+The primary goal when creating any bot is to engage your user in a meaningful conversation. One of the best ways to achieve this goal is to ensure that from the moment a user first connects, they understand your bot’s main purpose and capabilities, the reason your bot was created. A welcome message should be generated whenever your users first interacts with your bot. To achieve this, you can monitor your bot’s Activity types and watch for new connections. 
+
+## Module 4: Store information
+A bot is inherently stateless. Once your bot is deployed, it may not run in the same process or on the same machine from one turn to the next. However, your bot may need to track the context of a conversation, so that it can manage its behavior and remember answers to previous questions. The state and storage features of the SDK allow you to add state to your bot.
