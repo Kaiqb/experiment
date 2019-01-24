@@ -32,7 +32,7 @@
 | 40.times-resolution           |                       |**Remove**. This one should be moved to the Recognizer-Text repo.             | 
 | 42.scaleout                   |                       |**Remove**. Per John, this functionality will be in the SDK.                | 
 | 51.cafe-bot                   |                       |**Remove**. Use it to test the SDK?        |                     
-|                               | Hand-off-to-human     |**Add**    |
+|                               | Handoff-to-human     |**Add**    |
 |                               | Direct Line           |**Add**. A bot and a custom client communicating  using the Direct Line API. |
 
 
