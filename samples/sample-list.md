@@ -33,11 +33,11 @@
 | 30.asp-mvc-bot                |                       | This should be removed when all of the samples are updated to use MVC.                                       | 
 | 40.times-resolution           |                       | This one should be moved to the Recognizer-Text repo.                                                        | 
 | 42.scaleout                   |                       | "Per John, this functionality will be in the SDK."                                                           | 
-| 51.cafe-bot                   |                       | Remove from samples list. Use it to test the SDK.                                                            | 
-|                               |                       |                                                                                                              | 
-|                               |                       |                                                                                                              | 
-|                               |                       |                                                                                                              | 
-| JS delta                      |                       |                                                                                                              | 
-| diceroller-skill              |                       |                                                                                                              | 
-| logger                        |                       |                                                                                                              | 
-| transcript-logger             |                       |                                                                                                              | 
+| 51.cafe-bot                   |                       | Remove from samples list. Use it to test the SDK.                             
+                                                                      
+
+
+### JS delta                                               
+- diceroller-skill                                                                                                                  
+- logger
+- transcript-logger                                                                                                                     
