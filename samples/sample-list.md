@@ -24,8 +24,7 @@
 | 17.multilingual-bot           | multilingual-bot      |**Update**. Use MVC pattern.            | 
 | 18.bot-authentication         | bot-authentication    |**Update**. Use MVC pattern.    | 
 | 19.custom-dialogs             | custom-dialogs        |**Update**. Use MVC pattern.                        | 
-| 20.qna-with-appinsights       |                       |Could there be one AppInsights focused sample instead of 2?                  | 
-| 21.luis-with-appinsights      |                       |Could there be one AppInsights focused sample instead of 2?                  | 
+| 20.qna-with-appinsights  &  21.luis-with-appinsights    |              |Dedicated AppInsights focused sample instead of two?| 
 | 22.conversation-history       |                       |**Update**. Use MVC pattern. This is about transcript logger. Rename?        | 
 | 23.facebook-events            |                       |**Update**. Used MVC pattern.                                                 | 
 | 24.bot-authentication-msgraph |                       |**Update**. Used MVC pattern.                                         | 
