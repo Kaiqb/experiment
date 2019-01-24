@@ -7,16 +7,14 @@
 | 03.welcome-user               | welcome-user          |**Update**. Simplify the sample by removing cards/attachments + fix bug. Use MVC pattern.  | 
 | 04.simple-prompt              | simple-prompt         |**Update**. Handle ""cancel"" event so that the state is not corrupted. Use MVC pattern.   | 
 | 05.multi-prompt               | multi-prompt          |**Update**. Use MVC pattern. Sample is used in the "Implement sequential conversation flow" topic.  | 
-| 06.using-cards                |                       |**Combine**. Merge 06, 07, 08, and 15 into a single media-bot sample. | 
-| 07.using-adaptive-cards       |                       |**Combine**. Merge 06, 07, 08, and 15 into a single media-bot sample. | 
-| 08.suggested-actions          |                       |**Combine**. Merge 06, 07, 08, and 15 into a single media-bot sample. | 
+| 06.using-cards, 07.using-adaptive-cards, 08.suggested-actions  |  |**Combine**. Merge 06, 07, 08, and 15 into a single media-bot sample. | 
 |                               | media-bot             |**Add**. New sample that combines 06, 07, 08, and 15 samples into one. Use MVC pattern. |
 | 09.message-routing            |                       |**Remove**. Scenario not clear. It has RegEx, Dialogs, interruption, etc.| 
 | 10.prompt-validations         |                       |**Remove**. Seems too basic for prompt validation. Use _PromptUsersforInput_ sample used in docs.                          | 
 |                               | PromptUsersforInput   |**Add/Update**. Use this sample instead of _10.prompt-validation_ sample. Use MVC pattern.                                                                                  | 
 |                               | StateBot              |**Add/Update**. This sample is used in "Save user and conversation data" topic. Use MVC pattern.                                                                                    | 
 | 11.qnamaker                   | qnamaker              |**Update**. Use MVC pattern. Used in "QnA Maker to answer questions" topic"  | 
-| 12.nlp-with-luis              | nlp-with-luis         |**Update**. Use MVC pattern. Used in "Add natural language understanding to your bot" topic".                                           | 
+| 12.nlp-with-luis              | nlp-with-luis         |**Update**. Use MVC pattern. Used in "Add natural language understanding to your bot" topic". | 
 | 13.basic-bot                  |                       |**Remove**. Conceptually, this is similar to the nlp-with-luis bot. | 
 | 14.nlp-with-dispatch          | nlp-with-dispatch     |**Update**. Use MVC pattern. Used in "Use multiple LUIS and QnA models" topic.| 
 | 15.handling-attachments       |                       |**Remove**. This sample will be combined with 06, 07, and 08 into media-bot sample.  | 
