@@ -1,5 +1,5 @@
-| Current Sample List           | Proposed Sample List  | Notes                                                                                                        | 
-|-------------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------| 
+| Current Sample List           | Proposed Sample List  | Notes                                                                        | 
+|-------------------------------|-----------------------|------------------------------------------------------------------------------| 
 | 00.empty-bot                  |                       | Remove. Empty bot can be created using VSIX/Yo templates. Add README for info.                               | 
 | 01.console-echo               |                       | Not clear with the benefit is of having this sample.                                                         | 
 | 02.a.echo-bot                 |                       | Remove. Echo bot can be created using VSIX/Yo templates. Use template's README for info on this type of bot. | 
