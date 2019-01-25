@@ -27,6 +27,7 @@ In this module, you'll learn what a bot is, play with with a few bots, understan
 * Conversational software works differently than other type of apps
 * Hidden complexity
 * Humans talk funny. Understanding exactly what they mean is hard.
+* Don't frustrate your users. Plan ahead to handle interruptions and changes of topic.
 
 ## What is the Azure Bot Service?
 * It’s an integrated set of tools and services that makes it easier to design, build, test, deploy, measure and manage bots.
