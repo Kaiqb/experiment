@@ -1,3 +1,4 @@
+# Module 2: Setup
 Set up your development environment to work with the [Azure Bot Service and the Bot Framework SDK.](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0) First, we
 will walk through the tools needed to develop and run a bot locally on your laptop. Then, we'll put together the first pieces
 of a brand new bot.
