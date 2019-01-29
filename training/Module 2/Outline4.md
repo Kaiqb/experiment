@@ -13,7 +13,7 @@ The primary goal when creating any bot is to engage your user in a meaningful co
 * Discuss channel differences and dual channel update occurances.
 
 ## Working with state
-* what is turn context?
+* What is turn context?
   - What information does it contain?
   - How do I access and use this information?
 * What is user state?
