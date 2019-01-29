@@ -23,9 +23,9 @@ The primary goal when creating any bot is to engage your user in a meaningful co
 
 ## Detecting and welcoming users
 * How do we find a new user to greet them?
-  - querying didBotWelcomedUser - False
+* querying didBotWelcomedUser - False
    - setting/saving didBotWelcomedUser
    - sending inital welcome message
-  - querying didBotWelcomedUser - True
+* querying didBotWelcomedUser - True
    - sending welcome back message
 
