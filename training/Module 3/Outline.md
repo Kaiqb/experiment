@@ -2,16 +2,25 @@
 In this module, you'll learn how to process incoming message event to access and use the text of the user's message. We'll go over the concepts of an "activity" and how to appropriately respond to the incoming activities from the user.
 
 ## Find user input
-- User input structures
-  - turnContext
+* What is turn context?
+  - what information does it contain?
+  - how do I access and use this information?
   - message activities
   - text
-- async onTurn
-  - creates turnContext
-  - find user input with turnContext.activity.text
+ * Async onTurn
+  - creates turnContext.
+  - find user input with turnContext.activity.text.
   
  ## Process user input
+ * Process anticipated user response
+   - switch statement for multiple cases.
+ * Process unanticipated user reponse
+   - pass to help or prompt function.
+ * Process user exit response
+   - how to cleanly end a conversation.
  
  ## Respond to user input
- 
- 
+ * One turnContext.sendActivity per user input
+   - response may provide answer or additional info request.
+   - bots are stateless, each response considered independently.
+  
