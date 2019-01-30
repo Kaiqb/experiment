@@ -31,12 +31,12 @@
 * 12:00 P.M - 12:50 P.M
   - lunch
 * 1:00 P.M - 1:50 P.M
-  - Module 10: Greet users
-  - Module 5: State and storage
+  - Module 10: Route messages using the Dispatch service
 * 2:00 P.M - 2:50 P.M
-  - Lab 2, Persisting user info.
+  - Lab 5, Build weather bot with dispatch for multiple models.
 * 3:00 P.M - 3:50 P.M
-  - Module 6: Helping users navigate
-  - Module 7: Manage conversations using dialogs library
-* 4:00 P.M - 4:50 P.M
-  - Lab 3, Building the simple weather bo
+  - Module 11: Deploy your bot to Azure
+* 4:00 P.M - 4:30 P.M
+  - Lab 6, Deploy and run weather bot in Azure
+* 4:30 P.M - 5:00 P.M
+  - Summary Remarks and Evaluation  
