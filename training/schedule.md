@@ -19,6 +19,6 @@
   - Module 6: Help users navigate
   - Module 7: Manage conversations using dialogs library
 * 4:00 P.M - 4:50 P.M
-  - Lab 3, building the simple weather bot.
+  - Lab 3, Building the simple weather bot.
 
 ## Day 2:
