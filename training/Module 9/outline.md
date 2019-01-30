@@ -36,6 +36,6 @@ The ability to understand what your user means conversationally and contextually
 * deciding when results contain no usable intents.
 
 ## Improving your LUIS model results
-* review endpoint utterances.
+* reviewing endpoint utterances.
 * how to assign utterance to intents, label entities
 * how to train and test results.
