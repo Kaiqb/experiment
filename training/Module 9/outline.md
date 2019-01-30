@@ -12,9 +12,14 @@ The ability to understand what your user means conversationally and contextually
 * LUIS programmatic APIs
   - how to find and use LUIS APIs.
 * build you model using the LUIS portal.
-  - how to structure intents
-  - applying utterances to train intents
+  - how to structure intents.
+  - use of the None intent.
+  - applying utterances to train intents.
   - importing preconfigured intents and utterances for weather bot model.
+  
+## Modify your weather bot code to respond to LUIS intents
+* code paths for expected intent results.
+* coding logic for unexpected results or no results found.
 
 ## Querying your LUIS model
 * obtaining key values and LUIS endpoint to query your moddel.
@@ -22,10 +27,15 @@ The ability to understand what your user means conversationally and contextually
 * generating utterance queries that return LUIS model results.
 
 ## Interpreting LUIS results
-
+* LUIS results structure
+  - intent
+  - entity
+  - score
+* interpreting LUIS score values.
+  - handling multiple results.
+* deciding when results contain no usable intents.
 
 ## Improving your LUIS model results
-
-  
-
-  
+* review endpoint utterances.
+* how to assign utterance to intents, label entities
+* how to train and test results.
