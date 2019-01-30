@@ -17,7 +17,7 @@ The ability to understand what your user means conversationally and contextually
   - importing preconfigured intents and utterances for weather bot model.
 
 ## Querying your LUIS model
-* obtaining LUIS values and endpoint to query your moddel.
+* obtaining key values and LUIS endpoint to query your moddel.
 * adding LUIS connection values into your weather bot code.
 * generating utterance queries that return LUIS model results.
 
