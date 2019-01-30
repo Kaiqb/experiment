@@ -8,9 +8,9 @@ The ability to understand what your user means conversationally and contextually
   - user utterances
   - LUIS intents, entities, and scores
   
-## Building a LUIS model
+## Building your LUIS model
 
-## Querying yur LUIS model
+## Querying your LUIS model
 
 ## Interpreting LUIS results
 
