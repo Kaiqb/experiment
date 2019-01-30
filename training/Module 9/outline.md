@@ -9,10 +9,20 @@ The ability to understand what your user means conversationally and contextually
   - LUIS intents, entities, and scores
   
 ## Building your LUIS model
+* LUIS programmatic APIs
+  - how to find and use LUIS APIs.
+* build you model using the LUIS portal.
+  - how to structure intents
+  - applying utterances to train intents
+  - importing preconfigured intents and utterances for weather bot model.
 
 ## Querying your LUIS model
+* obtaining LUIS values and endpoint to query your moddel.
+* adding LUIS connection values into your weather bot code.
+* generating utterance queries that return LUIS model results.
 
 ## Interpreting LUIS results
+
 
 ## Improving your LUIS model results
 
