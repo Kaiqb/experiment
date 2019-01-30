@@ -3,9 +3,9 @@ A bot is inherently stateless. Once your bot is deployed, it may not run in the 
 
 ## More state
 * What is conversation state? 
-- where/when is it stored?
-- what can it store?
-- how is it accessed?
+  - where/when is it stored?
+  - what can it store?
+  - how is it accessed?
 
 ## Which state do I use for multiple turn conversations?
 * What goes into user state?
