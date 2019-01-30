@@ -16,7 +16,7 @@
 * 2:00 P.M - 2:50 P.M
   - Lab 2, Persisting user info
 * 3:00 P.M - 3:50 P.M
-  - Module 6: Help users navigate
+  - Module 6: Helping users navigate
   - Module 7: Manage conversations using dialogs library
 * 4:00 P.M - 4:50 P.M
   - Lab 3, Building the simple weather bot.
