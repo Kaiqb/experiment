@@ -3,7 +3,7 @@ Learn to separate various areas of bot functionality and guide conversational fl
 
 ## Why dialogs?
 
-## Dialog Types
+## Dialog Types - which type used when?
 * Prompts
   - Prompt types
 * Waterfall
@@ -17,6 +17,7 @@ Learn to separate various areas of bot functionality and guide conversational fl
 * cancel
 
 ## Calling and closing dialogs
+
 
 ## Storing and saving dialog results
 
