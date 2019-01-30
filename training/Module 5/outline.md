@@ -11,7 +11,12 @@ A bot is inherently stateless. Once your bot is deployed, it may not run in the 
 * What goes into user state?
 * What goes into conversation state?
 
-## Storage - temporary and persistent
+## Storage of state
+* When to save state
+  - persistence of user inputs.
+  - persistence of user info.
+
+## Types of storage - temporary and persistent
 * Temporary storage - we will use this for our labs.
   - memory storage, how to create it.
   - memory storage, when to use it.
