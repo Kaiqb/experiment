@@ -3,9 +3,9 @@ You can use QnA Maker service to add question and answer support to your bot. In
 
 ## What is QnA Maker
 
-## How to create your QnA Maker topic
+## Create your QnA Maker topic
 
-## How to connect to your QnA Maker topic
+## Connect to and query your QnA Maker topic
 
 ## Interpret results from your QnA Maker topic
 
