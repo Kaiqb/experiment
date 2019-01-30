@@ -11,6 +11,7 @@ In this tutorial, we demonstrate how to use the Dispatch service to route uttera
 * key values in .dispatch file.
 * create dispatch using .bot file.
   - include "version": "Dispatch",
+* adding dispatch to weather bot code.
 
 ## Run and test your dispatch model
 * Logic paths based on top intent.
