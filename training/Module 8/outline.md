@@ -1,5 +1,5 @@
 # State and storage
-A bot is inherently stateless. Once your bot is deployed, it may not run in the same process or on the same machine from one turn to the next. However, your bot may need to track the context of a conversation, so that it can manage its behavior and remember answers to previous questions. The state and storage features of the SDK allow you to add state to your bot.
+You can use QnA Maker service to add question and answer support to your bot. In many cases, the questions and answers already exist in content like FAQs or other documentation and can be leverage by QnA Maker service to provide your bot with answers to common questions your bot users might ask.
 
 
   
