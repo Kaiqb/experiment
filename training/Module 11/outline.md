@@ -1,0 +1,2 @@
+# Deploy your bot to Azure
+After you have created your bot and tested it locally, you can deploy it to Azure to make it accessible from anywhere. Deploying your bot to Azure will involve paying for the services you use.
