@@ -131,13 +131,13 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         private async Task DispatchToTopIntentAsync(ITurnContext context, (string intent, double score)? topIntent, CancellationToken cancellationToken = default(CancellationToken))
         {
-            const string weatherDispatchKey = "l_Weather";
+            const string dailyForecastDispatchKey = "l_Weather";
             const string noneDispatchKey = "None";
             const string qnaDispatchKey = "q_Weather";
 
             switch (topIntent.Value.intent)
             {
-                case weatherDispatchKey:
+                case dailyForecastDispatchKey:
                     await DispatchToLuisModelAsync(context, WeatherLuisKey);
 
                     // Here, you can add code for calling the hypothetical weather service,
