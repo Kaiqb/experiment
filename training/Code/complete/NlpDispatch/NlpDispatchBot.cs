@@ -222,7 +222,12 @@ namespace NLP_With_Dispatch_Bot
                     // Use top intent and "entityFound" = location to call hourly weather service here...
                     string hourlyURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound + "&mode=xml&APPID=" + OpenWeatherMapKey;
                     var xmlText = GetFormattedXml(hourlyURL);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Calling Hourly weather forecast for {entityFound}.\n");
+                    XmlDocument xmlDailyDoc = new XmlDocument();
+                    xmlDailyDoc.LoadXml(xmlText);
+
+                    // Call FindHourlyForecast
+                    var currentForecast = FindHourlyForecast(xmlDailyDoc);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Hourly weather forecast for {entityFound}.\n" + currentForecast);
                 }
             }
             else
@@ -301,8 +306,7 @@ namespace NLP_With_Dispatch_Bot
         // returns result as a string.
         private string FindCurrentTemp(XmlDocument xml_doc)
         {
-            float intialTemp = 0;
-            string tempString = "00.00";
+            string currentTempString = "00.00";
 
             // Select current weather.
             foreach (XmlNode node in xml_doc.SelectNodes("/current"))
@@ -314,13 +318,13 @@ namespace NLP_With_Dispatch_Bot
                 {
                     var kelvinTemp = double.Parse(temp_attr.Value.ToString());
                     double tempFahrenheit = (1.8 * (kelvinTemp - 273.15)) + 32;
-                    tempString = System.Convert.ToString(tempFahrenheit);
+                    currentTempString = System.Convert.ToString(tempFahrenheit);
                 }
             }
 
             // truncate to xx.xx or -x.xx ...
-            tempString = tempString.Substring(0, 5);
-            return tempString;
+            currentTempString = currentTempString.Substring(0, 5);
+            return currentTempString;
         }
 
         private string FindCurrentConditions(XmlDocument xml_doc)
@@ -350,6 +354,31 @@ namespace NLP_With_Dispatch_Bot
             // format and return conditions string
             string conditionsString = "skies: " + cloudString + ", conditions: " + weatherString;
             return conditionsString;
+        }
+
+        private string FindHourlyForecast(XmlDocument xml_doc)
+        {
+            string hourlyForecastString = string.Empty;
+            string hourlyTempString = "00.00";
+            string hourlyPrecipitationString = "snow";
+            string hourlycloudString = "cloudy";
+
+            int counter = 0;
+            foreach (XmlNode time_node in xml_doc.SelectNodes("//time"))
+            {
+                // only procees the first 5 forecasts, that's enough for now...
+                if (counter < 5)
+                {
+
+
+                    hourlyForecastString = hourlyForecastString + "temperature: " + hourlyTempString + ", skies: " + hourlycloudString + ", conditions: " + hourlyPrecipitationString +"\n";
+                }
+
+                // next forecast
+                counter++;
+            }
+                return hourlyForecastString;
+
         }
     }
 }
