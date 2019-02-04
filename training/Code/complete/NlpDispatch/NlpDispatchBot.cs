@@ -328,8 +328,27 @@ namespace NLP_With_Dispatch_Bot
             string cloudString = "cloudy";
             string weatherString = "snow";
 
-            string conditionsString = "skies: " + cloudString + ", conditions: " + weatherString;
+            // Select current weather.
+            foreach (XmlNode node in xml_doc.SelectNodes("/current"))
+            {
+                // Get the temperature node.
+                XmlNode clouds_node = node.SelectSingleNode("clouds");
+                XmlAttribute clouds_attr = clouds_node.Attributes["name"];
+                if (clouds_attr != null)
+                {
+                    cloudString = clouds_attr.Value;
+                }
+                // Get the current weather node.
+                XmlNode weather_node = node.SelectSingleNode("weather");
+                XmlAttribute weather_attr = weather_node.Attributes["value"];
+                if (weather_attr != null)
+                {
+                    weatherString = weather_attr.Value;
+                }
+            }
 
+            // format and return conditions string
+            string conditionsString = "skies: " + cloudString + ", conditions: " + weatherString;
             return conditionsString;
         }
     }
