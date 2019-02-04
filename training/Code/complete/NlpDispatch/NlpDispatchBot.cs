@@ -208,14 +208,14 @@ namespace NLP_With_Dispatch_Bot
                 if (topIntent.Value.intent == "Daily_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call daily weather service here...
-                    string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&mode=xml&units=farenheit&APPID=" + OpenWeatherMapKey;
+                    string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&mode=xml&APPID=" + OpenWeatherMapKey;
                     var xmlText = GetFormattedXml(dailyURL);
                     XmlDocument xmlDailyDoc = new XmlDocument();
                     xmlDailyDoc.LoadXml(xmlText);
                     var currentTemp = FindCurrentTemp(xmlDailyDoc);
                     var currentConditions = FindCurrentConditions(xmlDailyDoc);
 
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", temperature: " + currentTemp);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", temperature: " + currentTemp + "F");
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
@@ -296,11 +296,30 @@ namespace NLP_With_Dispatch_Bot
             }
         }
 
+        // FindCurrentTemp parses temperature,
+        // converts from Kelvin to Fahrenheit,
+        // returns result as a string.
         private string FindCurrentTemp(XmlDocument xml_doc)
         {
             float intialTemp = 0;
-            string tempString = "32.0F";
+            string tempString = "00.00";
 
+            // Select current weather.
+            foreach (XmlNode node in xml_doc.SelectNodes("/current"))
+            {
+                // Get the temperature node.
+                XmlNode temp_node = node.SelectSingleNode("temperature");
+                XmlAttribute temp_attr = temp_node.Attributes["value"];
+                if (temp_attr != null)
+                {
+                    var kelvinTemp = double.Parse(temp_attr.Value.ToString());
+                    double tempFahrenheit = (1.8 * (kelvinTemp - 273.15)) + 32;
+                    tempString = System.Convert.ToString(tempFahrenheit);
+                }
+            }
+
+            // truncate to xx.xx or -x.xx ...
+            tempString = tempString.Substring(0, 5);
             return tempString;
         }
 
