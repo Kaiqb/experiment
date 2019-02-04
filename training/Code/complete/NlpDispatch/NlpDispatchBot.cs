@@ -9,6 +9,8 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace NLP_With_Dispatch_Bot
 {
@@ -69,7 +71,7 @@ namespace NLP_With_Dispatch_Bot
         /// There are no dialogs used, since it's "single turn" processing, meaning a single
         /// request and response, with no stateful conversation.
         /// </summary>
-        /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data needed
+        /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data neededDispatchToTopIntentAsync
         /// for processing this conversation turn. </param>
         /// <param name="cancellationToken">(Optional) A <see cref="CancellationToken"/> that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
@@ -81,6 +83,9 @@ namespace NLP_With_Dispatch_Bot
                 // Get the intent recognition result
                 var recognizerResult = await _services.LuisServices[DispatchKey].RecognizeAsync(turnContext, cancellationToken);
                 var topIntent = recognizerResult?.GetTopScoringIntent();
+
+                // See if LUIS found and used an entity to determine user intent.
+                var entityFound = ParseLuisForEntities(recognizerResult);
 
                 if (topIntent == null)
                 {
@@ -144,8 +149,8 @@ namespace NLP_With_Dispatch_Bot
                     // passing in any entity information that you need
                     break;
                 case noneDispatchKey:
-                    // You can provide logic here to handle the known None intent (none of the above).
-                    // In this example we fall through to the QnA intent.
+                // You can provide logic here to handle the known None intent (none of the above).
+                // In this example we fall through to the QnA intent.
                 case qnaDispatchKey:
                     await DispatchToQnAMakerAsync(context, QnAMakerKey);
                     break;
@@ -184,12 +189,66 @@ namespace NLP_With_Dispatch_Bot
             await context.SendActivityAsync($"Sending your request to the {appName} system ...");
             var result = await _services.LuisServices[appName].RecognizeAsync(context, cancellationToken);
 
-            await context.SendActivityAsync($"Intents detected by the {appName} app:\n\n{string.Join("\n\n", result.Intents)}");
+            var topIntent = result?.GetTopScoringIntent();
 
-            if (result.Entities.Count > 0)
+            // See if LUIS found and used an entity to determine user intent.
+            var entityFound = ParseLuisForEntities(result);
+
+            if (topIntent != null && topIntent.HasValue && topIntent.Value.intent != "None")
             {
-                await context.SendActivityAsync($"The following entities were found in the message:\n\n{string.Join("\n\n", result.Entities)}");
+                // await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n");
+
+                // Use top intent and "entityFound" = location to call weather service here...
+
+                if (topIntent.Value.intent == "Daily_Forecast")
+                {
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Calling Daily weather forecast for {entityFound}.\n");
+                }
+                else if (topIntent.Value.intent == "Hourly_Forecast")
+                {
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Calling Hourly weather forecast for {entityFound}.\n");
+                }
             }
+            else
+            {
+                var msg = @"No LUIS intents were found.
+                            This sample is about identifying two user intents:
+                            'Daily_Forecast'
+                            'Hourly_Forecast'
+                            Try typing 'Show me weather for Redmond.' or 'When will it start to rain in Redmond?'.";
+                await context.SendActivityAsync(msg);
+            }
+        }
+
+        private string ParseLuisForEntities(RecognizerResult recognizerResult)
+        {
+            var result = string.Empty;
+
+            // recognizerResult.Entities returns type JObject.
+            foreach (var entity in recognizerResult.Entities)
+            {
+                // Parse JObject for a known entity types: Appointment, Meeting, and Schedule.
+                var locationFound = JObject.Parse(entity.Value.ToString())["location"];
+
+                // We will return info on the first entity found.
+                if (locationFound != null)
+                {
+                    // use JsonConvert to convert entity.Value to a dynamic object.
+                    dynamic o = JsonConvert.DeserializeObject<dynamic>(entity.Value.ToString());
+                    if (o.location[0] != null)
+                    {
+                        // Find and return the entity type and score.
+                        var entText = o.location[0].text;
+                        var entScore = o.location[0].score;
+                        result = entText;
+
+                        return result;
+                    }
+                }
+            }
+
+            // No entity results found.
+            return result;
         }
     }
 }
