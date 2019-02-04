@@ -2,9 +2,12 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.AI.QnA;
@@ -41,6 +44,10 @@ namespace NLP_With_Dispatch_Bot
         /// In the .bot file, multiple instances of QnaMaker can be configured.
         /// </summary>
         private const string QnAMakerKey = "weatherbottutorial";
+
+        // API key to access Free OpenWeatherMap APIs.
+        // NOTE - Register at http://home.openweathermap.org/users/sign_in to obtain a free subscription key.
+        private const string OpenWeatherMapKey = "64ff82cecc338ba76e3a1dc7f19a73ae";
 
         /// <summary>
         /// Services configured from the ".bot" file.
@@ -198,14 +205,23 @@ namespace NLP_With_Dispatch_Bot
             {
                 // await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n");
 
-                // Use top intent and "entityFound" = location to call weather service here...
-
                 if (topIntent.Value.intent == "Daily_Forecast")
                 {
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Calling Daily weather forecast for {entityFound}.\n");
+                    // Use top intent and "entityFound" = location to call daily weather service here...
+                    string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&mode=xml&units=farenheit&APPID=" + OpenWeatherMapKey;
+                    var xmlText = GetFormattedXml(dailyURL);
+                    XmlDocument xmlDailyDoc = new XmlDocument();
+                    xmlDailyDoc.LoadXml(xmlText);
+                    var currentTemp = findCurrentTemp(xmlDailyDoc);
+                    var currentConditions = findCurrentConditions(xmlDailyDoc);
+
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", current temperature: " + currentTemp);
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
+                    // Use top intent and "entityFound" = location to call hourly weather service here...
+                    string hourlyURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound + "&mode=xml&APPID=" + OpenWeatherMapKey;
+                    var xmlText = GetFormattedXml(hourlyURL);
                     await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Calling Hourly weather forecast for {entityFound}.\n");
                 }
             }
@@ -249,6 +265,53 @@ namespace NLP_With_Dispatch_Bot
 
             // No entity results found.
             return result;
+        }
+
+        // Return the XML result of the URL.
+        private string GetFormattedXml(string url)
+        {
+            // Create a web client.
+            using (WebClient client = new WebClient())
+            {
+                // Get the response string from the URL.
+                string xml = client.DownloadString(url);
+
+                // Load the response into an XML document.
+                System.Xml.XmlDocument xml_document = new XmlDocument();
+                xml_document.LoadXml(xml);
+
+                // return xml_document;
+
+                // Format the XML.
+                using (StringWriter string_writer = new StringWriter())
+                {
+                    XmlTextWriter xml_text_writer =
+                        new XmlTextWriter(string_writer);
+                    xml_text_writer.Formatting = System.Xml.Formatting.Indented;
+                    xml_document.WriteTo(xml_text_writer);
+
+                    // Return the result.
+                    return string_writer.ToString();
+                }
+            }
+        }
+
+        private string findCurrentTemp(XmlDocument xml_doc)
+        {
+            float intialTemp = 0;
+            string tempString = "32.0F";
+
+            return tempString;
+        }
+
+        private string findCurrentConditions(XmlDocument xml_doc)
+        {
+            string cloudString = "cloudy";
+            string weatherString = "snowy";
+
+            string conditionsString = cloudString + " and " + weatherString;
+
+            return conditionsString;
         }
     }
 }
