@@ -212,10 +212,10 @@ namespace NLP_With_Dispatch_Bot
                     var xmlText = GetFormattedXml(dailyURL);
                     XmlDocument xmlDailyDoc = new XmlDocument();
                     xmlDailyDoc.LoadXml(xmlText);
-                    var currentTemp = findCurrentTemp(xmlDailyDoc);
-                    var currentConditions = findCurrentConditions(xmlDailyDoc);
+                    var currentTemp = FindCurrentTemp(xmlDailyDoc);
+                    var currentConditions = FindCurrentConditions(xmlDailyDoc);
 
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", current temperature: " + currentTemp);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", temperature: " + currentTemp);
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
@@ -296,7 +296,7 @@ namespace NLP_With_Dispatch_Bot
             }
         }
 
-        private string findCurrentTemp(XmlDocument xml_doc)
+        private string FindCurrentTemp(XmlDocument xml_doc)
         {
             float intialTemp = 0;
             string tempString = "32.0F";
@@ -304,12 +304,12 @@ namespace NLP_With_Dispatch_Bot
             return tempString;
         }
 
-        private string findCurrentConditions(XmlDocument xml_doc)
+        private string FindCurrentConditions(XmlDocument xml_doc)
         {
             string cloudString = "cloudy";
-            string weatherString = "snowy";
+            string weatherString = "snow";
 
-            string conditionsString = cloudString + " and " + weatherString;
+            string conditionsString = "skies: " + cloudString + ", conditions: " + weatherString;
 
             return conditionsString;
         }
