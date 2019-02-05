@@ -1,0 +1,49 @@
+{
+    "name": "nlp-with-dispatch",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "id": "1",
+            "name": "development",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages"
+        },
+        {
+            "type": "luis",
+            "name": "Forecasts",
+            "appId": "19a7e349-6521-4d99-8971-f409d92fa137",
+            "authoringKey": "c34a9b530cc34c789673f7bf1d683630",
+            "subscriptionKey": "c34a9b530cc34c789673f7bf1d683630",
+            "version": "0.1",
+            "region": "westus",
+            "id": "50"
+        },
+        {
+            "type": "qna",
+            "name": "weatherbottutorial",
+            "id": "201",
+            "kbId": "e6d9306e-9195-46ac-8ac1-3961cbd379b6",
+            "subscriptionKey": "",
+            "endpointKey": "b08080de-76b6-49d9-b90c-12900ad9131c",
+            "hostname": "https://weatherbottutorial.azurewebsites.net/qnamaker"
+        },
+        {
+            "type": "dispatch",
+            "serviceIds": [
+                "50",
+                "201"
+            ],
+            "name": "WeatherDispatch",
+            "appId": "e97985b1-0934-42ed-a04f-954c61886de1",
+            "authoringKey": "413f742250d445358f305ebdff7b5e8a",
+            "subscriptionKey": "413f742250d445358f305ebdff7b5e8a",
+            "version": "Dispatch",
+            "region": "westus",
+            "id": "161"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0"
+}
