@@ -391,15 +391,19 @@ namespace NLP_With_Dispatch_Bot
                         }
 
                         // Get the current weather node.
-                        //XmlNode weather_node = time_node.SelectSingleNode("precipitation");
-                        //XmlAttribute weather_attr = weather_node.Attributes["value"];
-                        //if (weather_attr != null)
-                        //{
-                        //    hourlyPrecipitationString = weather_attr.Value;
-                        //}
+                        XmlNode weather_node = time_node.SelectSingleNode("precipitation");
+                        XmlAttribute weather_attr = weather_node.Attributes["type"];
+                        if (weather_attr != null)
+                        {
+                            hourlyPrecipitationString = weather_attr.Value;
+                        }
+                        else
+                        {
+                            hourlyPrecipitationString = "none";
+                        }
                     }
 
-                    hourlyForecastString = hourlyForecastString + "temperature: " + hourlyTempString + ", skies: " + hourlyCloudString + ", conditions: " + hourlyPrecipitationString +"\n";
+                    hourlyForecastString = hourlyForecastString + "temperature: " + hourlyTempString + ", skies: " + hourlyCloudString + ", precipitation: " + hourlyPrecipitationString +"\n";
                 }
 
                 // next forecast
