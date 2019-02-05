@@ -213,8 +213,11 @@ namespace NLP_With_Dispatch_Bot
                 if (topIntent.Value.intent == "Daily_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call daily weather service here...
-                    string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&mode=xml&APPID=" + OpenWeatherMapKey;
-                    var xmlText = GetFormattedXml(dailyURL);
+                    string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&APPID=" + OpenWeatherMapKey;
+                    var jsonResultText = GetFormattedJSON(dailyURL);
+
+                    // <- Requires rework for JSON ->
+                    var xmlText = GetFormattedJSON(dailyURL);
                     XmlDocument xmlDailyDoc = new XmlDocument();
                     xmlDailyDoc.LoadXml(xmlText);
                     var currentTemp = FindCurrentTemp(xmlDailyDoc);
@@ -225,8 +228,11 @@ namespace NLP_With_Dispatch_Bot
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call hourly weather service here...
-                    string hourlyURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound + "&mode=xml&APPID=" + OpenWeatherMapKey;
-                    var xmlText = GetFormattedXml(hourlyURL);
+                    string hourlyURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound + "&APPID=" + OpenWeatherMapKey;
+                    var jsonResultText = GetFormattedJSON(hourlyURL);
+
+                    // <- Requires rework for JSON ->
+                    var xmlText = GetFormattedJSON(hourlyURL);
                     XmlDocument xmlDailyDoc = new XmlDocument();
                     xmlDailyDoc.LoadXml(xmlText);
 
@@ -277,7 +283,21 @@ namespace NLP_With_Dispatch_Bot
             return result;
         }
 
-        // Return the XML result of the URL.
+        private string GetFormattedJSON(string url)
+        {
+            // Create a web client.
+            using (WebClient client = new WebClient())
+            {
+                // Get the response string from the URL.
+                string resultJSON = client.DownloadString(url);
+
+                /* . . . */
+
+                return resultJSON;
+            }
+        }
+
+        // Returns the XML result of the URL.
         private string GetFormattedXml(string url)
         {
             // Create a web client.
