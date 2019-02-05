@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -363,6 +364,7 @@ namespace NLP_With_Dispatch_Bot
             string hourlyTempString = "00.00";
             string hourlyPrecipitationString = "snow";
             string hourlyCloudString = "cloudy";
+            string hourlyTimeString = string.Empty;
 
             int counter = 0;
             foreach (XmlNode time_node in xml_doc.SelectNodes("//time"))
@@ -370,6 +372,17 @@ namespace NLP_With_Dispatch_Bot
                 // only procees the first 5 forecasts, that's enough for now...
                 if (counter < 5)
                 {
+                    // Get the start date and time.
+                    XmlAttribute time_attr = time_node.Attributes["from"];
+                    DateTime start_time = DateTime.Parse(time_attr.Value);
+
+                    // Convert from UTC to local time.
+                    start_time = start_time.ToLocalTime();
+
+                    // Add 90 minutes to get to the middle of the interval.
+                    start_time += new TimeSpan(1, 30, 0);
+                    hourlyTimeString = start_time.ToShortTimeString();
+
                     // Get the temperature node.
                     XmlNode temp_node = time_node.SelectSingleNode("temperature");
                     XmlAttribute temp_attr = temp_node.Attributes["value"];
@@ -403,7 +416,7 @@ namespace NLP_With_Dispatch_Bot
                         }
                     }
 
-                    hourlyForecastString = hourlyForecastString + "temperature: " + hourlyTempString + ", skies: " + hourlyCloudString + ", precipitation: " + hourlyPrecipitationString +"\n";
+                    hourlyForecastString = hourlyForecastString + "Forecast for: " + hourlyTimeString + ", temperature: " + hourlyTempString + ", skies: " + hourlyCloudString + ", precipitation: " + hourlyPrecipitationString +"\n";
                 }
 
                 // next forecast
