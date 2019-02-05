@@ -227,7 +227,7 @@ namespace NLP_With_Dispatch_Bot
 
                     // Call FindHourlyForecast
                     var currentForecast = FindHourlyForecast(xmlDailyDoc);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Hourly weather forecast for {entityFound}.\n" + currentForecast);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Hourly weather forecasts for {entityFound}.\n" + currentForecast);
                 }
             }
             else
@@ -335,13 +335,14 @@ namespace NLP_With_Dispatch_Bot
             // Select current weather.
             foreach (XmlNode node in xml_doc.SelectNodes("/current"))
             {
-                // Get the temperature node.
+                // Get the clouds node.
                 XmlNode clouds_node = node.SelectSingleNode("clouds");
                 XmlAttribute clouds_attr = clouds_node.Attributes["name"];
                 if (clouds_attr != null)
                 {
                     cloudString = clouds_attr.Value;
                 }
+
                 // Get the current weather node.
                 XmlNode weather_node = node.SelectSingleNode("weather");
                 XmlAttribute weather_attr = weather_node.Attributes["value"];
@@ -361,7 +362,7 @@ namespace NLP_With_Dispatch_Bot
             string hourlyForecastString = string.Empty;
             string hourlyTempString = "00.00";
             string hourlyPrecipitationString = "snow";
-            string hourlycloudString = "cloudy";
+            string hourlyCloudString = "cloudy";
 
             int counter = 0;
             foreach (XmlNode time_node in xml_doc.SelectNodes("//time"))
@@ -369,16 +370,43 @@ namespace NLP_With_Dispatch_Bot
                 // only procees the first 5 forecasts, that's enough for now...
                 if (counter < 5)
                 {
+                    // Get the temperature node.
+                    XmlNode temp_node = time_node.SelectSingleNode("temperature");
+                    XmlAttribute temp_attr = temp_node.Attributes["value"];
+                    if (temp_attr != null)
+                    {
+                        var kelvinTemp = double.Parse(temp_attr.Value.ToString());
+                        double tempFahrenheit = (1.8 * (kelvinTemp - 273.15)) + 32;
+                        hourlyTempString = System.Convert.ToString(tempFahrenheit);
 
+                        // truncate to xx.xx or -x.xx ...
+                        hourlyTempString = hourlyTempString.Substring(0, 5);
 
-                    hourlyForecastString = hourlyForecastString + "temperature: " + hourlyTempString + ", skies: " + hourlycloudString + ", conditions: " + hourlyPrecipitationString +"\n";
+                        // Get the clouds node.
+                        XmlNode clouds_node = time_node.SelectSingleNode("clouds");
+                        XmlAttribute clouds_attr = clouds_node.Attributes["value"];
+                        if (clouds_attr != null)
+                        {
+                            hourlyCloudString = clouds_attr.Value;
+                        }
+
+                        // Get the current weather node.
+                        //XmlNode weather_node = time_node.SelectSingleNode("precipitation");
+                        //XmlAttribute weather_attr = weather_node.Attributes["value"];
+                        //if (weather_attr != null)
+                        //{
+                        //    hourlyPrecipitationString = weather_attr.Value;
+                        //}
+                    }
+
+                    hourlyForecastString = hourlyForecastString + "temperature: " + hourlyTempString + ", skies: " + hourlyCloudString + ", conditions: " + hourlyPrecipitationString +"\n";
                 }
 
                 // next forecast
                 counter++;
             }
-                return hourlyForecastString;
 
+            return hourlyForecastString;
         }
     }
 }
