@@ -92,6 +92,8 @@ namespace NLP_With_Dispatch_Bot
                 var recognizerResult = await _services.LuisServices[DispatchKey].RecognizeAsync(turnContext, cancellationToken);
                 var topIntent = recognizerResult?.GetTopScoringIntent();
 
+                await turnContext.SendActivityAsync($"Returned intent: {topIntent.Value.intent} ({topIntent.Value.score}).");
+
                 // See if LUIS found and used an entity to determine user intent.
                 var entityFound = ParseLuisForEntities(recognizerResult);
 
