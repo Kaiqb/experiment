@@ -175,6 +175,8 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         private async Task DispatchToQnAMakerAsync(ITurnContext context, string appName, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await context.SendActivityAsync($"Sending your request to the QnA Maker {appName} system ...");
+
             if (!string.IsNullOrEmpty(context.Activity.Text))
             {
                 var results = await _services.QnAServices[appName].GetAnswersAsync(context);
@@ -202,7 +204,7 @@ namespace NLP_With_Dispatch_Bot
             // See if LUIS found and used an entity to determine user intent.
             var entityFound = ParseLuisForEntities(result);
 
-            if (topIntent != null && topIntent.HasValue && topIntent.Value.intent != "None")
+            if (topIntent != null && entityFound != "" && topIntent.HasValue && topIntent.Value.intent != "None")
             {
                 // await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n");
 
@@ -233,7 +235,7 @@ namespace NLP_With_Dispatch_Bot
             }
             else
             {
-                var msg = @"No LUIS intents were found.
+                var msg = @"No LUIS intents with a location entity were found.
                             This sample is about identifying two user intents:
                             'Daily_Forecast'
                             'Hourly_Forecast'
