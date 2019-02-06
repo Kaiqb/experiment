@@ -214,30 +214,20 @@ namespace NLP_With_Dispatch_Bot
                 {
                     // Use top intent and "entityFound" = location to call daily weather service here...
                     string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&APPID=" + OpenWeatherMapKey;
-                    var jsonResultText = GetFormattedJSON(dailyURL);
+                    var jsonResult = GetFormattedJSON(dailyURL);
 
-                    // <- Requires rework for JSON ->
-                    var xmlText = GetFormattedJSON(dailyURL);
-                    XmlDocument xmlDailyDoc = new XmlDocument();
-                    xmlDailyDoc.LoadXml(xmlText);
-                    var currentTemp = FindCurrentTemp(xmlDailyDoc);
-                    var currentConditions = FindCurrentConditions(xmlDailyDoc);
-
+                    var currentConditions = FindCurrentConditions(jsonResult);
+                    var currentTemp = FindCurrentTemp(jsonResult);
                     await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", temperature: " + currentTemp + "F");
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call hourly weather service here...
                     string hourlyURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound + "&APPID=" + OpenWeatherMapKey;
-                    var jsonResultText = GetFormattedJSON(hourlyURL);
-
-                    // <- Requires rework for JSON ->
-                    var xmlText = GetFormattedJSON(hourlyURL);
-                    XmlDocument xmlDailyDoc = new XmlDocument();
-                    xmlDailyDoc.LoadXml(xmlText);
+                    var jsonResult = GetFormattedJSON(hourlyURL);
 
                     // Call FindHourlyForecast
-                    var currentForecast = FindHourlyForecast(xmlDailyDoc);
+                    var currentForecast = FindHourlyForecast(jsonResult);
                     await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Hourly weather forecasts for {entityFound}.\n" + currentForecast);
                 }
             }
@@ -252,6 +242,11 @@ namespace NLP_With_Dispatch_Bot
             }
         }
 
+        /// <summary>
+        /// Examines the LUIS response for entities, namely a location for the weather forecast.
+        /// </summary>
+        /// <param name="recognizerResult">Results from LUIS.</param>
+        /// <returns>String containing the entities, if any.</returns>
         private string ParseLuisForEntities(RecognizerResult recognizerResult)
         {
             var result = string.Empty;
@@ -283,7 +278,12 @@ namespace NLP_With_Dispatch_Bot
             return result;
         }
 
-        private string GetFormattedJSON(string url)
+        /// <summary>
+        /// Gets JSON from weather API and formats it into a JObject.
+        /// </summary>
+        /// <param name="url">URL for weather API call.</param>
+        /// <returns>JObject containing the returned weather information.</returns>
+        private JObject GetFormattedJSON(string url)
         {
             // Create a web client.
             using (WebClient client = new WebClient())
@@ -291,160 +291,101 @@ namespace NLP_With_Dispatch_Bot
                 // Get the response string from the URL.
                 string resultJSON = client.DownloadString(url);
 
-                /* . . . */
+                JObject json = JObject.Parse(resultJSON);
 
-                return resultJSON;
+                return json;
             }
         }
 
-        // Returns the XML result of the URL.
-        private string GetFormattedXml(string url)
-        {
-            // Create a web client.
-            using (WebClient client = new WebClient())
-            {
-                // Get the response string from the URL.
-                string xml = client.DownloadString(url);
-
-                // Load the response into an XML document.
-                System.Xml.XmlDocument xml_document = new XmlDocument();
-                xml_document.LoadXml(xml);
-
-                // return xml_document;
-
-                // Format the XML.
-                using (StringWriter string_writer = new StringWriter())
-                {
-                    XmlTextWriter xml_text_writer =
-                        new XmlTextWriter(string_writer);
-                    xml_text_writer.Formatting = System.Xml.Formatting.Indented;
-                    xml_document.WriteTo(xml_text_writer);
-
-                    // Return the result.
-                    return string_writer.ToString();
-                }
-            }
-        }
-
-        // FindCurrentTemp parses temperature,
-        // converts from Kelvin to Fahrenheit,
-        // returns result as a string.
-        private string FindCurrentTemp(XmlDocument xml_doc)
+        /// <summary>
+        /// Converts from Kelvin to Fahrenheit.
+        /// </summary>
+        /// <param name="kelvin">Tempurature value, in Kelvin</param>
+        /// <returns>String representation of the Fahrenheit tempurature.</returns>
+        private string KelvinToFahrenheit(double kelvin)
         {
             string currentTempString = "00.00";
 
-            // Select current weather.
-            foreach (XmlNode node in xml_doc.SelectNodes("/current"))
-            {
-                // Get the temperature node.
-                XmlNode temp_node = node.SelectSingleNode("temperature");
-                XmlAttribute temp_attr = temp_node.Attributes["value"];
-                if (temp_attr != null)
-                {
-                    var kelvinTemp = double.Parse(temp_attr.Value.ToString());
-                    double tempFahrenheit = (1.8 * (kelvinTemp - 273.15)) + 32;
-                    currentTempString = System.Convert.ToString(tempFahrenheit);
-                }
-            }
+            double tempFahrenheit = (1.8 * (kelvin - 273.15)) + 32;
+            currentTempString = Convert.ToString(tempFahrenheit);
 
             // truncate to xx.xx or -x.xx ...
             currentTempString = currentTempString.Substring(0, 5);
+
             return currentTempString;
         }
 
-        private string FindCurrentConditions(XmlDocument xml_doc)
+        /// <summary>
+        /// Find the current temp from provided JSON forecast.
+        /// </summary>
+        /// <param name="json">Forecast information from OpenWeather API.</param>
+        /// <returns>String representation of the current tempurature.</returns>
+        private string FindCurrentTemp(JObject json)
         {
-            string cloudString = "cloudy";
-            string weatherString = "snow";
+            return KelvinToFahrenheit((double)json["main"]["temp"]);
+        }
 
-            // Select current weather.
-            foreach (XmlNode node in xml_doc.SelectNodes("/current"))
-            {
-                // Get the clouds node.
-                XmlNode clouds_node = node.SelectSingleNode("clouds");
-                XmlAttribute clouds_attr = clouds_node.Attributes["name"];
-                if (clouds_attr != null)
-                {
-                    cloudString = clouds_attr.Value;
-                }
-
-                // Get the current weather node.
-                XmlNode weather_node = node.SelectSingleNode("weather");
-                XmlAttribute weather_attr = weather_node.Attributes["value"];
-                if (weather_attr != null)
-                {
-                    weatherString = weather_attr.Value;
-                }
-            }
+        /// <summary>
+        /// Finds the current conditions from provided forecast information.
+        /// </summary>
+        /// <param name="json">Forecast information from OpenWeather API.</param>
+        /// <returns>String representation of current weather conditions.</returns>
+        private string FindCurrentConditions(JObject json)
+        {
+            string currentConditions = (string)json["weather"][0]["description"];
+            string currentSkies = (string)json["weather"][0]["main"];
 
             // format and return conditions string
-            string conditionsString = "skies: " + cloudString + ", conditions: " + weatherString;
+            string conditionsString = "Skies: " + currentSkies + ", conditions: " + currentConditions;
             return conditionsString;
         }
 
-        private string FindHourlyForecast(XmlDocument xml_doc)
+        /// <summary>
+        /// Finds the hourly forecast from provided forecast information.
+        /// </summary>
+        /// <param name="json">Forecast information from OpenWeather API.</param>
+        /// <returns>String representation of hourly weather conditions.</returns>
+        private string FindHourlyForecast(JObject json)
         {
             string hourlyForecastString = string.Empty;
             string hourlyTempString = "00.00";
-            string hourlyPrecipitationString = "snow";
-            string hourlyCloudString = "cloudy";
+            string hourlyConditionString = "cloudy";
             string hourlyTimeString = string.Empty;
 
             int counter = 0;
-            foreach (XmlNode time_node in xml_doc.SelectNodes("//time"))
+
+            // LINQ query to get the list of hourly forecasts
+            var hourlyForecast =
+                from f in json["list"]
+                select f;
+
+            foreach (var forecast in hourlyForecast)
             {
-                // only procees the first 5 forecasts, that's enough for now...
-                if (counter < 5)
-                {
-                    // Get the start date and time.
-                    XmlAttribute time_attr = time_node.Attributes["from"];
-                    DateTime start_time = DateTime.Parse(time_attr.Value);
+                // Get the temp and convert it.
+                hourlyTempString = FindCurrentTemp(forecast as JObject);
 
-                    // Convert from UTC to local time.
-                    start_time = start_time.ToLocalTime();
+                // Get the conditions.
+                hourlyConditionString = FindCurrentConditions(forecast as JObject);
 
-                    // Add 90 minutes to get to the middle of the interval.
-                    start_time += new TimeSpan(1, 30, 0);
-                    hourlyTimeString = start_time.ToShortTimeString();
+                // Get the current time from the forecast.
+                DateTime start_time = (DateTime)forecast["dt_txt"];
 
-                    // Get the temperature node.
-                    XmlNode temp_node = time_node.SelectSingleNode("temperature");
-                    XmlAttribute temp_attr = temp_node.Attributes["value"];
-                    if (temp_attr != null)
-                    {
-                        var kelvinTemp = double.Parse(temp_attr.Value.ToString());
-                        double tempFahrenheit = (1.8 * (kelvinTemp - 273.15)) + 32;
-                        hourlyTempString = System.Convert.ToString(tempFahrenheit);
+                // Convert from UTC to local time.
+                start_time = start_time.ToLocalTime();
 
-                        // truncate to xx.xx or -x.xx ...
-                        hourlyTempString = hourlyTempString.Substring(0, 5);
+                // Add 90 minutes to get to the middle of the interval.
+                start_time += new TimeSpan(1, 30, 0);
+                hourlyTimeString = start_time.ToShortTimeString();
 
-                        // Get the clouds node.
-                        XmlNode clouds_node = time_node.SelectSingleNode("clouds");
-                        XmlAttribute clouds_attr = clouds_node.Attributes["value"];
-                        if (clouds_attr != null)
-                        {
-                            hourlyCloudString = clouds_attr.Value;
-                        }
+                // Build the forecast string from information above and append it.
+                hourlyForecastString = hourlyForecastString + "Forecast for: " + hourlyTimeString + ", Temperature: " + hourlyTempString + "F, " + hourlyConditionString + "\n";
 
-                        // Get the current weather node.
-                        XmlNode weather_node = time_node.SelectSingleNode("precipitation");
-                        XmlAttribute weather_attr = weather_node.Attributes["type"];
-                        if (weather_attr != null)
-                        {
-                            hourlyPrecipitationString = weather_attr.Value;
-                        }
-                        else
-                        {
-                            hourlyPrecipitationString = "none";
-                        }
-                    }
-
-                    hourlyForecastString = hourlyForecastString + "Forecast for: " + hourlyTimeString + ", temperature: " + hourlyTempString + ", skies: " + hourlyCloudString + ", precipitation: " + hourlyPrecipitationString +"\n";
-                }
-
-                // next forecast
+                // Only give first 8, which is a full day.
                 counter++;
+                if (counter > 7)
+                {
+                    break;
+                }
             }
 
             return hourlyForecastString;
