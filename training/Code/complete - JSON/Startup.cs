@@ -16,6 +16,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace NLP_With_Dispatch_Bot
 {
@@ -94,9 +95,8 @@ namespace NLP_With_Dispatch_Bot
                     await context.SendActivityAsync("Sorry, it looks like something went wrong.");
                 };
 
-                // The Memory Storage used here is for local bot debugging only. When the bot
-                // is restarted, everything stored in memory will be gone.
-                IStorage dataStore = new MemoryStorage();
+
+
 
                 // For production bots use the Azure Blob or
                 // Azure CosmosDB storage providers. For the Azure
@@ -116,11 +116,28 @@ namespace NLP_With_Dispatch_Bot
                 // var storageContainer = string.IsNullOrWhiteSpace(blobStorageConfig.Container) ? DefaultBotContainer : blobStorageConfig.Container;
                 // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobStorageConfig.ConnectionString, storageContainer);
 
+                // The Memory Storage used here is for local bot debugging only. When the bot
+                // is restarted, everything stored in memory will be gone.
+                IStorage dataStore = new MemoryStorage();
+
                 // Create Conversation State object.
                 // The Conversation State object is where we persist anything at the conversation-scope.
-                var conversationState = new ConversationState(dataStore);
+                ConversationState conversationState = new ConversationState(dataStore);
+                UserState userState = new UserState(dataStore);
 
-                options.State.Add(conversationState);
+                // Create and register state accessors.
+                // Accessors created here are passed into the IBot-derived class on every turn.
+                services.AddSingleton<WeatherBotAccessors>(sp =>
+                {
+                     // Create the custom state accessor.
+                     return new WeatherBotAccessors(conversationState, userState)
+                    {
+                        ConversationDataAccessor = conversationState.CreateProperty<ConversationData>(WeatherBotAccessors.ConversationDataName),
+                        UserProfileAccessor = userState.CreateProperty<UserProfile>(WeatherBotAccessors.UserProfileName),
+                    };
+                });
+
+                // options.State.Add(conversationState);
             });
         }
 

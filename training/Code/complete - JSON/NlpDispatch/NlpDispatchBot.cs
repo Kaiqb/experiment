@@ -50,6 +50,13 @@ namespace NLP_With_Dispatch_Bot
 
         private const string HourlyForecast = "hourly";
 
+        private readonly WeatherBotAccessors _accessors;
+
+        public NlpDispatchBot (WeatherBotAccessors accessors)
+        {
+            _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
+        }
+
         private class LUISEntities
         {
             public string Location { get; set; } = string.Empty;
@@ -101,6 +108,12 @@ namespace NLP_With_Dispatch_Bot
         /// <returns>A <see cref="Task"/> that represents the work queued to execute.</returns>
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
+            // Get the state properties from the turn context.
+            UserProfile userProfile =
+                await _accessors.UserProfileAccessor.GetAsync(turnContext, () => new UserProfile());
+            ConversationData conversationData =
+                await _accessors.ConversationDataAccessor.GetAsync(turnContext, () => new ConversationData());
+
             if (turnContext.Activity.Type == ActivityTypes.Message && !turnContext.Responded)
             {
                 // Get the intent recognition result
