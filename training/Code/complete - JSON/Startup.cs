@@ -95,9 +95,6 @@ namespace NLP_With_Dispatch_Bot
                     await context.SendActivityAsync("Sorry, it looks like something went wrong.");
                 };
 
-
-
-
                 // For production bots use the Azure Blob or
                 // Azure CosmosDB storage providers. For the Azure
                 // based storage providers, add the Microsoft.Bot.Builder.Azure
