@@ -46,8 +46,23 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         private const string QnAMakerKey = "weatherbottutorial";
 
-        // API key to access Free OpenWeatherMap APIs.
-        // NOTE - Register at http://home.openweathermap.org/users/sign_in to obtain a free subscription key.
+        private const string DailyForecast = "daily";
+
+        private const string HourlyForecast = "hourly";
+
+        private class LUISEntities
+        {
+            public string Location { get; set; } = string.Empty;
+
+            public string Condition { get; set; } = string.Empty;
+
+            public string Sun { get; set; } = string.Empty;
+        }
+
+        /// <summary>
+        /// API key to access Free OpenWeatherMap APIs.
+        /// NOTE - Register at http://home.openweathermap.org/users/sign_in to obtain a free subscription key.
+        /// </summary>
         private const string OpenWeatherMapKey = "64ff82cecc338ba76e3a1dc7f19a73ae";
 
         /// <summary>
@@ -93,9 +108,6 @@ namespace NLP_With_Dispatch_Bot
                 var topIntent = recognizerResult?.GetTopScoringIntent();
 
                 await turnContext.SendActivityAsync($"Returned intent: {topIntent.Value.intent} ({topIntent.Value.score}).");
-
-                // See if LUIS found and used an entity to determine user intent.
-                var entityFound = ParseLuisForEntities(recognizerResult);
 
                 if (topIntent == null)
                 {
@@ -204,42 +216,82 @@ namespace NLP_With_Dispatch_Bot
             var topIntent = result?.GetTopScoringIntent();
 
             // See if LUIS found and used an entity to determine user intent.
-            var entityFound = ParseLuisForEntities(result);
+            LUISEntities entityFound = ParseLuisForEntities(result);
 
-            if (topIntent != null && entityFound != "" && topIntent.HasValue && topIntent.Value.intent != "None")
+            if (topIntent != null && entityFound.Location != string.Empty && topIntent.HasValue && topIntent.Value.intent != "None")
             {
-                // await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n");
+                await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n");
 
                 if (topIntent.Value.intent == "Daily_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call daily weather service here...
-                    string dailyURL = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound + "&APPID=" + OpenWeatherMapKey;
-                    var jsonResult = GetFormattedJSON(dailyURL);
+                    var jsonResult = GetForecastInformation(DailyForecast, entityFound);
 
                     var currentConditions = FindCurrentConditions(jsonResult);
                     var currentTemp = FindCurrentTemp(jsonResult);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Daily weather forecast for {entityFound}.\n " + currentConditions + ", temperature: " + currentTemp + "F");
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, Score: {topIntent.Value.score}\n " +
+                        $"Daily weather forecast for {entityFound}.\n {currentConditions}, temperature: {currentTemp}F");
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call hourly weather service here...
-                    string hourlyURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound + "&APPID=" + OpenWeatherMapKey;
-                    var jsonResult = GetFormattedJSON(hourlyURL);
+                    var jsonResult = GetForecastInformation(HourlyForecast, entityFound);
 
                     // Call FindHourlyForecast
-                    var currentForecast = FindHourlyForecast(jsonResult);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n Hourly weather forecasts for {entityFound}.\n" + currentForecast);
+                    var currentForecast = FindHourlyForecast(jsonResult, entityFound);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, " +
+                        $"Score: {topIntent.Value.score}\n {currentForecast}");
+                }
+                else if (topIntent.Value.intent == "When_Condition")
+                {
+                    // Get forecast information
+                    var jsonResult = GetForecastInformation(HourlyForecast, entityFound);
+
+                    // Find when that condition is happening
+                    var currentForecast = FindHourlyForecast(jsonResult, entityFound);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, " +
+                        $"Score: {topIntent.Value.score}\n {currentForecast}");
+                }
+                else if (topIntent.Value.intent == "When_Sun")
+                {
+                    // Get forecast information
+                    var jsonResult = GetForecastInformation(DailyForecast, entityFound);
+
+                    var sunStatus = FindSunTime(jsonResult, entityFound.Sun);
+                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, " +
+                        $"Score: {topIntent.Value.score}\n Today in {entityFound.Location} the sun will " + sunStatus);
                 }
             }
             else
             {
                 var msg = @"No LUIS intents with a location entity were found.
-                            This sample is about identifying two user intents:
-                            'Daily_Forecast'
-                            'Hourly_Forecast'
-                            Try typing 'Show me weather for Redmond.' or 'When will it start to rain in Redmond?'.";
+                        This sample is about identifying four user intents:
+                        'Daily_Forecast'
+                        'Hourly_Forecast'
+                        'When_Condition'
+                        'When_Sun'
+                        Try typing 'Show me weather for Redmond.' or 'When will it start to rain in Redmond?'.";
                 await context.SendActivityAsync(msg);
             }
+        }
+
+        private JObject GetForecastInformation(string forecastType, LUISEntities entityFound)
+        {
+            string forecastUrl = string.Empty;
+
+            switch (forecastType)
+            {
+                case DailyForecast:
+                    forecastUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + entityFound.Location + "&APPID=" + OpenWeatherMapKey;
+                    break;
+                case HourlyForecast:
+                    forecastUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + entityFound.Location + "&APPID=" + OpenWeatherMapKey;
+                    break;
+                default:
+                    throw new InvalidOperationException($"Invalid forecast type requested.");
+            }
+
+            return GetFormattedJSON(forecastUrl);
         }
 
         /// <summary>
@@ -247,34 +299,59 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         /// <param name="recognizerResult">Results from LUIS.</param>
         /// <returns>String containing the entities, if any.</returns>
-        private string ParseLuisForEntities(RecognizerResult recognizerResult)
+        private LUISEntities ParseLuisForEntities(RecognizerResult recognizerResult)
         {
-            var result = string.Empty;
-
+            LUISEntities result = new LUISEntities();
+            var temp = recognizerResult.Entities.First;
             // recognizerResult.Entities returns type JObject.
             foreach (var entity in recognizerResult.Entities)
             {
-                // Parse JObject for a known entity types: Appointment, Meeting, and Schedule.
-                var locationFound = JObject.Parse(entity.Value.ToString())["location"];
+                // use JsonConvert to convert entity.Value to a dynamic object.
+                dynamic o = JsonConvert.DeserializeObject<dynamic>(entity.Value.ToString());
 
-                // We will return info on the first entity found.
-                if (locationFound != null)
+                if (result.Location.Equals(string.Empty))
                 {
-                    // use JsonConvert to convert entity.Value to a dynamic object.
-                    dynamic o = JsonConvert.DeserializeObject<dynamic>(entity.Value.ToString());
-                    if (o.location[0] != null)
+                    // Take the first entity
+                    if (o.location != null)
                     {
-                        // Find and return the entity type and score.
-                        var entText = o.location[0].text;
-                        var entScore = o.location[0].score;
-                        result = entText;
+                        // Grab first location entry
+                        result.Location = o.location[0].text;
 
-                        return result;
+                        // Since it's a location, make sure first letter is capitalized
+                        result.Location = result.Location.First().ToString().ToUpper() + result.Location.Substring(1);
                     }
                 }
+
+                if (result.Condition.Equals(string.Empty))
+                {
+                    // Take the first entity
+                    if (o.condition != null)
+                    {
+                        result.Condition = o.condition[0].text;
+                    }
+                }
+
+                if (result.Sun.Equals(string.Empty))
+                {
+                    // Take the first entity
+                    if (o.sun != null)
+                    {
+                        result.Sun = o.sun[0].text;
+                    }
+                }
+
+                // If we found entities, they will be together in the same entry. Return those results.
+                if (result.Sun.Equals(string.Empty) &&
+                    result.Condition.Equals(string.Empty) &&
+                    result.Location.Equals(string.Empty))
+                {
+                    continue;
+                }
+
+                return result;
             }
 
-            // No entity results found.
+            // No entities found.
             return result;
         }
 
@@ -345,14 +422,27 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         /// <param name="json">Forecast information from OpenWeather API.</param>
         /// <returns>String representation of hourly weather conditions.</returns>
-        private string FindHourlyForecast(JObject json)
+        private string FindHourlyForecast(JObject json, LUISEntities entities)
         {
-            string hourlyForecastString = string.Empty;
+            string hourlyForecastString = $"Hourly weather forecasts for {entities.Location}.\n";
             string hourlyTempString = "00.00";
             string hourlyConditionString = "cloudy";
             string hourlyTimeString = string.Empty;
+            string conditionString = string.Empty;
+            string conditionStart = string.Empty;
+            string condition = entities.Condition;
 
             int counter = 0;
+
+            if (condition != string.Empty)
+            {
+                // Truncate string for grammar for precipitation
+                condition = condition.Replace("ing", string.Empty);
+                condition = condition.Replace("sunny", "sun");
+                condition = condition.Replace("cloudy", "clouds");
+
+                conditionString = "It looks like you will see " + condition + " at about ";
+            }
 
             // LINQ query to get the list of hourly forecasts
             var hourlyForecast =
@@ -377,6 +467,12 @@ namespace NLP_With_Dispatch_Bot
                 start_time += new TimeSpan(1, 30, 0);
                 hourlyTimeString = start_time.ToShortTimeString();
 
+                if (hourlyConditionString.Contains(condition) &&
+                    conditionStart.Equals(string.Empty))
+                {
+                    conditionStart = hourlyTimeString + "\n";
+                }
+
                 // Build the forecast string from information above and append it.
                 hourlyForecastString = hourlyForecastString + "Forecast for: " + hourlyTimeString + ", Temperature: " + hourlyTempString + "F, " + hourlyConditionString + "\n";
 
@@ -388,7 +484,45 @@ namespace NLP_With_Dispatch_Bot
                 }
             }
 
-            return hourlyForecastString;
+            if (conditionStart.Equals(string.Empty))
+            {
+                conditionString = "There isn't any " + condition + "in the forecast for the next 24 hours!\n";
+            }
+            else
+            {
+                conditionString += conditionStart + "\n";
+            }
+
+            return conditionString + hourlyForecastString;
+        }
+
+        private string FindSunTime(JObject json, string sun)
+        {
+            string result = string.Empty;
+            DateTimeOffset sunTime;
+
+            // Strip 'sun' out of the string
+            sun = sun.Replace("sun", string.Empty);
+
+            if (sun.Contains("rise"))
+            {
+                // Grab the sunrise time
+                sunTime = DateTimeOffset.FromUnixTimeSeconds((long)json["sys"]["sunrise"]);
+            }
+            else if (sun.Contains("set"))
+            {
+                // Grab the sunset time
+                sunTime = DateTimeOffset.FromUnixTimeSeconds((long)json["sys"]["sunset"]);
+            }
+            else
+            {
+                return "Failed to get a sun state.";
+            }
+
+            // Convert from UTC to local time.
+            result = sun + " at " + sunTime.LocalDateTime.ToShortTimeString();
+
+            return result;
         }
     }
 }
