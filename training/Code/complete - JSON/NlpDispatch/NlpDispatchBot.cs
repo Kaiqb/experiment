@@ -220,7 +220,8 @@ namespace NLP_With_Dispatch_Bot
 
             if (topIntent != null && entityFound.Location != string.Empty && topIntent.HasValue && topIntent.Value.intent != "None")
             {
-                await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound}, Score: {topIntent.Value.score}\n");
+                string debugInfo = string.Empty; // $"==> LUIS Top Scoring Intent: { topIntent.Value.intent}, LUIS location entity: { entityFound.Location}, Score: { topIntent.Value.score}\n ";
+                //await context.SendActivityAsync(debugInfo);
 
                 if (topIntent.Value.intent == "Daily_Forecast")
                 {
@@ -229,8 +230,7 @@ namespace NLP_With_Dispatch_Bot
 
                     var currentConditions = FindCurrentConditions(jsonResult);
                     var currentTemp = FindCurrentTemp(jsonResult);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, Score: {topIntent.Value.score}\n " +
-                        $"Daily weather forecast for {entityFound}.\n {currentConditions}, temperature: {currentTemp}F");
+                    await context.SendActivityAsync(debugInfo + $"Daily weather forecast for {entityFound}.\n {currentConditions}, temperature: {currentTemp}F");
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
@@ -239,8 +239,7 @@ namespace NLP_With_Dispatch_Bot
 
                     // Call FindHourlyForecast
                     var currentForecast = FindHourlyForecast(jsonResult, entityFound);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, " +
-                        $"Score: {topIntent.Value.score}\n {currentForecast}");
+                    await context.SendActivityAsync(debugInfo + currentForecast);
                 }
                 else if (topIntent.Value.intent == "When_Condition")
                 {
@@ -249,8 +248,7 @@ namespace NLP_With_Dispatch_Bot
 
                     // Find when that condition is happening
                     var currentForecast = FindHourlyForecast(jsonResult, entityFound);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, " +
-                        $"Score: {topIntent.Value.score}\n {currentForecast}");
+                    await context.SendActivityAsync(debugInfo + currentForecast);
                 }
                 else if (topIntent.Value.intent == "When_Sun")
                 {
@@ -258,8 +256,7 @@ namespace NLP_With_Dispatch_Bot
                     var jsonResult = GetForecastInformation(DailyForecast, entityFound);
 
                     var sunStatus = FindSunTime(jsonResult, entityFound.Sun);
-                    await context.SendActivityAsync($"==>LUIS Top Scoring Intent: {topIntent.Value.intent}, LUIS location entity: {entityFound.Location}, " +
-                        $"Score: {topIntent.Value.score}\n Today in {entityFound.Location} the sun will " + sunStatus);
+                    await context.SendActivityAsync($"Today in {entityFound.Location} the sun will " + sunStatus);
                 }
             }
             else
@@ -440,8 +437,7 @@ namespace NLP_With_Dispatch_Bot
                 condition = condition.Replace("ing", string.Empty);
                 condition = condition.Replace("sunny", "sun");
                 condition = condition.Replace("cloudy", "clouds");
-
-                conditionString = "It looks like you will see " + condition + " at about ";
+                condition = condition.Replace("y", string.Empty);
             }
 
             // LINQ query to get the list of hourly forecasts
@@ -467,7 +463,8 @@ namespace NLP_With_Dispatch_Bot
                 start_time += new TimeSpan(1, 30, 0);
                 hourlyTimeString = start_time.ToShortTimeString();
 
-                if (hourlyConditionString.Contains(condition) &&
+                if (!condition.Equals(string.Empty) &&
+                    hourlyConditionString.Contains(condition) &&
                     conditionStart.Equals(string.Empty))
                 {
                     conditionStart = hourlyTimeString + "\n";
@@ -484,13 +481,16 @@ namespace NLP_With_Dispatch_Bot
                 }
             }
 
-            if (conditionStart.Equals(string.Empty))
+            if (!condition.Equals(string.Empty))
             {
-                conditionString = "There isn't any " + condition + "in the forecast for the next 24 hours!\n";
-            }
-            else
-            {
-                conditionString += conditionStart + "\n";
+                if (conditionStart.Equals(string.Empty))
+                {
+                    conditionString = "There isn't any " + condition + " in the forecast for the next 24 hours!\n";
+                }
+                else
+                {
+                    conditionString = "It looks like you will see " + condition + " by about " + conditionStart + "\n";
+                }
             }
 
             return conditionString + hourlyForecastString;
