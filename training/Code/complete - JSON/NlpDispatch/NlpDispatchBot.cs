@@ -218,11 +218,17 @@ namespace NLP_With_Dispatch_Bot
             // See if LUIS found and used an entity to determine user intent.
             LUISEntities entityFound = ParseLuisForEntities(result);
 
+            if (entityFound.Location == string.Empty)
+            {
+                // Add dialog prompt to ask user for weather location.
+
+                // Test - add a default of "Seattle".
+                entityFound.Location = "seattle";
+            }
+
             if (topIntent != null && entityFound.Location != string.Empty && topIntent.HasValue && topIntent.Value.intent != "None")
             {
                 string debugInfo = string.Empty; // $"==> LUIS Top Scoring Intent: { topIntent.Value.intent}, LUIS location entity: { entityFound.Location}, Score: { topIntent.Value.score}\n ";
-                //await context.SendActivityAsync(debugInfo);
-
                 if (topIntent.Value.intent == "Daily_Forecast")
                 {
                     // Use top intent and "entityFound" = location to call daily weather service here...
