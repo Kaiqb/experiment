@@ -52,11 +52,6 @@ namespace NLP_With_Dispatch_Bot
 
         private readonly WeatherBotAccessors _accessors;
 
-        //public NlpDispatchBot (WeatherBotAccessors accessors)
-        //{
-        //    _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
-        //}
-
         private class LUISEntities
         {
             public string Location { get; set; } = string.Empty;
@@ -121,6 +116,10 @@ namespace NLP_With_Dispatch_Bot
                 var recognizerResult = await _services.LuisServices[DispatchKey].RecognizeAsync(turnContext, cancellationToken);
                 var topIntent = recognizerResult?.GetTopScoringIntent();
 
+                // Add message details to the conversation data.
+                conversationData.Timestamp = turnContext.Activity.Timestamp.ToString();
+                conversationData.ChannelId = turnContext.Activity.ChannelId.ToString();
+
                 await turnContext.SendActivityAsync($"Returned intent: {topIntent.Value.intent} ({topIntent.Value.score}).");
 
                 if (topIntent == null)
@@ -129,6 +128,8 @@ namespace NLP_With_Dispatch_Bot
                 }
                 else
                 {
+                    // save the Dispatch topIntent;
+                    conversationData.DispatchIntent = topIntent.Value.intent;
                     await DispatchToTopIntentAsync(turnContext, topIntent, cancellationToken);
                 }
             }
@@ -137,7 +138,11 @@ namespace NLP_With_Dispatch_Bot
                 // Send a welcome message to the user and tell them what actions they may perform to use this bot
                 if (turnContext.Activity.MembersAdded != null)
                 {
+                    userProfile.Id = turnContext.Activity.Id;
                     await SendWelcomeMessageAsync(turnContext, cancellationToken);
+                    // Save user state and save changes.
+                    await _accessors.UserProfileAccessor.SetAsync(turnContext, userProfile);
+                    await _accessors.UserState.SaveChangesAsync(turnContext);
                 }
             }
             else
@@ -224,20 +229,43 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         private async Task DispatchToLuisModelAsync(ITurnContext context, string appName, CancellationToken cancellationToken = default(CancellationToken))
         {
+            // Get the state properties from the passed context.
+            UserProfile userProfile =
+                await _accessors.UserProfileAccessor.GetAsync(context, () => new UserProfile());
+            ConversationData conversationData =
+               await _accessors.ConversationDataAccessor.GetAsync(context, () => new ConversationData());
+
             await context.SendActivityAsync($"Sending your request to the {appName} system ...");
             var result = await _services.LuisServices[appName].RecognizeAsync(context, cancellationToken);
 
             var topIntent = result?.GetTopScoringIntent();
+
+            if (topIntent != null)
+            {
+                // save the LUIS topIntent;
+                conversationData.LuisIntent = topIntent.Value.intent;
+            }
 
             // See if LUIS found and used an entity to determine user intent.
             LUISEntities entityFound = ParseLuisForEntities(result);
 
             if (entityFound.Location == string.Empty)
             {
-                // Add dialog prompt to ask user for weather location.
-
-                // Test - add a default of "Seattle".
-                entityFound.Location = "seattle";
+                if (userProfile.Location != string.Empty)
+                {
+                    entityFound.Location = userProfile.Location;
+                }
+                else
+                {
+                    // Test - add a default of "Seattle".
+                    // Next - prompt user for location!
+                    entityFound.Location = "seattle";
+                }
+            }
+            else
+            {
+                // Save the location this usewr asked about.
+                userProfile.Location = entityFound.Location;
             }
 
             if (topIntent != null && entityFound.Location != string.Empty && topIntent.HasValue && topIntent.Value.intent != "None")
@@ -290,6 +318,14 @@ namespace NLP_With_Dispatch_Bot
                         Try typing 'Show me weather for Redmond.' or 'When will it start to rain in Redmond?'.";
                 await context.SendActivityAsync(msg);
             }
+
+            // Update conversation state and save changes.
+            await _accessors.ConversationDataAccessor.SetAsync(context, conversationData);
+            await _accessors.ConversationState.SaveChangesAsync(context);
+
+            // Save user state and save changes.
+            await _accessors.UserProfileAccessor.SetAsync(context, userProfile);
+            await _accessors.UserState.SaveChangesAsync(context);
         }
 
         private JObject GetForecastInformation(string forecastType, LUISEntities entityFound)
