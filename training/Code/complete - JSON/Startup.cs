@@ -80,6 +80,27 @@ namespace NLP_With_Dispatch_Bot
 
             services.AddSingleton(sp => connectedServices);
 
+            // The Memory Storage used here is for local bot debugging only. When the bot
+            // is restarted, everything stored in memory will be gone.
+            IStorage dataStore = new MemoryStorage();
+
+            // Create Conversation State object.
+            // The Conversation State object is where we persist anything at the conversation-scope.
+            ConversationState conversationState = new ConversationState(dataStore);
+            UserState userState = new UserState(dataStore);
+
+            // Create and register state accessors.
+            // Accessors created here are passed into the IBot-derived class on every turn.
+            services.AddSingleton<WeatherBotAccessors>(sp =>
+            {
+                // Create the custom state accessor.
+                return new WeatherBotAccessors(conversationState, userState)
+                {
+                    ConversationDataAccessor = conversationState.CreateProperty<ConversationData>(WeatherBotAccessors.ConversationDataName),
+                    UserProfileAccessor = userState.CreateProperty<UserProfile>(WeatherBotAccessors.UserProfileName),
+                };
+            });
+
             services.AddBot<NlpDispatchBot>(options =>
             {
 
@@ -113,26 +134,7 @@ namespace NLP_With_Dispatch_Bot
                 // var storageContainer = string.IsNullOrWhiteSpace(blobStorageConfig.Container) ? DefaultBotContainer : blobStorageConfig.Container;
                 // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobStorageConfig.ConnectionString, storageContainer);
 
-                // The Memory Storage used here is for local bot debugging only. When the bot
-                // is restarted, everything stored in memory will be gone.
-                IStorage dataStore = new MemoryStorage();
-
-                // Create Conversation State object.
-                // The Conversation State object is where we persist anything at the conversation-scope.
-                ConversationState conversationState = new ConversationState(dataStore);
-                UserState userState = new UserState(dataStore);
-
-                // Create and register state accessors.
-                // Accessors created here are passed into the IBot-derived class on every turn.
-                services.AddSingleton<WeatherBotAccessors>(sp =>
-                {
-                     // Create the custom state accessor.
-                     return new WeatherBotAccessors(conversationState, userState)
-                    {
-                        ConversationDataAccessor = conversationState.CreateProperty<ConversationData>(WeatherBotAccessors.ConversationDataName),
-                        UserProfileAccessor = userState.CreateProperty<UserProfile>(WeatherBotAccessors.UserProfileName),
-                    };
-                });
+                
 
                 // options.State.Add(conversationState);
             });

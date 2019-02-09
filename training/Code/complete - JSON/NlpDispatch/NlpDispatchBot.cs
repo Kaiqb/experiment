@@ -52,10 +52,10 @@ namespace NLP_With_Dispatch_Bot
 
         private readonly WeatherBotAccessors _accessors;
 
-        public NlpDispatchBot (WeatherBotAccessors accessors)
-        {
-            _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
-        }
+        //public NlpDispatchBot (WeatherBotAccessors accessors)
+        //{
+        //    _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
+        //}
 
         private class LUISEntities
         {
@@ -81,8 +81,9 @@ namespace NLP_With_Dispatch_Bot
         /// Initializes a new instance of the <see cref="NlpDispatchBot"/> class.
         /// </summary>
         /// <param name="services">Services configured from the ".bot" file.</param>
-        public NlpDispatchBot(BotServices services)
+        public NlpDispatchBot(BotServices services, WeatherBotAccessors accessors)
         {
+            _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
             _services = services ?? throw new System.ArgumentNullException(nameof(services));
 
             if (!_services.QnAServices.ContainsKey(QnAMakerKey))
@@ -112,7 +113,7 @@ namespace NLP_With_Dispatch_Bot
             UserProfile userProfile =
                 await _accessors.UserProfileAccessor.GetAsync(turnContext, () => new UserProfile());
             ConversationData conversationData =
-                await _accessors.ConversationDataAccessor.GetAsync(turnContext, () => new ConversationData());
+               await _accessors.ConversationDataAccessor.GetAsync(turnContext, () => new ConversationData());
 
             if (turnContext.Activity.Type == ActivityTypes.Message && !turnContext.Responded)
             {
