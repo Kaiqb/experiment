@@ -24,14 +24,15 @@
 | 17.multilingual-bot           | multilingual-bot      |**Update**. Use MVC pattern.            | 
 | 18.bot-authentication         | bot-authentication    |**Update**. Use MVC pattern.    | 
 | 19.custom-dialogs             | custom-dialogs        |**Update**. Use MVC pattern.                        | 
-| 20.qna-with-appinsights  &  21.luis-with-appinsights    |              |Dedicated AppInsights focused sample instead of two?| 
+| 20.qna-with-appinsights       |                       |**Update**. Use MVC pattern. | 
+| 21.luis-with-appinsights      |                       |**Update**. Use MVC pattern. |
 | 22.conversation-history       |                       |**Update**. Use MVC pattern. This is about transcript logger. Rename?        | 
-| 23.facebook-events            |                       |**Update**. Used MVC pattern.                                                 | 
-| 24.bot-authentication-msgraph |                       |**Update**. Used MVC pattern.                                         | 
-| 30.asp-mvc-bot                |                       |**Remove**. All of the samples should use MVC.       | 
-| 40.times-resolution           |                       |**Remove**. This one should be moved to the Recognizer-Text repo.             | 
-| 42.scaleout                   |                       |**Remove**. Per John, this functionality will be in the SDK.                | 
-| 51.cafe-bot                   |                       |**Remove**. Use it to test the SDK?        |                     
+| 23.facebook-events            |                       |**Update**. Use MVC pattern.                                                 | 
+| 24.bot-authentication-msgraph |                       |**Update**. Use MVC pattern.                                         | 
+| 30.asp-mvc-bot                |                       |**Remove**. All of the samples will use MVC pattern.       | 
+| 40.times-resolution           |                       |**Update**. Use MVC pattern.             | 
+| 42.scaleout                   |                       |**Update**. Use MVC pattern.           | 
+| 51.cafe-bot                   |                       |**Remove**.       |                     
 
 ### JS delta                                               
 * diceroller-skill                                                                                                                  
