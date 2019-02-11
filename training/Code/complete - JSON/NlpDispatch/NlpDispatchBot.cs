@@ -12,6 +12,7 @@ using System.Xml;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.AI.QnA;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -72,6 +73,8 @@ namespace NLP_With_Dispatch_Bot
         /// </summary>
         private readonly BotServices _services;
 
+        private readonly DialogSet _dialogs;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NlpDispatchBot"/> class.
         /// </summary>
@@ -80,6 +83,8 @@ namespace NLP_With_Dispatch_Bot
         {
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
             _services = services ?? throw new System.ArgumentNullException(nameof(services));
+            _dialogs = new DialogSet(accessors.ConversationDialogState);
+            _dialogs.Add(new TextPrompt("location"));
 
             if (!_services.QnAServices.ContainsKey(QnAMakerKey))
             {
@@ -251,15 +256,25 @@ namespace NLP_With_Dispatch_Bot
 
             if (entityFound.Location == string.Empty)
             {
-                if (userProfile.Location != string.Empty)
+                //if (userProfile.Location != string.Empty)
+                if (userProfile.Location == "redmond")
                 {
                     entityFound.Location = userProfile.Location;
                 }
                 else
                 {
                     // Test - add a default of "Seattle".
-                    // Next - prompt user for location!
-                    entityFound.Location = "seattle";
+                    // entityFound.Location = "seattle";
+
+                    var dialogContext = await _dialogs.CreateContextAsync(context, cancellationToken);
+
+                    // A prompt dialog can be started directly on the DialogContext.
+                    await dialogContext.PromptAsync(
+                        "location",
+                        new PromptOptions { Prompt = MessageFactory.Text("Please enter the weather location.") },
+                        cancellationToken);
+                    var results = await dialogContext.ContinueDialogAsync(cancellationToken);
+                    entityFound.Location = results.ToString();
                 }
             }
             else

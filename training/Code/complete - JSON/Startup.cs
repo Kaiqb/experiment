@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.AI.QnA;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Connector.Authentication;
@@ -97,6 +98,7 @@ namespace NLP_With_Dispatch_Bot
                 return new WeatherBotAccessors(conversationState, userState)
                 {
                     ConversationDataAccessor = conversationState.CreateProperty<ConversationData>(WeatherBotAccessors.ConversationDataName),
+                    ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                     UserProfileAccessor = userState.CreateProperty<UserProfile>(WeatherBotAccessors.UserProfileName),
                 };
             });
