@@ -86,6 +86,15 @@ namespace NLP_With_Dispatch_Bot
             _dialogs = new DialogSet(accessors.ConversationDialogState);
             _dialogs.Add(new TextPrompt("location"));
 
+            // This array defines how the Location prompt Waterfall will execute.
+            var waterfallSteps = new WaterfallStep[]
+            {
+                LocationStepAsync,
+                LocationConfirmStepAsync,
+            };
+
+            _dialogs.Add(new WaterfallDialog("locationprompt", waterfallSteps));
+
             if (!_services.QnAServices.ContainsKey(QnAMakerKey))
             {
                 throw new System.ArgumentException($"Invalid configuration. Please check your '.bot' file for a QnA service named '{QnAMakerKey}'.");
@@ -256,25 +265,23 @@ namespace NLP_With_Dispatch_Bot
 
             if (entityFound.Location == string.Empty)
             {
-                //if (userProfile.Location != string.Empty)
-                if (userProfile.Location == "redmond")
+                if (userProfile.Location != null)
                 {
                     entityFound.Location = userProfile.Location;
                 }
                 else
                 {
-                    // Test - add a default of "Seattle".
-                    // entityFound.Location = "seattle";
-
+                    // Inform the user we found no location.
                     var dialogContext = await _dialogs.CreateContextAsync(context, cancellationToken);
+                    await dialogContext.BeginDialogAsync("locationprompt", null, cancellationToken);
 
-                    // A prompt dialog can be started directly on the DialogContext.
-                    await dialogContext.PromptAsync(
-                        "location",
-                        new PromptOptions { Prompt = MessageFactory.Text("Please enter the weather location.") },
-                        cancellationToken);
-                    var results = await dialogContext.ContinueDialogAsync(cancellationToken);
-                    entityFound.Location = results.ToString();
+                    var promptresults = await dialogContext.ContinueDialogAsync(cancellationToken);
+
+                    // If promptresults Empty, try again.
+                    if (promptresults.Status == DialogTurnStatus.Empty)
+                    {
+                        await dialogContext.BeginDialogAsync("locationprompt", null, cancellationToken);
+                    }
                 }
             }
             else
@@ -330,7 +337,7 @@ namespace NLP_With_Dispatch_Bot
                         'Hourly_Forecast'
                         'When_Condition'
                         'When_Sun'
-                        Try typing 'Show me weather for Redmond.' or 'When will it start to rain in Redmond?'.";
+                        Try typing 'Show me weather for Redmond.' or 'Will it rain in Redmond?'.";
                 await context.SendActivityAsync(msg);
             }
 
@@ -594,6 +601,27 @@ namespace NLP_With_Dispatch_Bot
             result = sun + " at " + sunTime.LocalDateTime.ToShortTimeString();
 
             return result;
+        }
+
+        private static async Task<DialogTurnResult> LocationStepAsync(
+        WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Running a prompt here means the next WaterfallStep will be
+            // run when the users response is received.
+            return await stepContext.PromptAsync(
+                "location", new PromptOptions { Prompt = MessageFactory.Text("No location detected.") }, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> LocationConfirmStepAsync(
+            WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // We can send messages to the user at any point in the WaterfallStep.
+            await stepContext.Context.SendActivityAsync(
+                MessageFactory.Text($"Please add a location to your input '{stepContext.Result}'."), cancellationToken);
+
+            // WaterfallStep always finishes with the end of the Waterfall or with another dialog, 
+            // here it is the end.
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }
 }
