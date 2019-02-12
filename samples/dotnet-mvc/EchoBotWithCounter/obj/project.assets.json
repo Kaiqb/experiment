@@ -13131,11 +13131,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\EchoBotWithCounter\\EchoBotWithCounter.csproj",
+      "projectUniqueName": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBotWithCounter\\EchoBotWithCounter.csproj",
       "projectName": "EchoBotWithCounter",
-      "projectPath": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\EchoBotWithCounter\\EchoBotWithCounter.csproj",
+      "projectPath": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBotWithCounter\\EchoBotWithCounter.csproj",
       "packagesPath": "C:\\Users\\v-jofing\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\EchoBotWithCounter\\obj\\",
+      "outputPath": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBotWithCounter\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

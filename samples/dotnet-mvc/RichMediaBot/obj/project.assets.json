@@ -13159,11 +13159,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\RichMediaBot\\RichMediaBot.csproj",
+      "projectUniqueName": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\RichMediaBot\\RichMediaBot.csproj",
       "projectName": "RichMedia",
-      "projectPath": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\RichMediaBot\\RichMediaBot.csproj",
+      "projectPath": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\RichMediaBot\\RichMediaBot.csproj",
       "packagesPath": "C:\\Users\\v-jofing\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\RichMediaBot\\obj\\",
+      "outputPath": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\RichMediaBot\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

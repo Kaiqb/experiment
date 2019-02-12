@@ -13131,11 +13131,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\CsEchoBot\\EchoBot.csproj",
+      "projectUniqueName": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBot\\EchoBot.csproj",
       "projectName": "EchoBot",
-      "projectPath": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\CsEchoBot\\EchoBot.csproj",
+      "projectPath": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBot\\EchoBot.csproj",
       "packagesPath": "C:\\Users\\v-jofing\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\v-jofing\\source\\repos\\MS-docs\\EchoBot\\CsEchoBot\\CsEchoBot\\obj\\",
+      "outputPath": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBot\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
