@@ -192,6 +192,7 @@ namespace NLP_With_Dispatch_Bot
         private async Task DispatchToTopIntentAsync(ITurnContext context, (string intent, double score)? topIntent, CancellationToken cancellationToken = default(CancellationToken))
         {
             const string dailyForecastDispatchKey = "l_Weather";
+            const string userFinishedKey = "l_Goodbye";
             const string noneDispatchKey = "None";
             const string qnaDispatchKey = "q_Weather";
 
@@ -208,6 +209,11 @@ namespace NLP_With_Dispatch_Bot
                 // In this example we fall through to the QnA intent.
                 case qnaDispatchKey:
                     await DispatchToQnAMakerAsync(context, QnAMakerKey);
+                    break;
+
+                case userFinishedKey:
+                    // add function  to say goodbye.
+                    await SignOutUser(context);
                     break;
 
                 default:
@@ -236,6 +242,18 @@ namespace NLP_With_Dispatch_Bot
                     await context.SendActivityAsync($"Couldn't find an answer in the {appName}.");
                 }
             }
+        }
+
+        private async Task SignOutUser(ITurnContext context, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            UserProfile userProfile =
+                await _accessors.UserProfileAccessor.GetAsync(context, () => new UserProfile());
+            userProfile.Location = string.Empty;
+            await context.SendActivityAsync($"Thank you for using WeatherBot!");
+
+            // Save user state and save changes.
+            await _accessors.UserProfileAccessor.SetAsync(context, userProfile);
+            await _accessors.UserState.SaveChangesAsync(context);
         }
 
         /// <summary>
@@ -350,6 +368,8 @@ namespace NLP_With_Dispatch_Bot
             await _accessors.UserProfileAccessor.SetAsync(context, userProfile);
             await _accessors.UserState.SaveChangesAsync(context);
         }
+
+
 
         private JObject GetForecastInformation(string forecastType, LUISEntities entityFound)
         {
