@@ -1,0 +1,18 @@
+{
+    "name": "EchoBot",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages",
+            "id": "63b3a1a0-2ef6-11e9-81bd-d373c4847035",
+            "name": "http://localhost:3978/api/messages"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "overrides": null,
+    "path": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\EchoBot\\EchoBot.bot"
+}

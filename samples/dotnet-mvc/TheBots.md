@@ -9,6 +9,10 @@
     - Adds conversation state and property accessor objects in Startup.cs.
     - Adds DI constructor and instance fields to the controller.
     - Manages the counter in the controller's turn handler code.
-1. RichMedia - extends EchoBotWithCounter
-    - State is needed. Will use a state flag and an enumeration to track the current "task".
+1. RichMedia - extends EchoBot
     - Include AdaptiveCards NuGet package.
+    - State is not needed:
+        - Switch on user input text:
+        - If it doesn't match a "task", display the suggested actions.
+        - Otherwise, display the requested rich media type.
+    - Using DI for the adaptive card.

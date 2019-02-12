@@ -5,7 +5,6 @@ namespace RichMedia
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Bot.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -22,14 +21,6 @@ namespace RichMedia
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
-            // Create and register a conversation state management object.
-            var conversationState = new ConversationState(new MemoryStorage());
-            services.AddSingleton(conversationState);
-
-            // Create and register a state property accessor for conversation data.
-            var stateAccessor = conversationState.CreateProperty<ConversationData>("counter");
-            services.AddSingleton(stateAccessor);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
