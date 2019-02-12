@@ -212,7 +212,7 @@ namespace NLP_With_Dispatch_Bot
                     break;
 
                 case userFinishedKey:
-                    // add function  to say goodbye.
+                    // Say goodbye.
                     await SignOutUser(context);
                     break;
 
@@ -346,17 +346,15 @@ namespace NLP_With_Dispatch_Bot
                     var sunStatus = FindSunTime(jsonResult, entityFound.Sun);
                     await context.SendActivityAsync($"Today in {entityFound.Location} the sun will " + sunStatus);
                 }
+                else if (topIntent.Value.intent == "User_Goodbye")
+                {
+                    // Say goodbye.
+                    await SignOutUser(context);
+                }
             }
             else
             {
                 var msg = @"Try weather inputs like: 'Show me weather for Redmond.' or 'Will it rain in Redmond?'.";
-                        //No LUIS intents with a location entity were found.
-                        //This sample is about identifying four user intents:
-                        //'Daily_Forecast'
-                        //'Hourly_Forecast'
-                        //'When_Condition'
-                        //'When_Sun'
-                        //Try typing 'Show me weather for Redmond.' or 'Will it rain in Redmond?'.";
                 await context.SendActivityAsync(msg);
             }
 
@@ -368,8 +366,6 @@ namespace NLP_With_Dispatch_Bot
             await _accessors.UserProfileAccessor.SetAsync(context, userProfile);
             await _accessors.UserState.SaveChangesAsync(context);
         }
-
-
 
         private JObject GetForecastInformation(string forecastType, LUISEntities entityFound)
         {
