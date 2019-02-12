@@ -265,7 +265,7 @@ namespace NLP_With_Dispatch_Bot
 
             if (entityFound.Location == string.Empty)
             {
-                if (userProfile.Location != null)
+                if ((userProfile.Location != null) && (userProfile.Location != string.Empty))
                 {
                     entityFound.Location = userProfile.Location;
                 }
@@ -331,13 +331,14 @@ namespace NLP_With_Dispatch_Bot
             }
             else
             {
-                var msg = @"No LUIS intents with a location entity were found.
-                        This sample is about identifying four user intents:
-                        'Daily_Forecast'
-                        'Hourly_Forecast'
-                        'When_Condition'
-                        'When_Sun'
-                        Try typing 'Show me weather for Redmond.' or 'Will it rain in Redmond?'.";
+                var msg = @"Try weather inputs like: 'Show me weather for Redmond.' or 'Will it rain in Redmond?'.";
+                        //No LUIS intents with a location entity were found.
+                        //This sample is about identifying four user intents:
+                        //'Daily_Forecast'
+                        //'Hourly_Forecast'
+                        //'When_Condition'
+                        //'When_Sun'
+                        //Try typing 'Show me weather for Redmond.' or 'Will it rain in Redmond?'.";
                 await context.SendActivityAsync(msg);
             }
 
@@ -555,7 +556,7 @@ namespace NLP_With_Dispatch_Bot
                 counter++;
                 if (counter > 7)
                 {
-                    break;
+                   break;
                 }
             }
 
