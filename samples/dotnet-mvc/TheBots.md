@@ -13,6 +13,9 @@
     - Include AdaptiveCards NuGet package.
     - State is not needed:
         - Switch on user input text:
-        - If it doesn't match a "task", display the suggested actions.
-        - Otherwise, display the requested rich media type.
-    - Using DI for the adaptive card.
+        - If it matches a "task", display the rich media attachment.
+        - Display the suggested actions every turn.
+    - Check ConversationUpdate for new users
+        - On a new user, display suggested actions.
+    - All rich media attachments are defined in Resources\Attachments.cs.
+    - The Adaptive card JSON is in Resources\FlightDetails.json.
