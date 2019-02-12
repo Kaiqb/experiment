@@ -304,7 +304,7 @@ namespace NLP_With_Dispatch_Bot
             }
             else
             {
-                // Save the location this usewr asked about.
+                // Save the location this user asked about.
                 userProfile.Location = entityFound.Location;
             }
 
@@ -318,7 +318,7 @@ namespace NLP_With_Dispatch_Bot
 
                     var currentConditions = FindCurrentConditions(jsonResult);
                     var currentTemp = FindCurrentTemp(jsonResult);
-                    await context.SendActivityAsync(debugInfo + $"Daily weather forecast for {entityFound}.\n {currentConditions}, temperature: {currentTemp}F");
+                    await context.SendActivityAsync(debugInfo + $"Daily weather forecast for {entityFound.Location}.\n {currentConditions}, temperature: {currentTemp}F");
                 }
                 else if (topIntent.Value.intent == "Hourly_Forecast")
                 {
