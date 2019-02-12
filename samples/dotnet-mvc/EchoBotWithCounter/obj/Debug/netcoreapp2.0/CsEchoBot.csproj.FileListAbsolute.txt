@@ -1,0 +1,10 @@
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\bin\Debug\netcoreapp2.0\CsEchoBot.deps.json
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\bin\Debug\netcoreapp2.0\CsEchoBot.runtimeconfig.json
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\bin\Debug\netcoreapp2.0\CsEchoBot.runtimeconfig.dev.json
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\bin\Debug\netcoreapp2.0\CsEchoBot.dll
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\bin\Debug\netcoreapp2.0\CsEchoBot.pdb
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\obj\Debug\netcoreapp2.0\CsEchoBot.csproj.CoreCompileInputs.cache
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\obj\Debug\netcoreapp2.0\CsEchoBot.AssemblyInfoInputs.cache
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\obj\Debug\netcoreapp2.0\CsEchoBot.AssemblyInfo.cs
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\obj\Debug\netcoreapp2.0\CsEchoBot.dll
+C:\Users\v-jofing\source\repos\MS-docs\EchoBot\CsEchoBot\CsEchoBot\obj\Debug\netcoreapp2.0\CsEchoBot.pdb
