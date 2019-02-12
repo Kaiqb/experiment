@@ -19,5 +19,16 @@ namespace NLP_With_Dispatch_Bot
         // topIntent detected by LUIS.
         public string LuisIntent { get; set; }
 
+        // type of weather condition requested.
+        // blank when requesting daily weather forecast.
+        public string Condition { get; set; }
+
+        // request for sun status.
+        // blank when requesting some weather forecasts.
+        public string Sun { get; set; }
+
+        // location for weather condition requested.
+        public string Location { get; set; }
+
     }
 }

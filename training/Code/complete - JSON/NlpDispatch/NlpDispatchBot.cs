@@ -281,11 +281,17 @@ namespace NLP_With_Dispatch_Bot
             // See if LUIS found and used an entity to determine user intent.
             LUISEntities entityFound = ParseLuisForEntities(result);
 
+            // save all returned entities within conversationData
+            conversationData.Location = entityFound.Location;
+            conversationData.Condition = entityFound.Condition;
+            conversationData.Sun = entityFound.Sun;
+
             if (entityFound.Location == string.Empty)
             {
                 if ((userProfile.Location != null) && (userProfile.Location != string.Empty))
                 {
                     entityFound.Location = userProfile.Location;
+                    conversationData.Location = userProfile.Location;
                 }
                 else
                 {
@@ -304,7 +310,7 @@ namespace NLP_With_Dispatch_Bot
             }
             else
             {
-                // Save the location this user asked about.
+                // Save the location this user asked about for later use as well.
                 userProfile.Location = entityFound.Location;
             }
 
