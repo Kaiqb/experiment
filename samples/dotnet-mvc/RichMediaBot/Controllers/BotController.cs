@@ -35,135 +35,22 @@ namespace RichMedia.Controllers
                 Converters = new List<JsonConverter> { new Iso8601TimeSpanConverter() },
             });
 
-        /// <summary>Map of user options to functions for sending the associated card type.</summary>
-        private static Dictionary<string, Func<ITurnContext, CancellationToken, Task>> ShowCardAsync
-            => new Dictionary<string, Func<ITurnContext, CancellationToken, Task>>
+        /// <summary>Map of user options to sample attachments for each type of card.</summary>
+        private static Dictionary<string, Attachment> ShowCardAsync
+            => new Dictionary<string, Attachment>
             {
-                ["Hero Card"] = ShowHeroCard,
-                ["Thumbnail Card"] = ShowThumbnailCard,
-                ["Animation Card"] = ShowAnimationCard,
-                ["Audio Card"] = ShowAudioCard,
-                ["Video Card"] = ShowVideoCard,
-                ["Adaptive Card"] = ShowAdaptiveCard,
-                ["Receipt Card"] = ShowReceiptCard,
-                ["Sign-in Card"] = ShowSigninCard,
+                ["Hero Card"] = Attachments.SampleHeroCard,
+                ["Thumbnail Card"] = Attachments.SampleThumbnailCard,
+                ["Animation Card"] = Attachments.SampleAnimationCard,
+                ["Audio Card"] = Attachments.SampleAudioCard,
+                ["Video Card"] = Attachments.SampleVideoCard,
+                ["Adaptive Card"] = Attachments.SampleAdaptiveCardAttachment,
+                ["Receipt Card"] = Attachments.SampleReceiptCard,
+                ["Sign-in Card"] = Attachments.SampleSigninCard,
             };
 
-        /// <summary>Sends a stock hero card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowHeroCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var activity = MessageFactory.Attachment(HeroCard.ToAttachment());
-            await turnContext.SendActivityAsync(activity, cancellationToken);
-        }
-
-        /// <summary>A stock hero card.</summary>
-        private static HeroCard HeroCard => new HeroCard
-        {
-            Title = "BotFramework Hero Card",
-            Subtitle = "Microsoft Bot Framework",
-            Text = "Build and connect intelligent bots to interact with your users naturally wherever they are," +
-                       " from text/sms to Skype, Slack, Office 365 mail and other popular services.",
-            Images = new List<CardImage>
-            {
-                new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg"),
-            },
-            Buttons = new List<CardAction>
-            {
-                new CardAction(ActionTypes.OpenUrl, "Get Started", value: "https://docs.microsoft.com/bot-framework"),
-            },
-        };
-
-        /// <summary>Sends a stock thumbnail card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowThumbnailCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Sends a stock animation card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowAnimationCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Sends a stock audio card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowAudioCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Sends a stock video card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowVideoCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Sends a stock Adaptive card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowAdaptiveCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Sends a stock receipt card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowReceiptCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>Sends a stock sign-in card.</summary>
-        /// <param name="turnContext">The current turn context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        private static async Task ShowSigninCard(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        private static IActivity defaultMessage =>
+        /// <summary>A message that contains suggested actions for the available card types to send.</summary>
+        private static IActivity suggestedActions =>
             MessageFactory.SuggestedActions(ShowCardAsync.Keys, "Please choose the type of card to display.");
 
         /// <summary>Handles incoming POST requests.</summary>
@@ -228,26 +115,32 @@ namespace RichMedia.Controllers
             if (turnContext.Activity.Type is ActivityTypes.Message)
             {
                 // On a message activity display the type of card they asked for.
-                foreach(var cardType in ShowCardAsync.Keys)
+                foreach (var cardType in ShowCardAsync.Keys)
                 {
                     if (turnContext.Activity.Text.Equals(cardType, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        await ShowCardAsync[cardType](turnContext, cancellationToken);
-                        return;
+                        await turnContext.SendActivityAsync(
+                            MessageFactory.Attachment(ShowCardAsync[cardType]),
+                            cancellationToken);
+                        break;
                     }
                 }
 
-                // If we didn't understand their input, send suggested actions.
-                await SendDefaultMessage(turnContext, cancellationToken);
+                // Resend suggested actions, whether or not we understood their input.
+                await turnContext.SendActivityAsync(
+                    suggestedActions,
+                    cancellationToken: cancellationToken);
             }
             else if (turnContext.Activity.Type is ActivityTypes.ConversationUpdate)
             {
-                // Trigger the welcome message when new users are are added to the conversation.
                 var activity = turnContext.Activity.AsConversationUpdateActivity();
                 var newUsers = activity.MembersAdded.Where(member => member.Id != activity.Recipient.Id);
                 if (newUsers.Count() > 0)
                 {
-                    await SendWelcomeMessage(turnContext, newUsers);
+                    // If new users joined the conversation, send suggested actions.
+                    await turnContext.SendActivityAsync(
+                        suggestedActions,
+                        cancellationToken: cancellationToken);
                 }
             }
             else
@@ -255,29 +148,6 @@ namespace RichMedia.Controllers
                 // Otherwise, note the type of activity received.
                 await turnContext.SendActivityAsync($"Received a `{turnContext.Activity.Type}` activity.");
             }
-        }
-
-        private async Task SendWelcomeMessage(
-            ITurnContext turnContext,
-            IEnumerable<ChannelAccount> newUsers = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (newUsers != null)
-            {
-                await turnContext.SendActivityAsync(
-                    "New users have joined the conversation.",
-                    cancellationToken: cancellationToken);
-            }
-            await SendDefaultMessage(turnContext, cancellationToken);
-        }
-
-        private async Task SendDefaultMessage(
-            ITurnContext turnContext,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            await turnContext.SendActivityAsync(
-                defaultMessage,
-                cancellationToken: cancellationToken);
         }
     }
 }
