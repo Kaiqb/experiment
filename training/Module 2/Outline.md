@@ -14,6 +14,8 @@ of a brand new bot.
 * Install Microsoft.Bot libraries for course language
   - C#
   - JS
+*  Register with your email at http://home.openweathermap.org/users/sign_in to obtain a free OpenWeatherMap subscription key.
+  - Key takes an hour or so to activate. We will use these in our lab later today.
 
 ## First look at the sample code
 * Install initial Sample app for course language.
