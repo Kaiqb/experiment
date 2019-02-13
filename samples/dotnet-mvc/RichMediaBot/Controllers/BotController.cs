@@ -36,15 +36,17 @@ namespace RichMedia.Controllers
             });
 
         /// <summary>Map of user options to sample attachments for each type of card.</summary>
+        /// <seealso cref="https://docs.microsoft.com/adaptive-cards/"/>
+        /// <seealso cref="https://github.com/Microsoft/BotBuilder/blob/master/specs/botframework-activity/botframework-cards.md"/>
         private static Dictionary<string, Attachment> ShowCardAsync
             => new Dictionary<string, Attachment>
             {
+                ["Adaptive Card"] = Attachments.SampleAdaptiveCardAttachment,
                 ["Hero Card"] = Attachments.SampleHeroCard,
                 ["Thumbnail Card"] = Attachments.SampleThumbnailCard,
                 ["Animation Card"] = Attachments.SampleAnimationCard,
                 ["Audio Card"] = Attachments.SampleAudioCard,
                 ["Video Card"] = Attachments.SampleVideoCard,
-                ["Adaptive Card"] = Attachments.SampleAdaptiveCardAttachment,
                 ["Receipt Card"] = Attachments.SampleReceiptCard,
                 ["Sign-in Card"] = Attachments.SampleSigninCard,
             };

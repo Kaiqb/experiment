@@ -8,8 +8,19 @@ namespace RichMedia
     using Newtonsoft.Json;
 
     /// <summary>Contains attachments for sample rich media cards.</summary>
+    /// <seealso cref="https://docs.microsoft.com/adaptive-cards/"/>
+    /// <seealso cref="https://github.com/Microsoft/BotBuilder/blob/master/specs/botframework-activity/botframework-cards.md"/>
     public static class Attachments
     {
+        /// <summary>A sample Adaptive card.</summary>
+        public static Attachment SampleAdaptiveCardAttachment =>
+            new Attachment
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(
+                    System.IO.File.ReadAllText(@".\Resources\FlightDetails.json")),
+            };
+
         /// <summary>A sample hero card.</summary>
         public static Attachment SampleHeroCard =>
                 new HeroCard
@@ -130,15 +141,6 @@ namespace RichMedia
                     },
                 },
             }.ToAttachment();
-
-        /// <summary>A sample Adaptive card.</summary>
-        public static Attachment SampleAdaptiveCardAttachment =>
-            new Attachment
-            {
-                ContentType = "application/vnd.microsoft.card.adaptive",
-                Content = JsonConvert.DeserializeObject(
-                    System.IO.File.ReadAllText(@".\Resources\FlightDetails.json")),
-            };
 
         /// <summary>A sample receipt card.</summary>
         public static Attachment SampleReceiptCard =>
