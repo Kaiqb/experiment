@@ -19,7 +19,7 @@ namespace EchoBot.Controllers
 
     /// <summary>Defines a controller for this route.</summary>
     [Route("api/messages")]
-    public class EchoBotController : Controller
+    public class BotController : Controller
     {
         /// <summary>The serializer to use for request and response payloads.</summary>
         public static readonly JsonSerializer BotMessageSerializer

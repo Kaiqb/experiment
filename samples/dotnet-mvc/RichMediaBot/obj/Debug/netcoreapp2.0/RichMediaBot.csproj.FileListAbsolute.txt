@@ -20,3 +20,4 @@ C:\Users\v-jofing\source\repos\experiment\samples\dotnet-mvc\RichMediaBot\obj\De
 C:\Users\v-jofing\source\repos\experiment\samples\dotnet-mvc\RichMediaBot\obj\Debug\netcoreapp2.0\RichMediaBot.AssemblyInfo.cs
 C:\Users\v-jofing\source\repos\experiment\samples\dotnet-mvc\RichMediaBot\obj\Debug\netcoreapp2.0\RichMedia.dll
 C:\Users\v-jofing\source\repos\experiment\samples\dotnet-mvc\RichMediaBot\obj\Debug\netcoreapp2.0\RichMedia.pdb
+C:\Users\v-jofing\source\repos\experiment\samples\dotnet-mvc\RichMediaBot\bin\Debug\netcoreapp2.0\Resources\FlightDetails.json
