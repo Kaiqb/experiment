@@ -15,7 +15,7 @@
     },
     {
       "type": "TextBlock",
-      "text": "Wednesday, February 13, 2019",
+      "text": "Thursday, February 14, 2019",
       "spacing": "none"
     },
     {
@@ -28,7 +28,7 @@
             {
               "type": "Image",
               "url": "
-http://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
+http://messagecardplayground.azurewebsites.net/assets/Cloudy-Square.png",
               "size": "small"
             }
           ]
@@ -39,7 +39,7 @@ http://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
           "items": [
             {
               "type": "TextBlock",
-              "text": "63.1",
+              "text": "77.3",
               "size": "extraLarge",
               "spacing": "none"
             }
@@ -63,7 +63,7 @@ http://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
           "items": [
             {
               "type": "TextBlock",
-              "text": "Rain",
+              "text": "Clouds",
               "weight": "bolder",
               "size": "Large",
               "horizontalAlignment": "left",

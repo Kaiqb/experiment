@@ -15,7 +15,7 @@
     },
     {
       "type": "TextBlock",
-      "text": "Wednesday, February 13, 2019",
+      "text": "Thursday, February 14, 2019",
       "spacing": "none"
     },
     {
@@ -39,7 +39,7 @@ http://messagecardplayground.azurewebsites.net/assets/Cloudy-Square.png",
           "items": [
             {
               "type": "TextBlock",
-              "text": "36.7",
+              "text": "40.1",
               "size": "extraLarge",
               "spacing": "none"
             }
