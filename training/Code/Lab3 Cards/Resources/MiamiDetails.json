@@ -39,7 +39,7 @@ http://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png",
           "items": [
             {
               "type": "TextBlock",
-              "text": "65.0",
+              "text": "63.1",
               "size": "extraLarge",
               "spacing": "none"
             }

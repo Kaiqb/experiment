@@ -40,9 +40,11 @@ namespace RichMedia.Controllers
         private static Dictionary<string, Attachment> ShowCardAsync
             => new Dictionary<string, Attachment>
             {
-                ["Miami"] = Attachments.MiamiCardAttachment,
                 ["Chicago"] = Attachments.ChicagoCardAttachment,
+                ["London"] = Attachments.LondonCardAttachment,
+                ["Miami"] = Attachments.MiamiCardAttachment,
                 ["Seattle"] = Attachments.SeattleCardAttachment,
+                ["Sydney"] = Attachments.SydneyCardAttachment,
             };
 
         // API key to access Free OpenWeatherMap APIs.
@@ -180,7 +182,7 @@ namespace RichMedia.Controllers
         private JObject GetForecastInformation(string locationName)
         {
             string forecastUrl = string.Empty;
-            forecastUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + locationName + "&APPID=" + OpenWeatherMapKey;   
+            forecastUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + locationName + "&APPID=" + OpenWeatherMapKey;
             return GetFormattedJSON(forecastUrl);
         }
 
@@ -226,6 +228,9 @@ namespace RichMedia.Controllers
                     break;
                 case "clouds":
                     conditionsURL = "http://messagecardplayground.azurewebsites.net/assets/Cloudy-Square.png";
+                    break;
+                case "mist":
+                    conditionsURL = "http://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png";
                     break;
                 case "rain":
                     conditionsURL = "http://messagecardplayground.azurewebsites.net/assets/Drizzle-Square.png";

@@ -39,7 +39,7 @@ http://messagecardplayground.azurewebsites.net/assets/Sunny-Square.png",
           "items": [
             {
               "type": "TextBlock",
-              "text": "24.4",
+              "text": "23.9",
               "size": "extraLarge",
               "spacing": "none"
             }

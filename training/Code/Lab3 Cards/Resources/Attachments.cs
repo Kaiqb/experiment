@@ -11,15 +11,6 @@ namespace RichMedia
     public static class Attachments
     {
         /// <summary>A sample Adaptive Weather card.</summary>
-        public static Attachment SeattleCardAttachment =>
-            new Attachment
-            {
-                ContentType = "application/vnd.microsoft.card.adaptive",
-                Content = JsonConvert.DeserializeObject(
-                    System.IO.File.ReadAllText(@".\Resources\SeattleDetails.json")),
-            };
-
-        /// <summary>A sample Adaptive Weather card.</summary>
         public static Attachment ChicagoCardAttachment =>
             new Attachment
             {
@@ -29,12 +20,39 @@ namespace RichMedia
             };
 
         /// <summary>A sample Adaptive Weather card.</summary>
+        public static Attachment LondonCardAttachment =>
+            new Attachment
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(
+                    System.IO.File.ReadAllText(@".\Resources\LondonDetails.json")),
+            };
+
+        /// <summary>A sample Adaptive Weather card.</summary>
         public static Attachment MiamiCardAttachment =>
             new Attachment
             {
                 ContentType = "application/vnd.microsoft.card.adaptive",
                 Content = JsonConvert.DeserializeObject(
                     System.IO.File.ReadAllText(@".\Resources\MiamiDetails.json")),
+            };
+
+        /// <summary>A sample Adaptive Weather card.</summary>
+        public static Attachment SeattleCardAttachment =>
+            new Attachment
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(
+                    System.IO.File.ReadAllText(@".\Resources\SeattleDetails.json")),
+            };
+
+        /// <summary>A sample Adaptive Weather card.</summary>
+        public static Attachment SydneyCardAttachment =>
+            new Attachment
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(
+                    System.IO.File.ReadAllText(@".\Resources\SydneyDetails.json")),
             };
     }
 }
