@@ -42,3 +42,14 @@ C:\Development\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMediaBot.AssemblyInfoInput
 C:\Development\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMediaBot.AssemblyInfo.cs
 C:\Development\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMedia.dll
 C:\Development\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMedia.pdb
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\bin\Debug\netcoreapp2.0\RichMedia.deps.json
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\bin\Debug\netcoreapp2.0\RichMedia.runtimeconfig.json
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\bin\Debug\netcoreapp2.0\RichMedia.runtimeconfig.dev.json
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\bin\Debug\netcoreapp2.0\RichMedia.dll
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\bin\Debug\netcoreapp2.0\RichMedia.pdb
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMediaBot.csprojAssemblyReference.cache
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMediaBot.csproj.CoreCompileInputs.cache
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMediaBot.AssemblyInfoInputs.cache
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMediaBot.AssemblyInfo.cs
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMedia.dll
+C:\Users\v-dashel\Documents\GitHub\experiment\training\Code\Lab3 Cards\obj\Debug\netcoreapp2.0\RichMedia.pdb
