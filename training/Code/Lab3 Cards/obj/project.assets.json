@@ -13160,11 +13160,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Development\\Lab3 Cards\\RichMediaBot.csproj",
+      "projectUniqueName": "C:\\Users\\v-dashel\\Documents\\GitHub\\experiment\\training\\Code\\Lab3 Cards\\RichMediaBot.csproj",
       "projectName": "RichMedia",
-      "projectPath": "C:\\Development\\Lab3 Cards\\RichMediaBot.csproj",
+      "projectPath": "C:\\Users\\v-dashel\\Documents\\GitHub\\experiment\\training\\Code\\Lab3 Cards\\RichMediaBot.csproj",
       "packagesPath": "C:\\Users\\v-dashel\\.nuget\\packages\\",
-      "outputPath": "C:\\Development\\Lab3 Cards\\obj\\",
+      "outputPath": "C:\\Users\\v-dashel\\Documents\\GitHub\\experiment\\training\\Code\\Lab3 Cards\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

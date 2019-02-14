@@ -119,20 +119,20 @@ namespace RichMedia.Controllers
                 {
                     if (turnContext.Activity.Text.Equals(cardType, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        // Get weather forecast
-
-                        
-                        // Use top intent and "entityFound" = location to call daily weather service here...
+                        // Use cardType as location to get forecast from daily weather service.
                         var jsonResult = GetForecastInformation(cardType);
 
+                        // Save weather forecast details.
                         string forecastLocation = cardType;
-                        string detailsFile = cardType + "Details.json";
+                        string detailsFileName = cardType + "Details.json";
                         string forecastDate = System.DateTime.Now.ToLongDateString();
-                        // Conditions: clear, clouds, rain, snow
+                        // Find weather conditions from the forecast results: clear, clouds, rain, snow
                         var currentConditions = FindCurrentConditions(jsonResult);
+                        // Find URL to display forecast weather icon.
                         var conditionsURL = FindConditionsURL(currentConditions);
                         var currentTemp = FindCurrentTemp(jsonResult);
 
+                        // Retrieve Detail pieces to construct our JSON
                         var jsonString1 = System.IO.File.ReadAllText(@".\Resources\GenericDetails1.json");
                         var jsonString2 = System.IO.File.ReadAllText(@".\Resources\GenericDetails2.json");
                         var jsonString3 = System.IO.File.ReadAllText(@".\Resources\GenericDetails3.json");
@@ -140,11 +140,13 @@ namespace RichMedia.Controllers
                         var jsonString5 = System.IO.File.ReadAllText(@".\Resources\GenericDetails5.json");
                         var jsonString6 = System.IO.File.ReadAllText(@".\Resources\GenericDetails6.json");
 
+                        // Build JSON with embedded weather details.
                         string cardDetails = jsonString1 + forecastLocation + jsonString2 + forecastDate + jsonString3 + conditionsURL + jsonString4 + currentTemp + jsonString5 + currentConditions + jsonString6;
 
-                        System.IO.File.WriteAllText(@".\Resources\" + detailsFile, cardDetails);
+                        // Save it in the Resources folder.
+                        System.IO.File.WriteAllText(@".\Resources\" + detailsFileName, cardDetails);
 
-
+                        // Now send an Adaptive card showing weather based on the constructed JSON file.
                         await turnContext.SendActivityAsync(
                             MessageFactory.Attachment(ShowCardAsync[cardType]),
                             cancellationToken);
