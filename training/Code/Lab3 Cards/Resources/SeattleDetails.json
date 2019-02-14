@@ -1,0 +1,77 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.0",
+  "type": "AdaptiveCard",
+  "backgroundImage": "https://messagecardplayground.azurewebsites.net/assets/Mostly%20Cloudy-Background-Dark.jpg",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Seattle",
+      "weight": "large",
+      "isSubtle": false
+    },
+    {
+      "type": "TextBlock",
+      "text": "Wednesday, February 13, 2019",
+      "spacing": "none"
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "auto",
+          "items": [
+            {
+              "type": "Image",
+              "url": "
+http://messagecardplayground.azurewebsites.net/assets/Snow-Square.png",
+              "size": "small"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "auto",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "37.4",
+              "size": "extraLarge",
+              "spacing": "none"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "auto",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "F",
+              "weight": "bolder",
+              "spacing": "small"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Snow",
+              "weight": "bolder",
+              "size": "Large",
+              "horizontalAlignment": "left",
+              "spacing": "none"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
