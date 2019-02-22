@@ -1,19 +1,16 @@
 # Implementation notes
 
 Create a new project: ASP.NET Core Web Application
-- .NET Core, ASP.NET Core 2.1, API, no authentication
+- .NET Core, ASP.NET Core 2.1, API, no authentication, no https.
 
 ## NuGet/MyGet
 - Add Microsoft.Bot.Builder.Integration.AspNet.Core 4.3.0
 
 ## Update Properties/launchSettings.json
-- Change port to 3978
-- Remove iisSettings/iisExpress/sslPort
+- Change iisSettings/iisExpress/applicationUrl to use port 5000
+- Change iisSettings/iisExpress/sslPort to 0
 - Remove profiles/IIS Express/launchUrl
 - Remove profiles/<proj-name>/launchUrl
-- Change profiles/<proj-name>/applicationUrl:
-  - from: "https://localhost:5001;http://localhost:5000"
-  - to:   "http://localhost:5000"
 
 ## Add wwwroot/default.html
 -Add boilerplate launch page
