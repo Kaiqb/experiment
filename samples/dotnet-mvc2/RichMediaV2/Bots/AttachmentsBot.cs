@@ -11,15 +11,16 @@ namespace RichMediaV2
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Schema;
 
-    public class MyBot : ActivityHandler
+    public class AttachmentsBot : ActivityHandler
     {
         /// <summary>Map of user options to sample attachments for each type of card.</summary>
         /// <seealso cref="https://github.com/Microsoft/BotBuilder/blob/master/specs/botframework-activity/botframework-cards.md"/>
         /// <seealso cref="https://docs.microsoft.com/adaptive-cards/"/>
-        private static Dictionary<string, Attachment> ShowCardAsync
+        private static Dictionary<string, Attachment> AttachmentMap
             => new Dictionary<string, Attachment>
             {
-                ["Adaptive Card"] = Attachments.SampleAdaptiveCardAttachment,
+                ["Inline Attachment"] = Attachments.InlineAttachment,
+                ["Internet Attachment"] = Attachments.InternetAttachment,
                 ["Hero Card"] = Attachments.SampleHeroCard,
                 ["Thumbnail Card"] = Attachments.SampleThumbnailCard,
                 ["Animation Card"] = Attachments.SampleAnimationCard,
@@ -27,6 +28,8 @@ namespace RichMediaV2
                 ["Video Card"] = Attachments.SampleVideoCard,
                 ["Receipt Card"] = Attachments.SampleReceiptCard,
                 ["Sign-in Card"] = Attachments.SampleSigninCard,
+                ["Adaptive Card"] = Attachments.SampleAdaptiveCardAttachment,
+                ["Carousel"] = null,
             };
 
         /// <summary>A message that contains suggested actions for the available card types to send.</summary>
@@ -37,7 +40,7 @@ namespace RichMediaV2
             Text = "Please choose the type of card to display.",
             SuggestedActions = new SuggestedActions
             {
-                Actions = ShowCardAsync.Keys.Select(key =>
+                Actions = AttachmentMap.Keys.Select(key =>
                     new CardAction
                     {
                         Value = key,
@@ -52,7 +55,7 @@ namespace RichMediaV2
         /// <remarks>Uses the MessageFactory to create the activity.</remarks>
         private static readonly IActivity prompt2 = MessageFactory.SuggestedActions(
                 text: "Please choose the type of card to display.",
-                actions: ShowCardAsync.Keys
+                actions: AttachmentMap.Keys
             );
 
         private static readonly IActivity prompt = prompt2;
@@ -62,30 +65,32 @@ namespace RichMediaV2
             CancellationToken cancellationToken)
         {
             // Display the type of card they asked for.
-            var cardType = ShowCardAsync.Keys.FirstOrDefault(
+            var cardType = AttachmentMap.Keys.FirstOrDefault(
                 key => key.Equals(
                     turnContext.Activity.Text, StringComparison.InvariantCultureIgnoreCase));
             if (cardType != null)
             {
-                await turnContext.SendActivityAsync(
-                    MessageFactory.Attachment(ShowCardAsync[cardType]),
-                    cancellationToken);
+                if (cardType is "Carousel")
+                {
+                    var activity = MessageFactory.Carousel(new Attachment[]
+                    {
+                        Attachments.InlineAttachment,
+                        Attachments.SampleHeroCard,
+                        Attachments.SampleReceiptCard,
+                        Attachments.SampleSigninCard,
+                    });
+                    await turnContext.SendActivityAsync(activity, cancellationToken: cancellationToken);
+                }
+                else
+                {
+                    await turnContext.SendActivityAsync(
+                        MessageFactory.Attachment(AttachmentMap[cardType]),
+                        cancellationToken);
+                }
             }
 
             // Resend suggested actions, whether or not we understood their input.
             await turnContext.SendActivityAsync(prompt, cancellationToken: cancellationToken);
-        }
-
-        protected override async Task OnMembersAddedAsync(
-            IList<ChannelAccount> membersAdded,
-            ITurnContext<IConversationUpdateActivity> turnContext,
-            CancellationToken cancellationToken)
-        {
-            if (membersAdded.Any(member => !member.Id.Equals(turnContext.Activity.Recipient.Id)))
-            {
-                // Send suggested actions.
-                await turnContext.SendActivityAsync(prompt, cancellationToken: cancellationToken);
-            }
         }
     }
 }

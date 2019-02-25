@@ -43,7 +43,7 @@ namespace RichMediaV2
                 }
             );
 
-            services.AddTransient<IBot>(sp => new MyBot());
+            services.AddTransient<IBot>(sp => new AttachmentsBot());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

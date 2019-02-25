@@ -3,7 +3,9 @@
 
 namespace RichMediaV2
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using Microsoft.Bot.Schema;
     using Newtonsoft.Json;
 
@@ -12,33 +14,44 @@ namespace RichMediaV2
     /// <seealso cref="https://github.com/Microsoft/BotBuilder/blob/master/specs/botframework-activity/botframework-cards.md"/>
     public static class Attachments
     {
-        /// <summary>A sample Adaptive card.</summary>
-        public static Attachment SampleAdaptiveCardAttachment =>
+        private static string imagePath => Path.Combine(Environment.CurrentDirectory, @"Resources\logo.png");
+        private static string imageData => Convert.ToBase64String(File.ReadAllBytes(imagePath));
+
+        /// <summary>A simple image attachment.</summary>
+        public static Attachment InlineAttachment =>
             new Attachment
             {
-                ContentType = "application/vnd.microsoft.card.adaptive",
-                Content = JsonConvert.DeserializeObject(
-                    System.IO.File.ReadAllText(@".\Resources\FlightDetails.json")),
+                ContentType = "image/png",
+                ContentUrl = $"data:impage/png;base64,{imageData}",
+                Name = "Bot Framework",
+            };
+
+        public static Attachment InternetAttachment =>
+            new Attachment
+            {
+                ContentType = "image/png",
+                ContentUrl = "https://docs.microsoft.com/azure/bot-service/media/bot-service-overview.png",
+                Name = "Architecture resize",
             };
 
         /// <summary>A sample hero card.</summary>
         public static Attachment SampleHeroCard =>
-                new HeroCard
+            new HeroCard
+            {
+                Title = "BotFramework Hero Card",
+                Subtitle = "Microsoft Bot Framework",
+                Text = "Build and connect intelligent bots to interact with your users naturally wherever they are," +
+                    " from text/sms to Skype, Slack, Office 365 mail and other popular services.",
+                Images = new List<CardImage>
                 {
-                    Title = "BotFramework Hero Card",
-                    Subtitle = "Microsoft Bot Framework",
-                    Text = "Build and connect intelligent bots to interact with your users naturally wherever they are," +
-                       " from text/sms to Skype, Slack, Office 365 mail and other popular services.",
-                    Images = new List<CardImage>
-                    {
-                        new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg"),
-                    },
-                    Buttons = new List<CardAction>
-                    {
-                        new CardAction(ActionTypes.OpenUrl, "Get Started",
-                            value: "https://docs.microsoft.com/bot-framework"),
-                    },
-                }.ToAttachment();
+                    new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg"),
+                },
+                Buttons = new List<CardAction>
+                {
+                    new CardAction(ActionTypes.OpenUrl, "Get Started",
+                        value: "https://docs.microsoft.com/bot-framework"),
+                },
+            }.ToAttachment();
 
         /// <summary>A sample thumbnail card.</summary>
         public static Attachment SampleThumbnailCard =>
@@ -193,5 +206,14 @@ namespace RichMediaV2
                         value: "https://login.microsoftonline.com/")
                 },
             }.ToAttachment();
+
+        /// <summary>A sample Adaptive card.</summary>
+        public static Attachment SampleAdaptiveCardAttachment =>
+            new Attachment
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(
+                    System.IO.File.ReadAllText(@".\Resources\FlightDetails.json")),
+            };
     }
 }
