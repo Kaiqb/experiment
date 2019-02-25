@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Resources\FlightDetails.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

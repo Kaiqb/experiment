@@ -30,18 +30,19 @@ namespace RichMediaV2
             services.AddSingleton<IBotFrameworkHttpAdapter>(sp =>
                 new BotFrameworkHttpAdapter
                 {
-            // Code to run when the adapter catches an otherwise unhandled exception.
-            OnTurnError = async (turnContext, exception) =>
+                    // Code to run when the adapter catches an otherwise unhandled exception.
+                    OnTurnError = async (turnContext, exception) =>
                     {
                         await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
 
-                // When running the app from VS, Console.Error routes to the ASP.NET Core Web Server output window.
-                Console.Error.WriteLine($"{exception.GetType().Name} encountered:");
+                        // When running the app from VS, Console.Error routes to the ASP.NET Core Web Server output window.
+                        Console.Error.WriteLine($"{exception.GetType().Name} encountered:");
                         Console.Error.WriteLine(exception.Message);
                         Console.Error.WriteLine(exception.StackTrace);
                     }
                 }
             );
+
             services.AddTransient<IBot>(sp => new MyBot());
         }
 
