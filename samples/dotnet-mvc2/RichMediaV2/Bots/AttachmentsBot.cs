@@ -58,24 +58,22 @@ namespace RichMediaV2
                 actions: AttachmentMap.Keys
             );
 
-        private static readonly IActivity prompt = prompt2;
-
         protected override async Task OnMessageActivityAsync(
             ITurnContext<IMessageActivity> turnContext,
             CancellationToken cancellationToken)
         {
-            // Display the type of card they asked for.
-            var cardType = AttachmentMap.Keys.FirstOrDefault(
-                key => key.Equals(
-                    turnContext.Activity.Text, StringComparison.InvariantCultureIgnoreCase));
+            // Determine the type of card asked for.
+            var cardType = AttachmentMap.Keys.FirstOrDefault(key =>
+                key.Equals(turnContext.Activity.Text, StringComparison.InvariantCultureIgnoreCase));
+
             if (cardType != null)
             {
                 if (cardType is "Carousel")
                 {
+                    // Create and send a carousel of attachments.
                     var activity = MessageFactory.Carousel(new Attachment[]
                     {
                         Attachments.InlineAttachment,
-                        Attachments.SampleHeroCard,
                         Attachments.SampleReceiptCard,
                         Attachments.SampleSigninCard,
                     });
@@ -83,6 +81,7 @@ namespace RichMediaV2
                 }
                 else
                 {
+                    // Everything else in the map is an attachment.
                     await turnContext.SendActivityAsync(
                         MessageFactory.Attachment(AttachmentMap[cardType]),
                         cancellationToken);
@@ -90,7 +89,7 @@ namespace RichMediaV2
             }
 
             // Resend suggested actions, whether or not we understood their input.
-            await turnContext.SendActivityAsync(prompt, cancellationToken: cancellationToken);
+            await turnContext.SendActivityAsync(prompt2, cancellationToken: cancellationToken);
         }
     }
 }
