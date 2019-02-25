@@ -17,7 +17,7 @@ namespace RichMediaV2
         private static string imagePath => Path.Combine(Environment.CurrentDirectory, @"Resources\logo.png");
         private static string imageData => Convert.ToBase64String(File.ReadAllBytes(imagePath));
 
-        /// <summary>A simple image attachment.</summary>
+        /// <summary>A sample in-line attachment.</summary>
         public static Attachment InlineAttachment =>
             new Attachment
             {
@@ -26,6 +26,7 @@ namespace RichMediaV2
                 Name = "Bot Framework",
             };
 
+        /// <summary>A sample internet attachment.</summary>
         public static Attachment InternetAttachment =>
             new Attachment
             {
