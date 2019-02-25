@@ -32,34 +32,20 @@ namespace WelcomeUserBot
             // Add the Adapter as a singleton and our Bot as transient.
             services.AddSingleton<IBotFrameworkHttpAdapter>(sp => new BotFrameworkHttpAdapter());
 
-            // ??? This fails either way ???
-            // services.AddTransient<IBot>(sp => new MyBot());
-
             // Create conversation and user state with in-memory storage provider.
             IStorage storage = new MemoryStorage();
             // ConversationState conversationState = new ConversationState(storage);
-            UserState userState = new UserState(storage);
+            var userState = new UserState(storage);
 
-            // services.AddSingleton(sp => conversationState);
-            services.AddSingleton(sp => userState);
-
-            services.AddSingleton<WelcomeUserStateAccessors>(sp =>
+            // Create the custom state accessor.
+            // State accessors enable other components to read and write individual properties of state.
+            var accessors = new WelcomeUserStateAccessors(userState)
             {
-                var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
-                if (options == null)
-                {
-                    throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
-                }
+                WelcomeUserState = userState.CreateProperty<WelcomeUserState>(WelcomeUserStateAccessors.WelcomeUserName),
+            };
 
-                // Create the custom state accessor.
-                // State accessors enable other components to read and write individual properties of state.
-                var accessors = new WelcomeUserStateAccessors(userState)
-                {
-                    WelcomeUserState = userState.CreateProperty<WelcomeUserState>(WelcomeUserStateAccessors.WelcomeUserName),
-                };
-
-                return accessors;
-            });
+            // ??? This fails either way ???
+            services.AddTransient<IBot>(sp => new MyBot(accessors));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
