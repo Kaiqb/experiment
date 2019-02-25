@@ -22,7 +22,7 @@ namespace RichMediaV2
             new Attachment
             {
                 ContentType = "image/png",
-                ContentUrl = $"data:impage/png;base64,{imageData}",
+                ContentUrl = $"data:image/png;base64,{imageData}",
                 Name = "Bot Framework",
             };
 
