@@ -54,9 +54,8 @@ namespace RichMediaV2
         /// <summary>A message that contains suggested actions for the available card types to send.</summary>
         /// <remarks>Uses the MessageFactory to create the activity.</remarks>
         private static readonly IActivity prompt2 = MessageFactory.SuggestedActions(
-                text: "Please choose the type of card to display.",
-                actions: AttachmentMap.Keys
-            );
+                actions: AttachmentMap.Keys,
+                text: "Please choose the type of card to display.");
 
         protected override async Task OnMessageActivityAsync(
             ITurnContext<IMessageActivity> turnContext,

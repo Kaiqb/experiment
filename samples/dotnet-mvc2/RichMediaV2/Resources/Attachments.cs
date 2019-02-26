@@ -21,18 +21,19 @@ namespace RichMediaV2
         public static Attachment InlineAttachment =>
             new Attachment
             {
+                Name = "Bot logo",
                 ContentType = "image/png",
                 ContentUrl = $"data:image/png;base64,{imageData}",
-                Name = "Bot Framework",
             };
 
         /// <summary>A sample internet attachment.</summary>
+        /// <remarks>Content URLs must use HTTPS.</remarks>
         public static Attachment InternetAttachment =>
             new Attachment
             {
+                Name = "Architecture resize",
                 ContentType = "image/png",
                 ContentUrl = "https://docs.microsoft.com/azure/bot-service/media/bot-service-overview.png",
-                Name = "Architecture resize",
             };
 
         /// <summary>A sample hero card.</summary>
