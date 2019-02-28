@@ -122,5 +122,4 @@ public class BotController : ControllerBase
 }
 ```
 
-> ![IMPORTANT]
-> A Route attribute of "api/[controller]" means that ASP.NET looks for an appropriate class named \<controller>Controller. So, if your controller is `BotController`, your endpoint will be `api/bot`.
+> IMPORTANT: A Route attribute of "api/[controller]" means that ASP.NET looks for an appropriate class named \<controller>Controller. So, if your controller is `BotController`, your endpoint will be `api/bot`.
