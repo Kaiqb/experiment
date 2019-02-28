@@ -49,11 +49,11 @@ namespace dotnet_mvc2
                 app.UseHsts();
             }
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            app.UseHttpsRedirection();
-            app.UseMvc();
+            app
+                .UseDefaultFiles()
+                .UseStaticFiles()
+                .UseHttpsRedirection()
+                .UseMvc();
         }
     }
 }

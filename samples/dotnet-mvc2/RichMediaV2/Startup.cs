@@ -3,12 +3,13 @@
 
 namespace RichMediaV2
 {
-    using System;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Builder.BotFramework;
     using Microsoft.Bot.Builder.Integration.AspNet.Core;
+    using Microsoft.Bot.Connector.Authentication;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -26,23 +27,13 @@ namespace RichMediaV2
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Add the Adapter as a singleton and our Bot as a transient.
-            services.AddSingleton<IBotFrameworkHttpAdapter>(sp =>
-                new BotFrameworkHttpAdapter
-                {
-                    // Code to run when the adapter catches an otherwise unhandled exception.
-                    OnTurnError = async (turnContext, exception) =>
-                    {
-                        await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
+            // Create the credential provider to be used with the Bot Framework Adapter.
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
-                        // When running the app from VS, Console.Error routes to the ASP.NET Core Web Server output window.
-                        Console.Error.WriteLine($"{exception.GetType().Name} encountered:");
-                        Console.Error.WriteLine(exception.Message);
-                        Console.Error.WriteLine(exception.StackTrace);
-                    }
-                }
-            );
+            // Create the Bot Framework Adapter with error handling enabled. 
+            services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
+            // Create the bot as a transient.
             services.AddTransient<IBot>(sp => new AttachmentsBot());
         }
 
@@ -52,6 +43,10 @@ namespace RichMediaV2
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
             }
 
             app
