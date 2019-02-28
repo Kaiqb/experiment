@@ -90,5 +90,12 @@ namespace RichMediaV2
             // Resend suggested actions, whether or not we understood their input.
             await turnContext.SendActivityAsync(prompt2, cancellationToken: cancellationToken);
         }
+
+        public override Task OnTurnAsync(
+            ITurnContext turnContext,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return base.OnTurnAsync(turnContext, cancellationToken);
+        }
     }
 }
