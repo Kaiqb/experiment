@@ -2,7 +2,7 @@
 
 Create a new project: ASP.NET Core Web Application
 - .NET Core, ASP.NET Core 2.1, API, no authentication.
-- De-select **Configure for HTTPS**.
+- Leave **Configure for HTTPS** selected.
 
 ## NuGet/MyGet
 
@@ -10,19 +10,47 @@ Create a new project: ASP.NET Core Web Application
 
 ## Update Properties/launchSettings.json
 
-- Change `iisSettings/iisExpress/applicationUrl` to use port 5000.
-- Make sure `iisSettings/iisExpress/sslPort` is set to 0.
+- Optionally change `iisSettings/iisExpress/applicationUrl` and `iisSettings/iisExpress/sslPort` to user your preferred ports.
 - Remove `profiles/IIS Express/launchUrl`.
 - Remove `profiles/<proj-name>/launchUrl`.
 
 ## Add wwwroot/default.html
 
--Add boilerplate launch page
+- Add boilerplate launch page
+
+## Add a semi-customized adapter
+
+```csharp
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Extensions.Logging;
+
+public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
+{
+    public AdapterWithErrorHandler(
+        ICredentialProvider credentialProvider,
+        ILogger<BotFrameworkHttpAdapter> logger)
+        : base(credentialProvider)
+    {
+        // Enable logging at the adapter level using OnTurnError.
+        OnTurnError = async (turnContext, exception) =>
+        {
+            await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
+
+            logger.LogError(
+                $"{exception.GetType().Name} encountered:\n" +
+                $"{exception.Message}\n" +
+                $"{exception.StackTrace}");
+        };
+    }
+}
+```
 
 ## Bots/MyBot
 
 Create the `MyBot` file and derive the class from `ActivityHandler`
 
+- Add a constructor and local properties if you want to access objects via dependency injection.
 - Generate an override handlers for the activities you want to...handle, such as `OnMessageActivity`.
 
 ```csharp
@@ -33,6 +61,8 @@ using Microsoft.Bot.Schema;
 
 public class MyBot : ActivityHandler
 {
+    // DI associated code.
+
     protected override async Task OnMessageActivityAsync(
         ITurnContext<IMessageActivity> turnContext,
         CancellationToken cancellationToken)
@@ -53,22 +83,13 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-    // Add the Adapter as a singleton and our Bot as a transient.
-    services.AddSingleton<IBotFrameworkHttpAdapter>(sp =>
-        new BotFrameworkHttpAdapter
-        {
-            // Code to run when the adapter catches an otherwise unhandled exception.
-            OnTurnError = async (turnContext, exception) =>
-            {
-                await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
+    // Create the credential provider to be used with the Bot Framework Adapter.
+    services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
-                // When running the app from VS, Console.Error routes to the ASP.NET Core Web Server output window.
-                Console.Error.WriteLine($"{exception.GetType().Name} encountered:");
-                Console.Error.WriteLine(exception.Message);
-                Console.Error.WriteLine(exception.StackTrace);
-            }
-        }
-    );
+    // Create the Bot Framework Adapter with error handling enabled. 
+    services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
+
+    // Create the bot as a transient.
     services.AddTransient<IBot>(sp => new MyBot());
 }
 
@@ -78,6 +99,10 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     if (env.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseHsts();
     }
 
     app
@@ -94,6 +119,7 @@ In the Controllers directory:
 
 - Rename controller to BotController.
 - Replace its guts with boilerplate: constructor, properties, POST handler.
+- Change the Route attribute value to something that makes sense for the bot. The default should be "api/messages"?
 
 ```csharp
 using System.Threading.Tasks;

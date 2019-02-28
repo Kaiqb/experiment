@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 namespace dotnet_mvc2
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Bot.Builder;
+    using Microsoft.Bot.Builder.BotFramework;
+    using Microsoft.Bot.Builder.Integration.AspNet.Core;
+    using Microsoft.Bot.Connector.Authentication;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -23,23 +27,14 @@ namespace dotnet_mvc2
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Add the Adapter as a singleton and our Bot as transient.
-            services.AddSingleton<IBotFrameworkHttpAdapter>(sp =>
-                new BotFrameworkHttpAdapter
-                {
-                    // Code to run when the adapter catches an othwise unhandled exception.
-                    OnTurnError = async (turnContext, excepption) =>
-                    {
-                        await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
+            // Create the credential provider to be used with the Bot Framework Adapter.
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
-                        Console.Error.WriteLine($"{excepption.GetType().Name} encountered:");
-                        Console.Error.WriteLine(excepption.Message);
-                        Console.Error.WriteLine(excepption.StackTrace);
-                    }
-                }
-            );
+            // Create the Bot Framework Adapter with error handling enabled. 
+            services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
+
+            // Create the bot as a transient.
             services.AddTransient<IBot>(sp => new MyBot());
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
