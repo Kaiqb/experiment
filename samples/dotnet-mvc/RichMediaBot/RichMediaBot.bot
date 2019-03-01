@@ -1,0 +1,18 @@
+{
+    "name": "RichMediaBot",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages",
+            "id": "a0c40050-2fd5-11e9-bac1-59ef4d6b858b",
+            "name": "http://localhost:3978/api/messages"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "overrides": null,
+    "path": "C:\\Users\\v-jofing\\source\\repos\\experiment\\samples\\dotnet-mvc\\RichMediaBot\\RichMediaBot.bot"
+}
