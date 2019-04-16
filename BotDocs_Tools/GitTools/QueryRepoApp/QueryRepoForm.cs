@@ -1,14 +1,8 @@
 ﻿using RepoTools;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace QueryRepoApp
@@ -31,40 +25,38 @@ namespace QueryRepoApp
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void QueryRepoForm_Load(object sender, EventArgs e)
         {
-            SinceDatePicker.MaxDate = DateTime.Now;
-            SinceDatePicker.MinDate = DateTime.Now.AddMonths(-1);
+            DatePicker.MaxDate = DateTime.Now;
+            DatePicker.MinDate = DateTime.Now.AddMonths(-1);
+
+            dlg_ChooseRepoRoot.SelectedPath =
+                string.IsNullOrWhiteSpace(Properties.Settings.Default.LastRepoRoot)
+                ? @"c:\" : Properties.Settings.Default.LastRepoRoot;
+            RepoRootTextBox.Text = dlg_ChooseRepoRoot.SelectedPath;
+
+            dlg_SaveOutput.InitialDirectory =
+                string.IsNullOrWhiteSpace(Properties.Settings.Default.LastOutputDirectory)
+                ? @"c:\" : Properties.Settings.Default.LastOutputDirectory;
         }
 
-        private void RepoRootTextBox_TextChanged(object sender, EventArgs e)
+        private void QueryRepoForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            FolderPicker.SelectedPath = RepoRootTextBox.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void RepoRoot_TextChanged(object sender, EventArgs e)
+        {
+            dlg_ChooseRepoRoot.SelectedPath = RepoRootTextBox.Text;
         }
 
         private void SelectRepoButton_Click(object sender, EventArgs e)
         {
             Enabled = false;
-            var result = FolderPicker.ShowDialog();
+            var result = dlg_ChooseRepoRoot.ShowDialog();
             if (result == DialogResult.OK)
             {
-                RepoRootTextBox.Text = FolderPicker.SelectedPath;
-            }
-            Enabled = true;
-        }
-
-        private void OutputDirectoryTextBox_TextChanged(object sender, EventArgs e)
-        {
-            OutputBrowser.SelectedPath = OutputDirectoryTextBox.Text;
-        }
-
-        private void SelectDirectoryButton_Click(object sender, EventArgs e)
-        {
-            Enabled = false;
-            var result = OutputBrowser.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                OutputDirectoryTextBox.Text = OutputBrowser.SelectedPath;
+                RepoRootTextBox.Text = dlg_ChooseRepoRoot.SelectedPath;
             }
             Enabled = true;
         }
@@ -72,9 +64,10 @@ namespace QueryRepoApp
         private void RunButton_Click(object sender, EventArgs e)
         {
             Enabled = false;
-            OutputRichTextBox.Clear();
+            rtb_Output.Clear();
 
             Run();
+            rtb_Output.ScrollToCaret();
 
             Enabled = true;
         }
@@ -82,24 +75,16 @@ namespace QueryRepoApp
         private void Run()
         {
             var root = RepoRootTextBox.Text;
-            var outdir = OutputDirectoryTextBox.Text;
+            Properties.Settings.Default.LastRepoRoot = root;
 
             if (!Directory.Exists(root))
             {
-                OutputRichTextBox.AppendText(
-                    $"Repo directory `{root}` does not exist!");
+                Warning($"Repo directory `{root}` does not exist!");
                 return;
             }
             if (!Directory.Exists(Path.Combine(root, ".git")))
             {
-                OutputRichTextBox.AppendText(
-                    $"Repo directory `{root}` does not contain a repository!");
-                return;
-            }
-            if (!Directory.Exists(outdir))
-            {
-                OutputRichTextBox.AppendText(
-                    $"output directory `{outdir}` does not exist!");
+                Warning($"Repo directory `{root}` does not contain a repository!");
                 return;
             }
 
@@ -109,15 +94,11 @@ namespace QueryRepoApp
                 Console.SetOut(writer);
                 Console.SetError(writer);
 
-                var now = DateTimeOffset.Now;
-                var logFile = outputFileBase + now.AsShortDate() + ".csv";
-                outfile = Path.Combine(OutputDirectoryTextBox.Text, logFile);
-
                 var helper = new RepoHelper
                 {
                     AcceptableDirectories = RepoDirectories,
                     AcceptableExtensions = FileExtensions,
-                    SinceDate = SinceDatePicker.Value,
+                    SinceDate = DatePicker.Value,
                 };
 
                 using (var repo = helper.GetRepository(RepoRootTextBox.Text))
@@ -125,44 +106,89 @@ namespace QueryRepoApp
                     changes = helper.GetChanges(repo);
                     if (changes is null)
                     {
-                        Console.Error.WriteLine("Failed to generate content for the log.");
+                        Error("Failed to generate content for the log.");
                     }
                 }
 
-                Console.WriteLine($"Generating log `{outfile}`...");
 
                 Console.Out.Flush();
                 Console.Error.Flush();
-                OutputRichTextBox.Text = writer.ToString();
+                Message(writer.ToString());
             }
 
             if (changes != null && changes.Count > 0)
             {
                 try
                 {
-                    using (TextWriter writer = new StreamWriter(outfile, false))
-                    {
-                        writer.WriteLine(ChangeInfo.CsvHeader);
-                        foreach (var change in changes.Values)
-                        {
-                            writer.WriteLine(change.AsCsv);
-                        }
+                    Information($"Found {changes.Count} changed files.");
+                    rtb_Output.ScrollToCaret();
 
-                        writer.Flush();
-                        writer.Close();
+                    var now = DateTimeOffset.Now;
+                    outfile = outputFileBase + now.AsShortDate() + ".csv";
+                    dlg_SaveOutput.FileName = Path.Combine(dlg_SaveOutput.InitialDirectory, outfile);
+                    var result = dlg_SaveOutput.ShowDialog();
+
+                    if (result is DialogResult.OK)
+                    {
+                        outfile = dlg_SaveOutput.FileName;
+                        Properties.Settings.Default.LastOutputDirectory = Path.GetDirectoryName(outfile);
+
+                        Information($"Generating log `{outfile}`...");
+                        using (TextWriter writer = new StreamWriter(outfile, false))
+                        {
+                            writer.WriteLine(ChangeInfo.CsvHeader);
+                            foreach (var change in changes.Values)
+                            {
+                                writer.WriteLine(change.AsCsv);
+                            }
+
+                            writer.Flush();
+                            writer.Close();
+                        }
+                        Information("Done");
+                    }
+                    else
+                    {
+                        Information("No report saved.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    OutputRichTextBox.AppendText($"{ex.GetType().Name} encountered writing output." +
-                        Environment.NewLine + ex.Message);
-                    OutputRichTextBox.AppendText("No information gathered to report.");
+                    Warning($"{ex.GetType().Name} encountered writing output:" + Environment.NewLine + ex.Message);
                 }
             }
             else
             {
-                OutputRichTextBox.AppendText("No information gathered to report.");
+                Information("No information gathered to report.");
             }
+        }
+
+        private void Message(string message)
+        {
+            Output(message, DefaultForeColor, DefaultBackColor);
+        }
+
+        private void Information(string message)
+        {
+            Output(message, Color.Green, DefaultBackColor);
+        }
+
+        private void Warning(string message)
+        {
+            Output(message, Color.DarkOrange, DefaultBackColor);
+        }
+
+        private void Error(string message)
+        {
+            Output(message, Color.Red, DefaultBackColor);
+        }
+
+        private void Output(string message, Color forecolor, Color backcolor)
+        {
+            rtb_Output.SelectionColor = forecolor;
+            rtb_Output.SelectionBackColor = backcolor;
+
+            rtb_Output.AppendText(message + Environment.NewLine);
         }
     }
 }

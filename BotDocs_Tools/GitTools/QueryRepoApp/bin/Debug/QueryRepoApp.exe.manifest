@@ -78,14 +78,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="QueryRepoApp.exe" size="15296">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="QueryRepoApp.exe" size="16320">
       <assemblyIdentity name="QueryRepoApp" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>bGOFpLuaTgFIXlWGXLDpRKwliXkg/FtYmeWU9qriDhE=</dsig:DigestValue>
+        <dsig:DigestValue>+OjyDVMZosFtK61uwvk4Ss0slONfkXk0waQ0q+QrMkI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -97,7 +97,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>dPWiebLxFJHVZzchjjRbgTx9b0lQjDy1pHRUHH5bUHI=</dsig:DigestValue>
+        <dsig:DigestValue>OvV9mv8y5S+zMZvyfK25t+ZHGxd+MMwNWclnRASYp2M=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -299,22 +299,22 @@
       <dsig:DigestValue>l9Dr8drSIkd7S8lJilq4QRIhbdYS/gE+rqIZ+Khs/5M=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="LibGit2Sharp.dll.config" size="252">
+  <file name="LibGit2Sharp.dll.config" size="256">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>SDbw5HLoNaMLJtjV1gtEA2qdMxuDE2IQgB6TMvNpnZo=</dsig:DigestValue>
+      <dsig:DigestValue>ksJfIcoKf0e4buVoMSVZkyuoPK4wFZ6G0rTdBWerXNw=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="QueryRepoApp.exe.config" size="4264">
+  <file name="QueryRepoApp.exe.config" size="5052">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>xFXA7RdoqV/oFsRblBRNwcQf20eRDiwEaCFFMk+P670=</dsig:DigestValue>
+      <dsig:DigestValue>oN6NFNyuerQg6duVUnQ6cbouBTOoP/+7KwFhitXjI2Y=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
