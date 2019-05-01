@@ -19,6 +19,7 @@ namespace ReportUtils
         public bool Add(string filePath, string akaLink)
         {
             var added = false;
+
             if (!FileIndex.ContainsKey(filePath))
             {
                 FileIndex[filePath] = new AkaFileData { FullPath = filePath };
@@ -37,14 +38,14 @@ namespace ReportUtils
         public bool Add(string filePath, IEnumerable<string> links)
         {
             var added = false;
-            foreach(var link in links)
+            foreach (var link in links)
             {
                 added |= Add(filePath, link);
             }
             return added;
         }
 
-        public bool IsEmpty => FileIndex.Count == 0;
-        
+        public bool IsEmpty => FileIndex.Count is 0;
+
     }
 }

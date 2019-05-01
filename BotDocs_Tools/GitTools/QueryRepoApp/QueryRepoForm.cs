@@ -67,8 +67,12 @@ namespace QueryRepoApp
             Enabled = false;
             rtb_Output.Clear();
 
-            var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput) { DocPath = RepoRootTextBox.Text };
+            var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput)
+            {
+                DocPath = RepoRootTextBox.Text,
+            };
             report.Run();
+
             rtb_Output.ScrollToCaret();
 
             Enabled = true;
@@ -76,7 +80,17 @@ namespace QueryRepoApp
 
         private void btn_RunCodeLinkReport_Click(object sender, EventArgs e)
         {
+            Enabled = false;
+            rtb_Output.Clear();
 
+            var report = new CodeLinkReport(rtb_Output, dlg_ChooseRepoRoot, dlg_SaveOutput)
+            {
+                DocPath = RepoRootTextBox.Text,
+            };
+            report.Run();
+
+            rtb_Output.ScrollToCaret();
+            Enabled = true;
         }
 
         // This is the old code link report
@@ -117,7 +131,7 @@ namespace QueryRepoApp
                         Error("Failed to generate content for the log.");
                     }
                 }
-                
+
                 Console.Out.Flush();
                 Console.Error.Flush();
                 Message(writer.ToString());

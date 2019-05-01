@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -47,11 +50,16 @@
     <Compile Include="AkaLinkMap.cs" />
     <Compile Include="AkaLinkReport.cs" />
     <Compile Include="BaseReport.cs" />
+    <Compile Include="CodeLinkMap.cs" />
+    <Compile Include="CodeLinkReport.cs" />
     <Compile Include="FileData.cs" />
     <Compile Include="AkaLinkData.cs" />
     <Compile Include="RichTextBoxExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
