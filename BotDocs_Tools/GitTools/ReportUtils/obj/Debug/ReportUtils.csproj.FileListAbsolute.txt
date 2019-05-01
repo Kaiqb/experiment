@@ -1,0 +1,6 @@
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\ReportUtils\bin\Debug\ReportUtils.dll
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\ReportUtils\bin\Debug\ReportUtils.pdb
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\ReportUtils\obj\Debug\ReportUtils.csprojAssemblyReference.cache
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\ReportUtils\obj\Debug\ReportUtils.csproj.CoreCompileInputs.cache
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\ReportUtils\obj\Debug\ReportUtils.dll
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\ReportUtils\obj\Debug\ReportUtils.pdb

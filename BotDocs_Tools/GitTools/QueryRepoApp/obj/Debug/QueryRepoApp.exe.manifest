@@ -85,7 +85,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>+OjyDVMZosFtK61uwvk4Ss0slONfkXk0waQ0q+QrMkI=</dsig:DigestValue>
+        <dsig:DigestValue>pxKta8kvUIEOsOgKQUCwYS9G9iI5TnE+6LBNpwrEROo=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ReportUtils.dll" size="12800">
+      <assemblyIdentity name="ReportUtils" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>V5cSBTJahT4cbwDRM+1+/dXVrRY0/QimleedcnepFzI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -97,7 +109,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>OvV9mv8y5S+zMZvyfK25t+ZHGxd+MMwNWclnRASYp2M=</dsig:DigestValue>
+        <dsig:DigestValue>4BhJ3jkTgOcHaNWI745ZtI16/BhkCxRNiCGxxUIPTrc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
