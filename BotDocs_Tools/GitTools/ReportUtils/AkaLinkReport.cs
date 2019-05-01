@@ -11,6 +11,7 @@ namespace ReportUtils
     {
         private const string AkaLede1 = "http://aka.ms/";
         private const string AkaLede2 = "https://aka.ms/";
+        private const string ArticlesRoot = "articles";
 
         public string DocPath { get; set; }
 
@@ -25,11 +26,13 @@ namespace ReportUtils
             Contract.Requires(DocPath != null);
             Contract.Requires(Directory.Exists(DocPath));
             Contract.Requires(Directory.Exists(Path.Combine(DocPath, ".git")));
+            Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot)));
 
             base.Run();
 
             LinkMap.Clear();
-            var files = Directory.GetFiles(DocPath, "*.md", SearchOption.AllDirectories);
+            var dir = Path.Combine(DocPath, ArticlesRoot);
+            var files = Directory.GetFiles(dir, "*.md", SearchOption.AllDirectories);
             var links = new HashSet<string>();
             var linkCount = 0;
             foreach (var file in files)
@@ -64,7 +67,7 @@ namespace ReportUtils
                             {
                                 writer.WriteLine($"{entry.FullPath.CsvEscape()}" +
                                     $",{url.CsvEscape()}" +
-                                    $",{LinkData.GetShortUrl(url).CsvEscape()}");
+                                    $",{AkaLinkData.GetShortUrl(url).CsvEscape()}");
                             }
                         }
                         writer.Flush();

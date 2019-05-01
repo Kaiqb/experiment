@@ -90,14 +90,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ReportUtils.dll" size="12288">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ReportUtils.dll" size="12800">
       <assemblyIdentity name="ReportUtils" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Calf7ziJPMKLsLpf23jGlFLqrkl2hxB18cz7ACAJNDo=</dsig:DigestValue>
+        <dsig:DigestValue>V5cSBTJahT4cbwDRM+1+/dXVrRY0/QimleedcnepFzI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

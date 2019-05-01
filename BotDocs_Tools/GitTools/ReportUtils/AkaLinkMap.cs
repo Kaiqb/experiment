@@ -7,8 +7,8 @@ namespace ReportUtils
         public Dictionary<string, AkaFileData> FileIndex { get; }
             = new Dictionary<string, AkaFileData>();
 
-        public Dictionary<string, LinkData> LinkIndex { get; }
-            = new Dictionary<string, LinkData>();
+        public Dictionary<string, AkaLinkData> LinkIndex { get; }
+            = new Dictionary<string, AkaLinkData>();
 
         public void Clear()
         {
@@ -27,7 +27,7 @@ namespace ReportUtils
 
             if (!LinkIndex.ContainsKey(akaLink))
             {
-                LinkIndex[akaLink] = new LinkData { Url = akaLink };
+                LinkIndex[akaLink] = new AkaLinkData { Url = akaLink };
             }
             added |= LinkIndex[akaLink].FilesContainingLink.Add(filePath);
 
