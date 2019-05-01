@@ -62,3 +62,5 @@ C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\RepoTools\obj\D
 C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\RepoTools\obj\Debug\RepoTools.csproj.CopyComplete
 C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\RepoTools\obj\Debug\RepoTools.dll
 C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\RepoTools\obj\Debug\RepoTools.pdb
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\RepoTools\bin\Debug\ReportUtils.dll
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\RepoTools\bin\Debug\ReportUtils.pdb

@@ -84,3 +84,5 @@ C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\QueryRepoApp\bi
 C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\QueryRepoApp\obj\Debug\QueryRepoApp.exe.manifest
 C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\QueryRepoApp\obj\Debug\QueryRepoApp.application
 C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\QueryRepoApp\obj\Debug\QueryRepoApp.csproj.CopyComplete
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\QueryRepoApp\bin\Debug\ReportUtils.dll
+C:\Users\v-jofing\source\repos\experiment\BotDocs_Tools\GitTools\QueryRepoApp\bin\Debug\ReportUtils.pdb

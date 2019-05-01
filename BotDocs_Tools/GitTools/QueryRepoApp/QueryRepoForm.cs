@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using ReportUtils;
 
 namespace QueryRepoApp
 {
@@ -61,12 +62,13 @@ namespace QueryRepoApp
             Enabled = true;
         }
 
-        private void RunButton_Click(object sender, EventArgs e)
+        private void RunAkaLinkReport_Click(object sender, EventArgs e)
         {
             Enabled = false;
             rtb_Output.Clear();
 
-            Run();
+            var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput) { DocPath = RepoRootTextBox.Text };
+            report.Run();
             rtb_Output.ScrollToCaret();
 
             Enabled = true;
@@ -120,7 +122,7 @@ namespace QueryRepoApp
             {
                 try
                 {
-                    Information($"Found {changes.Count} changed files.");
+                    Info($"Found {changes.Count} changed files.");
                     rtb_Output.ScrollToCaret();
 
                     var now = DateTimeOffset.Now;
@@ -133,7 +135,7 @@ namespace QueryRepoApp
                         outfile = dlg_SaveOutput.FileName;
                         Properties.Settings.Default.LastOutputDirectory = Path.GetDirectoryName(outfile);
 
-                        Information($"Generating log `{outfile}`...");
+                        Info($"Generating log `{outfile}`...");
                         using (TextWriter writer = new StreamWriter(outfile, false))
                         {
                             writer.WriteLine(ChangeInfo.CsvHeader);
@@ -145,11 +147,11 @@ namespace QueryRepoApp
                             writer.Flush();
                             writer.Close();
                         }
-                        Information("Done");
+                        Info("Done");
                     }
                     else
                     {
-                        Information("No report saved.");
+                        Info("No report saved.");
                     }
                 }
                 catch (Exception ex)
@@ -159,36 +161,28 @@ namespace QueryRepoApp
             }
             else
             {
-                Information("No information gathered to report.");
+                Info("No information gathered to report.");
             }
         }
 
         private void Message(string message)
         {
-            Output(message, DefaultForeColor, DefaultBackColor);
+            rtb_Output.WriteLine(Severity.Messgae, message);
         }
 
-        private void Information(string message)
+        private void Info(string message)
         {
-            Output(message, Color.Green, DefaultBackColor);
+            rtb_Output.WriteLine(Severity.Information, message);
         }
 
         private void Warning(string message)
         {
-            Output(message, Color.DarkOrange, DefaultBackColor);
+            rtb_Output.WriteLine(Severity.Warning, message);
         }
 
         private void Error(string message)
         {
-            Output(message, Color.Red, DefaultBackColor);
-        }
-
-        private void Output(string message, Color forecolor, Color backcolor)
-        {
-            rtb_Output.SelectionColor = forecolor;
-            rtb_Output.SelectionBackColor = backcolor;
-
-            rtb_Output.AppendText(message + Environment.NewLine);
+            rtb_Output.WriteLine(Severity.Error, message);
         }
     }
 }

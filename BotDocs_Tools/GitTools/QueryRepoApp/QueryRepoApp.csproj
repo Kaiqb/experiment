@@ -130,6 +130,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ReportUtils\ReportUtils.csproj">
+      <Project>{c585b59f-0e0b-4e8e-8959-414297a0f6c4}</Project>
+      <Name>ReportUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RepoTools\RepoTools.csproj">
       <Project>{73F55550-F11F-4CEF-BAA3-217883328FEB}</Project>
       <Name>RepoTools</Name>
