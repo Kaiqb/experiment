@@ -13,8 +13,6 @@ namespace RepoTools
         public IEnumerable<string> AcceptableDirectories { get; set; }
         public IEnumerable<string> AcceptableExtensions { get; set; }
 
-        public DateTimeOffset SinceDate { get; set; }
-
         public Repository GetRepository(string rootDir)
         {
             Contract.Requires(Directory.Exists(rootDir),
@@ -40,15 +38,8 @@ namespace RepoTools
             return repo;
         }
 
-        public Dictionary<string, ChangeInfo> GetChanges(Repository repo)
+        public Dictionary<string, ChangeInfo> GetChanges(Repository repo, DateTimeOffset sinceDate)
         {
-
-            if (DateTime.Now < SinceDate)
-            {
-                Console.Error.WriteLine($"{nameof(SinceDate)} must be in the past.");
-                return null;
-            }
-
             var branch = repo.Head;
             Console.WriteLine($"Branch {branch.FriendlyName}...");
 
@@ -61,7 +52,7 @@ namespace RepoTools
                 while (e.MoveNext() && count < maxCount)
                 {
                     var when = e.Current.Author.When;
-                    if (when < SinceDate)
+                    if (when < sinceDate)
                     {
                         Console.Error.WriteLine($"Stopping at commit {e.Current.Id} from {when}.");
                         break;

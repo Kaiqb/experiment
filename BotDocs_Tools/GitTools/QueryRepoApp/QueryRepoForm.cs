@@ -28,8 +28,8 @@ namespace QueryRepoApp
 
         private void QueryRepoForm_Load(object sender, EventArgs e)
         {
-            DatePicker.MaxDate = DateTime.Now;
-            DatePicker.MinDate = DateTime.Now.AddMonths(-1);
+            //DatePicker.MaxDate = DateTime.Now;
+            //DatePicker.MinDate = DateTime.Now.AddMonths(-1);
 
             dlg_ChooseRepoRoot.SelectedPath =
                 string.IsNullOrWhiteSpace(Properties.Settings.Default.LastRepoRoot)
@@ -74,6 +74,12 @@ namespace QueryRepoApp
             Enabled = true;
         }
 
+        private void btn_RunCodeLinkReport_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        // This is the old code link report
         private void Run()
         {
             var root = RepoRootTextBox.Text;
@@ -100,19 +106,18 @@ namespace QueryRepoApp
                 {
                     AcceptableDirectories = RepoDirectories,
                     AcceptableExtensions = FileExtensions,
-                    SinceDate = DatePicker.Value,
+                    //SinceDate = DatePicker.Value,
                 };
 
                 using (var repo = helper.GetRepository(RepoRootTextBox.Text))
                 {
-                    changes = helper.GetChanges(repo);
+                    changes = helper.GetChanges(repo, DateTimeOffset.Now.AddDays(-14));
                     if (changes is null)
                     {
                         Error("Failed to generate content for the log.");
                     }
                 }
-
-
+                
                 Console.Out.Flush();
                 Console.Error.Flush();
                 Message(writer.ToString());

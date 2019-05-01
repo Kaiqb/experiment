@@ -7,6 +7,17 @@ using System.Windows.Forms;
 
 namespace ReportUtils
 {
+    public class CodeLinkReport : BaseReport
+    {
+        public FolderBrowserDialog ChooseFolder { get; private set; }
+
+        public string DocPath { get; set; }
+
+        public CodeLinkReport(RichTextBox status, SaveFileDialog saveDialog) : base(status, saveDialog)
+        {
+        }
+    }
+
     public class AkaLinkReport : BaseReport
     {
         private const string AkaLede1 = "http://aka.ms/";
