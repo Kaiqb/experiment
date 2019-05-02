@@ -1,7 +1,7 @@
 ﻿using LibGit2Sharp;
-using ReportUtils;
 using System;
 using System.IO;
+using Utilities;
 
 namespace RepoTools
 {

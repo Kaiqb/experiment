@@ -57,14 +57,14 @@
             this.RepoRootTextBox.Location = new System.Drawing.Point(12, 30);
             this.RepoRootTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.RepoRootTextBox.Name = "RepoRootTextBox";
-            this.RepoRootTextBox.Size = new System.Drawing.Size(655, 22);
+            this.RepoRootTextBox.Size = new System.Drawing.Size(544, 22);
             this.RepoRootTextBox.TabIndex = 1;
             this.RepoRootTextBox.TextChanged += new System.EventHandler(this.RepoRoot_TextChanged);
             // 
             // SelectRepoButton
             // 
             this.SelectRepoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectRepoButton.Location = new System.Drawing.Point(673, 30);
+            this.SelectRepoButton.Location = new System.Drawing.Point(562, 30);
             this.SelectRepoButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SelectRepoButton.Name = "SelectRepoButton";
             this.SelectRepoButton.Size = new System.Drawing.Size(115, 23);
@@ -88,7 +88,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(776, 326);
+            this.groupBox1.Size = new System.Drawing.Size(665, 423);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Output";
@@ -100,14 +100,14 @@
             this.rtb_Output.Margin = new System.Windows.Forms.Padding(4);
             this.rtb_Output.Name = "rtb_Output";
             this.rtb_Output.ReadOnly = true;
-            this.rtb_Output.Size = new System.Drawing.Size(768, 303);
+            this.rtb_Output.Size = new System.Drawing.Size(657, 400);
             this.rtb_Output.TabIndex = 0;
             this.rtb_Output.Text = "";
             // 
             // btn_RunAkaLinkReport
             // 
             this.btn_RunAkaLinkReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_RunAkaLinkReport.Location = new System.Drawing.Point(330, 78);
+            this.btn_RunAkaLinkReport.Location = new System.Drawing.Point(219, 78);
             this.btn_RunAkaLinkReport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_RunAkaLinkReport.Name = "btn_RunAkaLinkReport";
             this.btn_RunAkaLinkReport.Size = new System.Drawing.Size(179, 23);
@@ -125,7 +125,7 @@
             // btn_RunCodeLinkReport
             // 
             this.btn_RunCodeLinkReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_RunCodeLinkReport.Location = new System.Drawing.Point(515, 78);
+            this.btn_RunCodeLinkReport.Location = new System.Drawing.Point(404, 78);
             this.btn_RunCodeLinkReport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_RunCodeLinkReport.Name = "btn_RunCodeLinkReport";
             this.btn_RunCodeLinkReport.Size = new System.Drawing.Size(179, 23);
@@ -138,7 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(689, 547);
             this.Controls.Add(this.btn_RunCodeLinkReport);
             this.Controls.Add(this.btn_RunAkaLinkReport);
             this.Controls.Add(this.groupBox1);

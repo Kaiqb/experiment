@@ -1,7 +1,8 @@
 ﻿using System;
 
-namespace RepoTools
+namespace Utilities
 {
+
     public static class DateTimeOffsetExtensions
     {
         /// <summary>Returns a file-appropriate representation of the date and time.</summary>

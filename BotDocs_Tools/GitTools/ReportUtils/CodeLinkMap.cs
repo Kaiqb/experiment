@@ -7,23 +7,24 @@ namespace ReportUtils
     {
         public class FileData : IEquatable<FileData>
         {
-            public string RepoName { get; set; }
+            public string BranchName { get; set; }
             public string RelFilePath { get; set; }
-            public DateTimeOffset LastCommitDate { get; set; }
             public string CommitSha { get; set; }
+            public DateTimeOffset LastCommitDate { get; set; }
+            public string Author { get; set; }
 
             public bool Equals(FileData other)
             {
                 // For now, we don't have to worry if these are of the same type or not.
                 return other != null
-                    && other.RepoName.Equals(RepoName, StringComparison.InvariantCultureIgnoreCase)
+                    && other.BranchName.Equals(BranchName, StringComparison.InvariantCultureIgnoreCase)
                     && other.RelFilePath.Equals(RelFilePath, StringComparison.InvariantCultureIgnoreCase);
             }
 
             public override int GetHashCode()
             {
                 // Provide a simple hash code that will work with our sense of Equals.
-                return RepoName.GetHashCode() << 8 ^ RelFilePath.GetHashCode() >> 8;
+                return BranchName.GetHashCode() << 8 ^ RelFilePath.GetHashCode() >> 8;
             }
 
             public override bool Equals(object obj)

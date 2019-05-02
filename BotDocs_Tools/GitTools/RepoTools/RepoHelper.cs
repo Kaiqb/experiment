@@ -1,5 +1,4 @@
-﻿using GitTools.Git;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -19,7 +18,7 @@ namespace RepoTools
                 $"Directory `{rootDir}` does not exist or is not a valid directory");
 
             Console.WriteLine($"Getting local repository at `{rootDir}`...");
-            var repo = RepositoryLoader.GetRepo(rootDir);
+            var repo = new Repository(rootDir);
 
             Console.WriteLine($"Repo info {repo.Info}.");
 
@@ -38,7 +37,7 @@ namespace RepoTools
             return repo;
         }
 
-        private static readonly char[] PathSeparatorCharacters = new char[] { '/' };
+        private static readonly char[] PathSeparatorCharacters = new char[] { '/', '\\' };
 
         /// <summary>Returns the top-level directory, followed by the remainder of the path.</summary>
         /// <param name="path">The path to get the top-level directory from.</param>
