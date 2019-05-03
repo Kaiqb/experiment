@@ -107,15 +107,17 @@ namespace RepoTools
 
             foreach(var commit in repo.Commits)
             {
+                if (commit.Parents.Count() == 0) { continue; }
+
                 var blob2 = FindFileInTree(commit.Tree, relPath);
                 if (blob2 != null)
                 {
-                    if (blob2.Id != blob1.Id)
-                    {
-                        throw new ApplicationException($"Found a commit for file `{relPath}`, but" +
-                            $"the ID is a mismatch with the head.");
-                    }
-                    else { return commit; }
+                    //if (blob2.Id != blob1.Id)
+                    //{
+                    //    throw new ApplicationException($"Found a commit for file `{relPath}`, but" +
+                    //        $"the ID is a mismatch with the head.");
+                    //}
+                    return commit;
                 }
             }
 

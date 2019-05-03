@@ -187,18 +187,16 @@ namespace ReportUtils
             {
                 writer.WriteLine(
                     "Doc file path" +
-                    ",Line in doc" +
                     ",Code file path" +
+                    ",Line in doc" +
                     ",Code query params" +
                     ",Doc repo branch" +
                     ",Doc commit date" +
                     ",Doc commit author" +
-                    ",Doc commit sha" +
                     ",Code repo handle" +
                     ",Code repo branch" +
                     ",Code commit date" +
                     ",Code commit author" +
-                    ",Code commit sha" +
                     "");
 
                 // Write out all the link data.
@@ -212,18 +210,16 @@ namespace ReportUtils
                         {
                             writer.WriteLine(
                                 docFile.RelFilePath.CsvEscape()
-                                + "," + lineData.DocLine
                                 + "," + codeFile.RelFilePath.CsvEscape()
+                                + "," + lineData.DocLine
                                 + "," + lineData.QueryParams.CsvEscape()
                                 + "," + docFile.BranchName.CsvEscape()
                                 + "," + docFile.LastCommitDate.ToString().CsvEscape()
                                 + "," + docFile.Author.CsvEscape()
-                                + "," + docFile.CommitSha.CsvEscape()
                                 + "," + CodeInfo.PathToRoot.CsvEscape()
                                 + "," + codeFile.BranchName.CsvEscape()
                                 + "," + codeFile.LastCommitDate.ToString().CsvEscape()
                                 + "," + codeFile.Author.CsvEscape()
-                                + "," + codeFile.CommitSha.CsvEscape()
                                 );
                         }
                     }
