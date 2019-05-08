@@ -93,11 +93,12 @@ namespace ReportUtils
                 if (result == DialogResult.OK)
                 {
                     WriteReport();
+                    Status.WriteLine(Severity.Information, $"Report written to {SaveDialog.FileName}.");
+                    return true;
                 }
-
-                Status.WriteLine(Severity.Information, $"Report written to {SaveDialog.FileName}.");
-                return true;
             }
+            Status.WriteLine(Severity.Warning, "No report written.");
+            return false;
         }
 
         private void FindRelevantCodeLinks(Repository docRepo, Repository codeRepo)
@@ -109,11 +110,11 @@ namespace ReportUtils
 
             foreach (var file in files)
             {
-                var relDocPath = file.Substring(DocPath.Length);
+                var relDocPath = file.Substring(DocPath.Length+1);
                 var docFile = new CodeLinkMap.FileData
                 {
                     BranchName = docRepo.Head.FriendlyName,
-                    RelFilePath = relDocPath,
+                    RelFilePath = relDocPath.Replace('\\','/'),
                 };
                 var lines = File.ReadAllLines(file).ToList();
                 for (var lineNum = 0; lineNum < lines.Count; lineNum++)
@@ -161,22 +162,58 @@ namespace ReportUtils
         }
 
         private void BackfillCommitDates(
-            IEnumerable<CodeLinkMap.FileData> files, Repository inRepo, RepoHelper helper)
+            IEnumerable<CodeLinkMap.FileData> files, Repository repo, RepoHelper helper)
         {
-            foreach (var file in files)
+            // This is currently a very inefficient algorithm.
+
+            // In theory, we just want information about the last commit to touch each file.
+            var filesMap = files.ToDictionary(f => f.RelFilePath);
+            var todo = filesMap.Count;
+            Status.WriteLine(Severity.Information, $"Looking for commit information for {todo} files in repo {repo}.");
+            Status.ScrollToCaret();
+
+            // Ignore merge commits (with 2 parents).
+            foreach (var commit in repo.Commits.Where(c => c.Parents.Count() is 1))
             {
-                try
+                // Search each change in each commit for the files we're interested in.
+                var diff = repo.Diff.Compare<TreeChanges>(commit.Parents.First().Tree, commit.Tree);
+                foreach (var change in diff.Where(i => i.Status != ChangeKind.Unmodified))
                 {
-                    var commit = helper.LastCommitFor(inRepo, file.RelFilePath);
-                    file.CommitSha = commit.Id.Sha;
-                    file.Author = commit.Author.Name;
-                    file.LastCommitDate = commit.Author.When;
+                    if (filesMap.ContainsKey(change.Path))
+                    {
+                        // If we've found a match, fill in the commit information.
+                        var fileInfo = filesMap[change.Path];
+
+                        fileInfo.CommitSha = commit.Id.Sha;
+                        fileInfo.Author = commit.Author.Name;
+                        fileInfo.LastCommitDate = commit.Author.When;
+                        fileInfo.LastChangeStatus = change.Status.ToString();
+
+                        // Remove this file from the list of files to search for.
+                        if (filesMap.Remove(change.Path))
+                        {
+                            todo--;
+                        }
+
+                        if (todo is 0)
+                        {
+                            break;
+                        }
+                    }
                 }
-                catch
+                if (todo is 0)
                 {
-                    file.CommitSha = "unknown";
-                    file.Author = "unknown";
-                    file.LastCommitDate = default(DateTimeOffset);
+                    break;
+                }
+            }
+            if (filesMap.Count > 0)
+            {
+                Status.WriteLine(Severity.Warning, $"Failed to get commit data for {filesMap.Count} files.");
+                foreach (var fileInfo in filesMap.Values)
+                {
+                    fileInfo.CommitSha = "unknown";
+                    fileInfo.Author = "unknown";
+                    fileInfo.LastChangeStatus = "unknown";
                 }
             }
         }

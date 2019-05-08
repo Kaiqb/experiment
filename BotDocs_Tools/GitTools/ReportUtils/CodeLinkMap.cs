@@ -10,9 +10,9 @@ namespace ReportUtils
             public string BranchName { get; set; }
             public string RelFilePath { get; set; }
             public string CommitSha { get; set; }
-            public DateTimeOffset LastCommitDate { get; set; }
-            public string CommitKind { get; set; }
             public string Author { get; set; }
+            public DateTimeOffset LastCommitDate { get; set; }
+            public string LastChangeStatus { get; set; }
 
             public bool Equals(FileData other)
             {

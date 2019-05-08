@@ -76,6 +76,7 @@ namespace QueryRepoApp
         private void RunAkaLinkReport_Click(object sender, EventArgs e)
         {
             Enabled = false;
+            Cursor = Cursors.WaitCursor;
             rtb_Output.Clear();
 
             var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput)
@@ -85,13 +86,14 @@ namespace QueryRepoApp
             report.Run();
 
             rtb_Output.ScrollToCaret();
-
+            Cursor = DefaultCursor;
             Enabled = true;
         }
 
         private void btn_RunCodeLinkReport_Click(object sender, EventArgs e)
         {
             Enabled = false;
+            Cursor = Cursors.WaitCursor;
             rtb_Output.Clear();
 
             var report = new CodeLinkReport(rtb_Output, dlg_ChooseRepoRoot, dlg_SaveOutput)
@@ -108,6 +110,7 @@ namespace QueryRepoApp
             }
 
             rtb_Output.ScrollToCaret();
+            Cursor = DefaultCursor;
             Enabled = true;
         }
 
