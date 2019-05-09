@@ -259,12 +259,12 @@ namespace ReportUtils
                     ",Line in doc" +
                     ",Code query params" +
                     ",Doc repo branch" +
-                    ",Doc commit date" +
                     ",Doc commit author" +
+                    ",Doc commit date" +
                     ",Code repo handle" +
                     ",Code repo branch" +
-                    ",Code commit date" +
                     ",Code commit author" +
+                    ",Code commit date" +
                     "");
 
                 // Write out all the link data.
@@ -282,12 +282,12 @@ namespace ReportUtils
                                 + "," + lineData.DocLine
                                 + "," + lineData.QueryParams.CsvEscape()
                                 + "," + docFile.BranchName.CsvEscape()
-                                + "," + docFile.LastCommitDate.ToString().CsvEscape()
                                 + "," + docFile.Author.CsvEscape()
+                                + "," + docFile.LastCommitDate.ToString().CsvEscape()
                                 + "," + CodeInfo.PathToRoot.CsvEscape()
                                 + "," + codeFile.BranchName.CsvEscape()
-                                + "," + codeFile.LastCommitDate.ToString().CsvEscape()
                                 + "," + codeFile.Author.CsvEscape()
+                                + "," + codeFile.LastCommitDate.ToString().CsvEscape()
                                 );
                         }
                     }
