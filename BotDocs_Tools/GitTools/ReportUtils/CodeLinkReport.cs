@@ -13,6 +13,23 @@ namespace ReportUtils
 {
     public class CodeLinkReport : BaseReport
     {
+        private class PathComparer : IEqualityComparer<string>
+        {
+            public bool Equals(string x, string y)
+            {
+                return string.Equals(x, y, StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            public int GetHashCode(string x)
+            {
+                return x.GetHashCode();
+            }
+
+            private PathComparer() { }
+
+            public static PathComparer Default { get; } = new PathComparer();
+        }
+
         public FolderBrowserDialog ChooseFolder { get; private set; }
 
         public string DocPath { get; set; }
@@ -110,34 +127,38 @@ namespace ReportUtils
 
             foreach (var file in files)
             {
-                var relDocPath = file.Substring(DocPath.Length+1);
+                var relDocPath = file.Substring(DocPath.Length + 1);
                 var docFile = new CodeLinkMap.FileData
                 {
                     BranchName = docRepo.Head.FriendlyName,
-                    RelFilePath = relDocPath.Replace('\\','/'),
+                    RelFilePath = relDocPath.Trim().Replace('\\', '/'),
                 };
+
                 var lines = File.ReadAllLines(file).ToList();
                 for (var lineNum = 0; lineNum < lines.Count; lineNum++)
                 {
+                    // The array of lines is 0-based, but "line numbers" are 1-based.
                     var line = lines[lineNum];
-                    if (line.StartsWith(pattern1, System.StringComparison.InvariantCultureIgnoreCase))
+                    if (line.StartsWith(pattern1, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var pos = line.IndexOf(pattern2);
                         if (pos < 0)
                         {
                             Status.WriteLine(Severity.Information,
-                                $"Ignoring other-repo code link in {relDocPath} at line {lineNum}.");
+                                $"Ignoring other-repo code link in {relDocPath} at line {lineNum + 1}.");
                             continue;
                         }
+
                         var start = pos + pattern2.Length;
-                        pos = line.IndexOf('?', start);
                         var end = line.IndexOf(")]", start);
                         if (end < 0)
                         {
                             Status.WriteLine(Severity.Warning,
-                                $"Poorly formed code link in {relDocPath} at line {lineNum}.");
+                                $"Poorly formed code link in {relDocPath} at line {lineNum + 1}.");
                             continue;
                         }
+
+                        pos = line.IndexOf('?', start);
                         string relCodePath, queryParameters;
                         if (pos < 0)
                         {
@@ -150,12 +171,14 @@ namespace ReportUtils
                             pos++;
                             queryParameters = line.Substring(pos, end - pos);
                         }
+
                         var codeFile = new CodeLinkMap.FileData
                         {
                             BranchName = codeRepo.Head.FriendlyName,
-                            RelFilePath = relCodePath,
+                            RelFilePath = relCodePath.Trim(),
                         };
-                        LinkMap.Add(docFile, codeFile, lineNum, queryParameters);
+
+                        LinkMap.Add(docFile, codeFile, lineNum + 1, queryParameters);
                     }
                 }
             }
@@ -167,9 +190,10 @@ namespace ReportUtils
             // This is currently a very inefficient algorithm.
 
             // In theory, we just want information about the last commit to touch each file.
-            var filesMap = files.ToDictionary(f => f.RelFilePath);
+            var filesMap = files.ToDictionary(f => f.RelFilePath, f => f, CodeLinkMap.FileData.PathComparer);
             var todo = filesMap.Count;
-            Status.WriteLine(Severity.Information, $"Looking for commit information for {todo} files in repo {repo}.");
+            Status.WriteLine(Severity.Information,
+                $"Looking for commit information for {todo} files in repo.");
             Status.ScrollToCaret();
 
             // Ignore merge commits (with 2 parents).
@@ -182,17 +206,23 @@ namespace ReportUtils
                     if (filesMap.ContainsKey(change.Path))
                     {
                         // If we've found a match, fill in the commit information.
-                        var fileInfo = filesMap[change.Path];
+                        var fileEntry = filesMap[change.Path];
 
-                        fileInfo.CommitSha = commit.Id.Sha;
-                        fileInfo.Author = commit.Author.Name;
-                        fileInfo.LastCommitDate = commit.Author.When;
-                        fileInfo.LastChangeStatus = change.Status.ToString();
+                        fileEntry.CommitSha = commit.Id.Sha;
+                        fileEntry.Author = commit.Author.Name;
+                        fileEntry.LastCommitDate = commit.Author.When;
+                        fileEntry.LastChangeStatus = change.Status.ToString();
 
                         // Remove this file from the list of files to search for.
-                        if (filesMap.Remove(change.Path))
+                        // Use the key that was used to create the dictionary, not the key used to find the entry.
+                        if (filesMap.Remove(fileEntry.RelFilePath))
                         {
                             todo--;
+                        }
+                        else
+                        {
+                            Status.WriteLine(Severity.Error,
+                                $"Failed to remove {change.Path} from the temporary collection.");
                         }
 
                         if (todo is 0)
@@ -208,12 +238,13 @@ namespace ReportUtils
             }
             if (filesMap.Count > 0)
             {
-                Status.WriteLine(Severity.Warning, $"Failed to get commit data for {filesMap.Count} files.");
-                foreach (var fileInfo in filesMap.Values)
+                Status.WriteLine(Severity.Warning,
+                    $"Failed to get commit data for {filesMap.Count} files.");
+                foreach (var fileEntry in filesMap.Values)
                 {
-                    fileInfo.CommitSha = "unknown";
-                    fileInfo.Author = "unknown";
-                    fileInfo.LastChangeStatus = "unknown";
+                    fileEntry.CommitSha = "unknown";
+                    fileEntry.Author = "unknown";
+                    fileEntry.LastChangeStatus = "unknown";
                 }
             }
         }
