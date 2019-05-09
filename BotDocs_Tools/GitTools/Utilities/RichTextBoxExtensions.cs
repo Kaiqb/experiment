@@ -2,10 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ReportUtils
+namespace Utilities
 {
-    public enum Severity { Messgae, Information, Warning, Error }
-
     public static class RichTextBoxExtensions
     {
         public static void WriteLine(this RichTextBox rtb, string message, Color forecolor, Color backcolor)

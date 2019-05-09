@@ -1,30 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ReportUtils
+namespace Utilities
 {
-    public static class StringExtensions
-    {
-        /// <summary>CSV-escapes a string.</summary>
-        /// <param name="value">The string to escape.</param>
-        /// <returns>The CSV-escaped string.</returns>
-        public static string CsvEscape(this string value)
-        {
-            var escaped = value
-                .Replace("\r", @"\r")
-                .Replace("\n", @"\n")
-                .Replace("\t", @"\t")
-                .Replace("\"", "\"\"");
-
-            return '"' + escaped + '"';
-        }
-
-        public static int IndexOf(this string s, Func<char,bool> predicate, int start = 0)
-        {
-            return s.ToCharArray().IndexOf(predicate, start);
-        }
-    }
-
     public static class EnumerableExtensions
     {
         /// <summary>Gets the index of the first item in a list or array that matches a criteria.</summary>
@@ -35,7 +13,7 @@ namespace ReportUtils
         /// <returns>The index of the first item in the list to match the criteria; or -1 if no match is found.</returns>
         public static int IndexOf<T>(this IList<T> list, Func<T, bool> predicate, int start = 0)
         {
-            for (int i = start; i<list.Count; i++)
+            for (int i = start; i < list.Count; i++)
             {
                 if (predicate(list[i])) return i;
             }

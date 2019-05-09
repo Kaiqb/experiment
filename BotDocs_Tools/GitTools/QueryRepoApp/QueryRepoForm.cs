@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using ReportUtils;
+using Utilities;
 
 namespace QueryRepoApp
 {
@@ -21,15 +22,19 @@ namespace QueryRepoApp
 
         private string outfile;
 
+        private ItemPicker dlg_ItemPicker;
+
         public QueryRepoForm()
         {
             InitializeComponent();
+
+            dlg_ItemPicker = new ItemPicker();
         }
 
         private void QueryRepoForm_Load(object sender, EventArgs e)
         {
-            DatePicker.MaxDate = DateTime.Now;
-            DatePicker.MinDate = DateTime.Now.AddMonths(-1);
+            //DatePicker.MaxDate = DateTime.Now;
+            //DatePicker.MinDate = DateTime.Now.AddMonths(-1);
 
             dlg_ChooseRepoRoot.SelectedPath =
                 string.IsNullOrWhiteSpace(Properties.Settings.Default.LastRepoRoot)
@@ -43,6 +48,12 @@ namespace QueryRepoApp
 
         private void QueryRepoForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (dlg_ItemPicker != null)
+            {
+                dlg_ItemPicker.Dispose();
+                dlg_ItemPicker = null;
+            }
+
             Properties.Settings.Default.Save();
         }
 
@@ -65,15 +76,92 @@ namespace QueryRepoApp
         private void RunAkaLinkReport_Click(object sender, EventArgs e)
         {
             Enabled = false;
+            Cursor = Cursors.WaitCursor;
             rtb_Output.Clear();
 
-            var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput) { DocPath = RepoRootTextBox.Text };
+            var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput)
+            {
+                DocPath = RepoRootTextBox.Text,
+            };
             report.Run();
-            rtb_Output.ScrollToCaret();
 
+            rtb_Output.ScrollToCaret();
+            Cursor = DefaultCursor;
             Enabled = true;
         }
 
+        private void btn_RunCodeLinkReport_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            Cursor = Cursors.WaitCursor;
+            rtb_Output.Clear();
+
+            var report = new CodeLinkReport(rtb_Output, dlg_ChooseRepoRoot, dlg_SaveOutput)
+            {
+                DocPath = RepoRootTextBox.Text,
+            };
+            RepositoryInfo codeInfo;
+            string codeRoot;
+            (codeInfo, codeRoot) = SelectCodeRepo(report);
+            if (codeRoot != null)
+            {
+                report.SetCodeTarget(codeInfo, codeRoot);
+                report.Run();
+            }
+
+            rtb_Output.ScrollToCaret();
+            Cursor = DefaultCursor;
+            Enabled = true;
+        }
+
+        private (RepositoryInfo, string) SelectCodeRepo(CodeLinkReport report)
+        {
+            var depRepos = report.GetPotentialTargets();
+            RepositoryInfo codeInfo = null;
+            string codeRoot = null;
+            DialogResult result;
+            switch (depRepos.Count)
+            {
+                case 0:
+                    // No linked code repos!
+                    break;
+                case 1:
+                    // Just one linked [potential] code repo.
+                    codeInfo = depRepos[0];
+                    dlg_ChooseRepoRoot.Description = $"Select the local root for the {codeInfo.Branch} " +
+                        $"branch of the '{codeInfo.PathToRoot}' repo.";
+                    result = dlg_ChooseRepoRoot.ShowDialog();
+                    if (result != DialogResult.OK)
+                    {
+                        // Abort.
+                        break;
+                    }
+                    codeRoot = dlg_ChooseRepoRoot.SelectedPath;
+                    break;
+                default:
+                    // More than one to choose from.
+                    dlg_ItemPicker.SetItems(depRepos);
+                    result = dlg_ItemPicker.ShowDialog();
+                    if (result != DialogResult.OK)
+                    {
+                        break;
+                    }
+                    codeInfo = depRepos[dlg_ItemPicker.SelectedIndex];
+                    dlg_ChooseRepoRoot.Description = $"Select the local root for the {codeInfo.Branch} " +
+                        $"branch of the '{codeInfo.PathToRoot}' repo.";
+                    result = dlg_ChooseRepoRoot.ShowDialog();
+                    if (result != DialogResult.OK)
+                    {
+                        break;
+                    }
+                    codeRoot = dlg_ChooseRepoRoot.SelectedPath;
+                    break;
+            }
+
+            return (codeInfo, codeRoot);
+        }
+
+        // This is the old code link report
         private void Run()
         {
             var root = RepoRootTextBox.Text;
@@ -100,18 +188,17 @@ namespace QueryRepoApp
                 {
                     AcceptableDirectories = RepoDirectories,
                     AcceptableExtensions = FileExtensions,
-                    SinceDate = DatePicker.Value,
+                    //SinceDate = DatePicker.Value,
                 };
 
                 using (var repo = helper.GetRepository(RepoRootTextBox.Text))
                 {
-                    changes = helper.GetChanges(repo);
+                    changes = helper.GetChanges(repo, DateTimeOffset.Now.AddDays(-14));
                     if (changes is null)
                     {
                         Error("Failed to generate content for the log.");
                     }
                 }
-
 
                 Console.Out.Flush();
                 Console.Error.Flush();

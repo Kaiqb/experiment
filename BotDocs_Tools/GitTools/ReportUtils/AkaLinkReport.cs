@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Utilities;
 
 namespace ReportUtils
 {
+
     public class AkaLinkReport : BaseReport
     {
         private const string AkaLede1 = "http://aka.ms/";
         private const string AkaLede2 = "https://aka.ms/";
-        private const string ArticlesRoot = "articles";
 
         public string DocPath { get; set; }
 
@@ -23,12 +23,12 @@ namespace ReportUtils
 
         public override bool Run()
         {
+            base.Run();
+
             Contract.Requires(DocPath != null);
             Contract.Requires(Directory.Exists(DocPath));
             Contract.Requires(Directory.Exists(Path.Combine(DocPath, ".git")));
             Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot)));
-
-            base.Run();
 
             LinkMap.Clear();
             var dir = Path.Combine(DocPath, ArticlesRoot);
