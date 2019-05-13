@@ -9,8 +9,8 @@ of a brand new bot.
 
 ## Set up your development environment
 * Install IDE for course language
-  - C# Visual Studio Dev Essentials
-  - JS Visual Studio Code
+  - C# [Visual Studio Dev Essentials](https://visualstudio.microsoft.com/dev-essentials/)
+  - JS [Visual Studio Code](https://code.visualstudio.com/Download)
 * Install Microsoft.Bot libraries for course language
   - C#
   - JS
