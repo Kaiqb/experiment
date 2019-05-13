@@ -13,7 +13,7 @@ In this module, you'll learn how to process incoming message event to access and
   - message activities
   - text
 
- * OnMessageActivityAsync (C#) or onMessage (JS)
+* OnMessageActivityAsync (C#) or onMessage (JS)
   - creates turnContext.
   - find user input with turnContext.activity.text.
   
