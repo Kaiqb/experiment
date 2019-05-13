@@ -2,7 +2,7 @@
 In this module, you'll learn how to process incoming message event to access and use the text of the user's message. We'll go over the concepts of an "activity" and how to appropriately respond to the incoming activities from the user.
 
 ## Simple Welcome for User
- * OnMembersAddedAsync (C#) or onMembersAdded (JS)
+* OnMembersAddedAsync (C#) or onMembersAdded (JS)
   - 1 event per joining user
   - sendActivity creates simple welcome message.
 
