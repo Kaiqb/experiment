@@ -16,6 +16,6 @@ of a brand new bot.
   - JS
 
 ## First look at the sample code
-* Install initial Sample app for course language. [C# EchoBot](https://aka.ms/cs-echobot-sample) [JavaScript EchoBot](https://aka.ms/js-echobot-sample)
+* Install initial Sample app for course language: [C# EchoBot](https://aka.ms/cs-echobot-sample), [JavaScript EchoBot](https://aka.ms/js-echobot-sample)
 * Install latest [Bot Framework Emulator](https://aka.ms/bot-framework-emulator-readme)
 * Run initial sample bot and enter "Hello" in the Emulator.
