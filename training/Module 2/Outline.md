@@ -5,7 +5,7 @@ of a brand new bot.
 
 ## Get started with Azure
 * Set up/login to provided (free) Azure account.
-* Install and log into AZ CLI using Azure account credentials.
+* Install and log into [AZ CLI](https://aka.ms/az-cli-download) using Azure account credentials.
 
 ## Set up your development environment
 * Install IDE for course language
