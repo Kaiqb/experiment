@@ -3,6 +3,10 @@ Set up your development environment to work with the [Azure Bot Service and the 
 will walk through the tools needed to develop and run a bot locally on your laptop. Then, we'll put together the first pieces
 of a brand new bot.
 
+## Obtain an OpenWeatherMap Key
+* Use your email account to register and obtain a Free Subscription API key from OpenWeatherMap APIs.
+  You can request your free subscription key here: http://home.openweathermap.org/users/sign_in
+
 ## Get started with Azure
 * Set up/login to provided (free) Azure account.
 * Install and log into [AZ CLI](https://aka.ms/az-cli-download) using Azure account credentials.
