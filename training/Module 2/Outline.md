@@ -13,13 +13,17 @@ of a brand new bot.
 
 ## Set up your development environment
 * Install IDE for course language
-  - C# Visual Studio Dev Essentials
-  - JS Visual Studio Code
-* Install Microsoft.Bot libraries for course language
-  - C#
-  - JS
+  - C# [Visual Studio Dev Essentials](https://visualstudio.microsoft.com/dev-essentials/)
+  - JS [Visual Studio Code](https://code.visualstudio.com/Download)
 
 ## First look at the sample code
-* Install initial Sample app for course language.
-* Install latest Bot Framework Emulator
-* Run initial sample bot and see "Hello" in the Emulator.
+* Install initial Sample app for course language: [C# EchoBot](https://aka.ms/cs-echobot-sample), [JavaScript EchoBot](https://aka.ms/js-echobot-sample)
+* Install Microsoft.Bot libraries for the course language
+  - C# - right click on Project, "Manage NuGet Packages..."
+  - JS - Open console window, cd to directory with your code.
+    - "nmp install npm".
+    - "npm install restify".
+    - "npm install path".
+    - "npm install botbuilder".
+* Install latest [Bot Framework Emulator](https://aka.ms/bot-framework-emulator-readme)
+* Run initial sample bot and enter "Hello" in the Emulator.
