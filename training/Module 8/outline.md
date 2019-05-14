@@ -29,3 +29,7 @@ You can use QnA Maker service to add question and answer support to your bot. In
 * Manually apply user queries to tune your results.
 * Tune results using Active Learning.
   - New feature in version 4.4.0 and above.
+  
+## Download Lab 4 sample code
+* Download BotBuilder sample "11.qnamaker" for your language: [C# Sample](https://aka.ms/cs-qna), [JavaScript Sample](https://aka.ms/js-qna-sample)
+
