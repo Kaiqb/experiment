@@ -5,7 +5,7 @@ You can use QnA Maker service to add question and answer support to your bot. In
 * What is QnA Maker?
   - QnA Maker processes.
   - QnA Maker Architecture.
-* Creating a QnA Maker account.
+* Creating a QnA Maker account - QnA Maker Website: https://www.qnamaker.ai/
 * Accessing QnA Maker.
 
 ## Create your QnA Maker knowledgebase
