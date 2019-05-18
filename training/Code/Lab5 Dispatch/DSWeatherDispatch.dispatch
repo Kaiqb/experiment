@@ -1,0 +1,36 @@
+{
+  "authoringRegion": "westus",
+  "hierarchical": true,
+  "useAllTrainingData": false,
+  "dontReviseUtterance": false,
+  "services": [
+    {
+      "intentName": "l_Weather",
+      "appId": "19a7e349-6521-4d99-8971-f409d92fa137",
+      "authoringKey": "c34a9b530cc34c789673f7bf1d683630",
+      "version": "0.1",
+      "region": "westus",
+      "type": "luis",
+      "name": "Forecasts",
+      "id": "1"
+    },
+    {
+      "intentName": "q_sample-qna",
+      "kbId": "1eef05d3-90af-4e28-b741-bf64100e0cf2",
+      "subscriptionKey": "ddebd3efecaa4c3abcda44cb63a74211",
+      "type": "qna",
+      "name": "Lab4WeatherBot",
+      "id": "2"
+    }
+  ],
+  "serviceIds": [
+    "1",
+    "2"
+  ],
+  "appId": "06cbbbf2-dee1-4c3c-adb5-373f2a157da2",
+  "authoringKey": "c34a9b530cc34c789673f7bf1d683630",
+  "version": "Dispatch",
+  "region": "westus",
+  "type": "dispatch",
+  "name": "DSWeatherDispatch"
+}

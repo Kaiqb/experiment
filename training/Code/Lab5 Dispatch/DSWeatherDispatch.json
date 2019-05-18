@@ -1,0 +1,513 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "Dispatch",
+  "name": "DSWeatherDispatch",
+  "desc": "Dispatch model for DSWeatherDispatch",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "l_Weather"
+    },
+    {
+      "name": "q_sample-qna"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "snow in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "forecast for seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is the sunrise",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is sunset in maple valley",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "done",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "show me weather for redmond",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "what is the forecast for bellevue",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is sunset",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will rain start in los angeles",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "will seattle get snow",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "is seattle snowy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "go back",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "rainy seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it snow in bellevue",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is seattle sunrise",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "seattle rainy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the sun set in location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the sun set",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "give me more weather information for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is seattle cloudy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "sunset in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "how warm will it be in location today",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it snow in redmond",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "please go back",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "goodbye",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it snow in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when can we expect snow in location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "stop",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is seattle raining",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "will it snow in redmond",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is seattle snowing",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "what will the weather be for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "what time will it rain in bellevue",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "how cold will it be in location today",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "is it snowy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "give me a detailed forecast for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "finished",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "so long",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will seattle snow",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it be snowy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is seattle sunset",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it snow",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "seattle sunny",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "detailed forecast for seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it rain in redmond",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the sun rise",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "show me weather in redmond",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "sun in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when is seattle sunny",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "seattle cloudy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the sun rise in location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the sun set in redmond",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it start raining in location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "give me full forecast for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "whats the forecast",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will i see sun in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "sunny seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "will it rain in location today",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it rain in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "what is the forecast for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "will it snow in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the clouds come in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will the sun come out in seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it be sunny",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "will it snow in seatle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "seattle sunrise",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it be cloudy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "exit",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will seattle rain",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "give me more weather details for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "close",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will it rain",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "seattle sunset",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "snowy seattle",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "show me the weather for location",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "bye",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "when will seattle be snowy",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "will it snow in bellevue",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "bye-bye",
+      "intent": "l_Weather",
+      "entities": []
+    },
+    {
+      "text": "what is the dew point",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is rain",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is a cloud",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is a tidal wave",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what are clouds",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "do earthquakes cause tsunamis",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "why does it rain",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "tell me about dew point",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is weather",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is humidity",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what causes wind",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is a snow storm?",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what causes rain",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what makes snow",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "tell me about weather",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is wind",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "why does it snow",
+      "intent": "q_sample-qna",
+      "entities": []
+    },
+    {
+      "text": "what is a tsunami",
+      "intent": "q_sample-qna",
+      "entities": []
+    }
+  ],
+  "settings": []
+}
