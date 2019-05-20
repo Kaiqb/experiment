@@ -26,12 +26,12 @@ namespace QueryRepoApp.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LastRepoRoot {
+        public string LastDocRepoRoot {
             get {
-                return ((string)(this["LastRepoRoot"]));
+                return ((string)(this["LastDocRepoRoot"]));
             }
             set {
-                this["LastRepoRoot"] = value;
+                this["LastDocRepoRoot"] = value;
             }
         }
         
@@ -44,6 +44,30 @@ namespace QueryRepoApp.Properties {
             }
             set {
                 this["LastOutputDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GitHubUserToken {
+            get {
+                return ((string)(this["GitHubUserToken"]));
+            }
+            set {
+                this["GitHubUserToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastCodeRepoRoot {
+            get {
+                return ((string)(this["LastCodeRepoRoot"]));
+            }
+            set {
+                this["LastCodeRepoRoot"] = value;
             }
         }
     }

@@ -31,19 +31,30 @@ namespace QueryRepoApp
             dlg_ItemPicker = new ItemPicker();
         }
 
+        private string LastDocRepoRoot { get; set; }
+        private string LastCodeRepoRoot { get; set; }
+        private string LastOutputDirectory { get; set; }
+        private string GitHubUserToken { get; set; }
+
         private void QueryRepoForm_Load(object sender, EventArgs e)
         {
             //DatePicker.MaxDate = DateTime.Now;
             //DatePicker.MinDate = DateTime.Now.AddMonths(-1);
 
-            dlg_ChooseRepoRoot.SelectedPath =
-                string.IsNullOrWhiteSpace(Properties.Settings.Default.LastRepoRoot)
-                ? @"c:\" : Properties.Settings.Default.LastRepoRoot;
-            RepoRootTextBox.Text = dlg_ChooseRepoRoot.SelectedPath;
+            LastDocRepoRoot = string.IsNullOrWhiteSpace(Properties.Settings.Default.LastDocRepoRoot)
+                ? Environment.SpecialFolder.Recent.ToString()
+                : Properties.Settings.Default.LastDocRepoRoot;
+            LastCodeRepoRoot = string.IsNullOrWhiteSpace(Properties.Settings.Default.LastCodeRepoRoot)
+                ? Environment.SpecialFolder.Recent.ToString()
+                : Properties.Settings.Default.LastCodeRepoRoot;
+            LastOutputDirectory = string.IsNullOrWhiteSpace(Properties.Settings.Default.LastOutputDirectory)
+                ? Environment.SpecialFolder.Recent.ToString()
+                : Properties.Settings.Default.LastOutputDirectory;
+            GitHubUserToken = Properties.Settings.Default.GitHubUserToken;
 
-            dlg_SaveOutput.InitialDirectory =
-                string.IsNullOrWhiteSpace(Properties.Settings.Default.LastOutputDirectory)
-                ? @"c:\" : Properties.Settings.Default.LastOutputDirectory;
+            RepoRootTextBox.Text = LastDocRepoRoot;
+            dlg_ChooseRepoRoot.SelectedPath = LastDocRepoRoot;
+            dlg_SaveOutput.InitialDirectory = LastOutputDirectory;
         }
 
         private void QueryRepoForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -90,7 +101,7 @@ namespace QueryRepoApp
             Enabled = true;
         }
 
-        private void btn_RunCodeLinkReport_Click(object sender, EventArgs e)
+        private void RunCodeLinkReport_Click(object sender, EventArgs e)
         {
             Enabled = false;
             Cursor = Cursors.WaitCursor;
@@ -108,6 +119,26 @@ namespace QueryRepoApp
                 report.SetCodeTarget(codeInfo, codeRoot);
                 report.Run();
             }
+
+            rtb_Output.ScrollToCaret();
+            Cursor = DefaultCursor;
+            Enabled = true;
+        }
+
+        private async void RunGitHubIssuesReportAsync(object sender, EventArgs e)
+        {
+            Enabled = false;
+            Cursor = Cursors.WaitCursor;
+            rtb_Output.Clear();
+
+            if (string.IsNullOrWhiteSpace(GitHubUserToken))
+            {
+                // Get and save a user token or fail out early.
+                Properties.Settings.Default.Save();
+            }
+
+            var report = new IssuesReport(rtb_Output, dlg_ChooseRepoRoot, dlg_SaveOutput);
+            var output = await report.RunAsync();
 
             rtb_Output.ScrollToCaret();
             Cursor = DefaultCursor;
@@ -165,7 +196,7 @@ namespace QueryRepoApp
         private void Run()
         {
             var root = RepoRootTextBox.Text;
-            Properties.Settings.Default.LastRepoRoot = root;
+            Properties.Settings.Default.LastDocRepoRoot = root;
 
             if (!Directory.Exists(root))
             {

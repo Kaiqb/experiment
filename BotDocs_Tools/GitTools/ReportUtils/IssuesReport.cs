@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ReportUtils
@@ -26,7 +27,7 @@ namespace ReportUtils
             SaveDialog = saveDialog;
         }
 
-        public bool Run()
+        public async Task<bool> RunAsync()
         {
             return false;
             // Get local repo root?

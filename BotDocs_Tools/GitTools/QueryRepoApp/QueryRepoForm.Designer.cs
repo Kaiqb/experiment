@@ -38,6 +38,7 @@
             this.OutputBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.dlg_SaveOutput = new System.Windows.Forms.SaveFileDialog();
             this.btn_RunCodeLinkReport = new System.Windows.Forms.Button();
+            this.btn_RunIssuesReport = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -107,10 +108,10 @@
             // btn_RunAkaLinkReport
             // 
             this.btn_RunAkaLinkReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_RunAkaLinkReport.Location = new System.Drawing.Point(219, 78);
+            this.btn_RunAkaLinkReport.Location = new System.Drawing.Point(58, 78);
             this.btn_RunAkaLinkReport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_RunAkaLinkReport.Name = "btn_RunAkaLinkReport";
-            this.btn_RunAkaLinkReport.Size = new System.Drawing.Size(179, 23);
+            this.btn_RunAkaLinkReport.Size = new System.Drawing.Size(165, 23);
             this.btn_RunAkaLinkReport.TabIndex = 9;
             this.btn_RunAkaLinkReport.Text = "Run aka link report";
             this.btn_RunAkaLinkReport.UseVisualStyleBackColor = true;
@@ -125,20 +126,33 @@
             // btn_RunCodeLinkReport
             // 
             this.btn_RunCodeLinkReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_RunCodeLinkReport.Location = new System.Drawing.Point(404, 78);
+            this.btn_RunCodeLinkReport.Location = new System.Drawing.Point(229, 78);
             this.btn_RunCodeLinkReport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_RunCodeLinkReport.Name = "btn_RunCodeLinkReport";
-            this.btn_RunCodeLinkReport.Size = new System.Drawing.Size(179, 23);
+            this.btn_RunCodeLinkReport.Size = new System.Drawing.Size(165, 23);
             this.btn_RunCodeLinkReport.TabIndex = 10;
             this.btn_RunCodeLinkReport.Text = "Run code link report";
             this.btn_RunCodeLinkReport.UseVisualStyleBackColor = true;
-            this.btn_RunCodeLinkReport.Click += new System.EventHandler(this.btn_RunCodeLinkReport_Click);
+            this.btn_RunCodeLinkReport.Click += new System.EventHandler(this.RunCodeLinkReport_Click);
+            // 
+            // btn_RunIssuesReport
+            // 
+            this.btn_RunIssuesReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_RunIssuesReport.Location = new System.Drawing.Point(400, 78);
+            this.btn_RunIssuesReport.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btn_RunIssuesReport.Name = "btn_RunIssuesReport";
+            this.btn_RunIssuesReport.Size = new System.Drawing.Size(165, 23);
+            this.btn_RunIssuesReport.TabIndex = 11;
+            this.btn_RunIssuesReport.Text = "Run issues report";
+            this.btn_RunIssuesReport.UseVisualStyleBackColor = true;
+            this.btn_RunIssuesReport.Click += new System.EventHandler(this.RunGitHubIssuesReportAsync);
             // 
             // QueryRepoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(689, 547);
+            this.Controls.Add(this.btn_RunIssuesReport);
             this.Controls.Add(this.btn_RunCodeLinkReport);
             this.Controls.Add(this.btn_RunAkaLinkReport);
             this.Controls.Add(this.groupBox1);
@@ -168,6 +182,7 @@
         private System.Windows.Forms.FolderBrowserDialog OutputBrowser;
         private System.Windows.Forms.SaveFileDialog dlg_SaveOutput;
         private System.Windows.Forms.Button btn_RunCodeLinkReport;
+        private System.Windows.Forms.Button btn_RunIssuesReport;
     }
 }
 
