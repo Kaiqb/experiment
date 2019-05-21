@@ -29,3 +29,5 @@ In this module, you'll learn how to process incoming message event to access and
  * One turnContext.sendActivity per user input
    - response may provide answer or additional info request.
    - bots are stateless, each response considered independently.
+
+Online documentation reference: [Send and receive text message](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-send-messages?view=azure-bot-service-4.0&tabs=csharp)
