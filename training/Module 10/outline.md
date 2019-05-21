@@ -19,3 +19,5 @@ In this tutorial, we demonstrate how to use the Dispatch service to route uttera
 * Logic paths based on top intent.
   - Steps to process QnA or LUIS result.
 * Logic processing for none intent.
+
+Online documentation reference: [Use multiple LUIS and QnA models](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs)
