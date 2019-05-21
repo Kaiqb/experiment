@@ -30,3 +30,8 @@ Learn to separate various areas of bot functionality and guide conversational fl
 * save dialog data to storage
   - memory to retain across user session.
   - persistent storage to retain across user visits.
+  
+Online documentation reference: [Design and control conversation flow](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-design-conversation-flow?view=azure-bot-service-4.0)
+
+Online documentation reference: [Implement sequential conversation flow](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-dialog-manage-conversation-flow?view=azure-bot-service-4.0&tabs=csharp)
+   

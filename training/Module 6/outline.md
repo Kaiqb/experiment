@@ -11,3 +11,7 @@ In a traditional application, the user interface (UI) is a series of screens. Li
 * How to create them.
 * Why you would use each type.
 * Card implementations across multiple channels.
+
+Online documentation reference: [Use button for input](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-suggested-actions?view=azure-bot-service-4.0&tabs=csharp)
+
+Online documentation reference: [Add media to messages](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-media-attachments?view=azure-bot-service-4.0&tabs=csharp)

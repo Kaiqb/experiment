@@ -36,3 +36,6 @@ In this module, you'll learn what a bot is, play with with a few bots, understan
 ## Tools available for use with bots
 * NLP things, can give LUIS or QnA as an example.
 * Other tools that come in helpful?
+
+Online documentation reference: [About Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
+

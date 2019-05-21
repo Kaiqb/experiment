@@ -22,7 +22,7 @@ The ability to understand what your user means conversationally and contextually
 * coding logic for unexpected results or no results found.
 
 ## Querying your LUIS model
-* obtaining key values and LUIS endpoint to query your moddel.
+* obtaining key values and LUIS endpoint to query your model.
 * adding LUIS connection values into your weather bot code.
 * generating utterance queries that return LUIS model results.
 
@@ -39,3 +39,5 @@ The ability to understand what your user means conversationally and contextually
 * reviewing endpoint utterances.
 * how to assign utterance to intents, label entities
 * how to train and test results.
+
+Online documentation reference: [Add natural language understanding to your bot](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&tabs=csharp)
