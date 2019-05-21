@@ -25,4 +25,7 @@ The primary goal when creating any bot is to engage your user in a meaningful co
    - sending inital welcome message
 * querying didBotWelcomedUser - True
    - sending welcome back message
+   
+Online documentation reference: [Send welcome message to users](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-send-welcome-message?view=azure-bot-service-4.0&tabs=csharp)
+   
 
