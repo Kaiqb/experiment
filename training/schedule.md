@@ -7,7 +7,7 @@
   - Module 2: Setup
   - Module 3: Run a simple bot
 * 11:00 A.M - 11:50 A.M
-  - Lab 1, Building the "Hello World" bot.
+  - Lab 1, Building an initial "Echo Bot".
 * 12:00 P.M - 12:50 P.M
   - lunch
 * 1:00 P.M - 1:50 P.M
