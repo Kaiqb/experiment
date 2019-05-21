@@ -39,3 +39,5 @@ The ability to understand what your user means conversationally and contextually
 * reviewing endpoint utterances.
 * how to assign utterance to intents, label entities
 * how to train and test results.
+
+Online documentation reference: [Add natural language understanding to your bot](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&tabs=csharp)
