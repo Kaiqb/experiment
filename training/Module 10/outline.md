@@ -4,16 +4,18 @@ In this tutorial, we demonstrate how to use the Dispatch service to route uttera
 ## Introduction to the Dispatch service
 * What is the Dispatch command line tool?
 * Installing the Dispatch command line tool.
-  - JS: npm install -g botdispatch
+  - JS: npm install -g botdispatch.
 * Initializing the Dispatch command line tool.
 
 ## Add dispatch key values into your code
 * key values in .dispatch file.
-* create dispatch using .bot file.
-  - include "version": "Dispatch",
+* create dispatch using npm dispatch commands.
+  - Clarify which keys to use for adding services, accessing services.
+  - Where do I obtain these values? (Azure, Qnamaker.ai, Luis.ai)
 * adding dispatch to weather bot code.
+  - How to update appsetting.json or .env file.
 
 ## Run and test your dispatch model
 * Logic paths based on top intent.
-  - Process QnA or LUIS result.
+  - Steps to process QnA or LUIS result.
 * Logic processing for none intent.
