@@ -29,7 +29,7 @@ A bot is inherently stateless. Once your bot is deployed, it may not run in the 
   - Transcript storage, when to use it.
   
  ## Download lab 2 sample code
- * Download BotBuilder sample "03.welcome-user" for your language: [C3 Sample](https://aka.ms/bot-welcome-sample-cs), [JavaScript Sample](https://aka.ms/bot-welcome-sample-js)
+ * Download BotBuilder sample "03.welcome-user" for your language: [C# Sample](https://aka.ms/bot-welcome-sample-cs), [JavaScript Sample](https://aka.ms/bot-welcome-sample-js)
  
  Online documentation reference: [Managing state](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-concept-state?view=azure-bot-service-4.0)
  
