@@ -22,7 +22,7 @@ The ability to understand what your user means conversationally and contextually
 * coding logic for unexpected results or no results found.
 
 ## Querying your LUIS model
-* obtaining key values and LUIS endpoint to query your moddel.
+* obtaining key values and LUIS endpoint to query your model.
 * adding LUIS connection values into your weather bot code.
 * generating utterance queries that return LUIS model results.
 
