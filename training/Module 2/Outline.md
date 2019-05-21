@@ -27,3 +27,8 @@ of a brand new bot.
     - "npm install botbuilder".
 * Install latest [Bot Framework Emulator](https://aka.ms/bot-framework-emulator-readme)
 * Run initial sample bot and enter "Hello" in the Emulator.
+
+Online documentation reference: [Create a bot with the Bot Framework SDK for .NET](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-sdk-quickstart?view=azure-bot-service-4.0)
+
+Online documentation reference: [Create a bot with the Bot Framework SDK for JavaScript](https://docs.microsoft.com/en-us/azure/bot-service/javascript/bot-builder-javascript-quickstart?view=azure-bot-service-4.0)
+
