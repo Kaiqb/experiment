@@ -1,6 +1,6 @@
 # Lab 1: Basic Echo Bot functionality
 
-The primary job of any bot is twofold 
+The primary job of any bot is twofold: 
 1. provide information when a new user connects.
 2. Provide a response based on user input.
 In this lab we wil find where each of these activities occurs, then add our own modifications to each process.
