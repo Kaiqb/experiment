@@ -51,7 +51,7 @@ In this lab we wil find where each of these activities occurs, then add our own 
   - JS - insert a line below the intial context.sendActivity() response and add the following:
     - await context.sendActivity(`You can send me another message to echo, or click "Restart conversation" above to start over.`);
 
-* rerun your bot and test for infromation with the emulator.
+* rerun your bot and test for your additional information within the emulator.
 
 ## More details to come
 This exercise started your exploration of bot code. Our next training module will walk through each of these major bot components in further detail. For now, feel free to add additional messaging to your Lab 1 bot to make it feel like your own voice. 
