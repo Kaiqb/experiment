@@ -1,15 +1,23 @@
 # Lab 2, Persisting user information
 
-The primary job of any bot is twofold 
-1. provide information when a new user connects.
-2. Provide a response based on user input.
-In this lab we wil find where each of these activities occurs, then add our own modifications to each process.
+In this lab we will begin with the downloaded welcome-user bot and explore how user information is acquired and persisted.
 
-
-## Find your bot file 
-* C# - Locate and open EcoBot.cs file inside of the 'Bots' folder.
-* JS - Locate and open bot.js
-
+## Define your bot's services
+Our lab sample code uses your computer's local memory for storage. This works well and is easy to configure for testing purposes. However, all stored information is lost whenever your bot is restarted. For a production bot, consider using CosmosDB or Blob storage to persist your bot's storage across multiple restarts. For now, let's look at how Memory storage is added as a service for your bot.
+* C# - Locate and open the Startup.cs file.
+  - Services are added to your C# bot within the ConfigureServices() method.
+  - Within ConfigureServices() are two calls of interest to "services.AddSingleton" for MemoryStorage and UserState.
+    - NOTE. UserState relies on there being some form of storage available. If MemoryStorage was not also defined your bot would fail to properly load and run.
+  - Both of these services are defined within the library Microsoft.Bot.Builder and will be used by your running bot.
+* JS - Locate and open the index.js file.
+  - MemoryStorage and UserState are imported from the botbuilder librabry by the following call:
+    - const { BotFrameworkAdapter, UserState, MemoryStorage } = require('botbuilder');
+  - MemoryStorage and UserState are now defined and used by the following 4 calls:
+    - let userState;  // creates a global variable for handling user state.
+    - const memoryStorage = new MemoryStorage();  // creates a constant of type MemoryStorage().
+    - userState = new UserState(memoryStorage);  // defines variable userState as type UserState() built using memoryStorage.
+    - const bot = new WelcomeBot(userState);  // creates your bot's main dialog and passes in the newly defined userState.
+  
 ## Set up Debugger for your bot.
 * New user connection.
   - C# - 
@@ -43,4 +51,4 @@ In this lab we wil find where each of these activities occurs, then add our own 
 * rerun your bot and test for infromation with the emulator.
 
 ## More details to come
-This exercise started your exploration of bot code. Our next training module will walk through each of these major bot components in further detail. For now, feel free to add additional messaging to your Lab 1 bot to make it feel like your own voice. 
+... 
