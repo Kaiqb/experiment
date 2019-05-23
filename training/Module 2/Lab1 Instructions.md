@@ -37,19 +37,19 @@ In this lab we wil find where each of these activities occurs, then add our own 
 
 ## Add a little 'Style' to your Echo Bot
 * Personalize your bot's greeting. 
-  - C# - 
-  - JS -
+  - Within your bot's new user connection section, find the string "Hello and welcome!" change this text to instead say "Welcome to my Lab 1 Echo Bot. Type anything and I will echo it back for you."
 
 * Add a 'tone' to your response bot's response.
-  - C# - 
-  - JS -
+  - Within your bot's response to user input section, find the partial string "Echo:" and change this text to instead say "Thanks! It looks like this time you said:"
 
-* rerun your bot and see these interactions in the emulator.
+* rerun your bot and see these interactions in the emulator. (Remember to click continue after catching each breakpoint)
 
 ## Provide users with additional information
 * customize your bot by adding an instructional 'what next' message following each user interaction.
-  - C# - 
-  - JS -
+  - C# - insert a line below the intial turnContext.SendActivityAsync() response and add the following:
+    - await turnContext.SendActivityAsync(MessageFactory.Text("You can send me another message to echo, or click 'Restart conversation' above to start over."), cancellationToken);
+  - JS - insert a line below the intial context.sendActivity() response and add the following:
+    - await context.sendActivity(`You can send me another message to echo, or click "Restart conversation" above to start over.`);
 
 * rerun your bot and test for infromation with the emulator.
 
