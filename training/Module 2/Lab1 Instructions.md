@@ -46,7 +46,7 @@ In this lab we wil find where each of these activities occurs, then add our own 
 
 * rerun your bot and see these interactions in the emulator.
 
-## Give users additional information
+## Provide users with additional information
 * customize your bot by adding an instructional 'what next' message following each user interaction.
   - C# - 
   - JS -
