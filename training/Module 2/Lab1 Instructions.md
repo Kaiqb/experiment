@@ -49,7 +49,7 @@ In this lab we wil find where each of these activities occurs, then add our own 
   - C# - insert a line below the intial turnContext.SendActivityAsync() response and add the following:
     - await turnContext.SendActivityAsync(MessageFactory.Text("You can send me another message to echo, or click 'Restart conversation' above to start over."), cancellationToken);
   - JS - insert a line below the intial context.sendActivity() response and add the following:
-    - await context.sendActivity(`You can send me another message to echo, or click "Restart conversation" above to start over.`);
+    - await context.sendActivity("You can send me another message to echo, or click 'Restart conversation' above to start over.");
 
 * rerun your bot and test for your additional information within the emulator.
 
