@@ -15,6 +15,7 @@ namespace Utilities
 
         public static void WriteLine(this RichTextBox rtb, Severity sev, string message)
         {
+            if (rtb is null) { return; }
             switch (sev)
             {
                 case Severity.Messgae:
