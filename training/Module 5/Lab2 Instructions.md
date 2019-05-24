@@ -29,8 +29,13 @@ Once userState has been defined for your bot, we now need to connect this servic
   - Whenever method OnMessageActivityAsync() is called, it accesses \_userState and stores the current state of _DidBotWelcomeUser_ into variable didBotWelcomeUser as follows:
     - var welcomeUserStateAccessor = _userState.CreateProperty<WelcomeUserState>(nameof(WelcomeUserState));  // create accessor.
     - var didBotWelcomeUser = await welcomeUserStateAccessor.GetAsync(turnContext, () => new WelcomeUserState()); // use accessor to obtain stored value.
-* JS -
-
+* JS - Locate and open file welcomeBot.js
+  - The following calls create an accessor for userState
+    - this.welcomedUserProperty = userState.createProperty(WELCOMED_USER);  // defines property welcomedUserProperty of userState.
+    - this.userState = userState;  // defines accessor for userState.
+  - Now each time method onMessage() is called, it accesses userState and stores the current value of _welcomedUserProperty_ into variable didBotWelcomeUser with the following call:
+    - const didBotWelcomedUser = await this.welcomedUserProperty.get(context, false);  // retrieve value into didBotWelcomeUser.
+    - Note, if this is the first access of welcomedUserProperty it is intitialized to 'false'.
 
 ## process user input based on current userState
 * If didBotWelcomeUser is 'false' (the original initialized value) then an initial welcome message is displayed to the user and this value is set to 'true'.
@@ -51,8 +56,8 @@ Run this bot code and test it with your emulator in the same manner as you did f
 
 ## Some user inputs return a card.
 Cards provide a useful and visual method of providing your users with both information and choices. 
-* the method calls SendIntroCardAsync() (C#) and sendIntroCard() (JS) show how easy it is to create and display a card from you bot code.
+* The method calls SendIntroCardAsync() (C#) and sendIntroCard() (JS) show how easy it is to create and display a card from within you bot code.
 
-Cards will be covered in detail during your next session.
+Cards will be covered in detail during our next session.
 
 
