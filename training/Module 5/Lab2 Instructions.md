@@ -18,7 +18,7 @@ Our lab sample code uses your computer's local memory for storage. This works we
     - userState = new UserState(memoryStorage);  // defines variable userState as type UserState() built using memoryStorage.
     - const bot = new WelcomeBot(userState);  // creates your bot's main dialog and passes in the newly defined userState.
   
-## Connect and use userState.
+## Connect and access userState.
 Once userState has been defined for your bot, we now need to connect this service and add whatever user properties you want to persist. The welcome-user provides a simple example of persisting user state. The only thing saved is a boolean value, _DidBotWelcomeUser_ that tells us whether this user has perviously received our initial welcome message(s). But, this same logic and storage could be used to ask for information such as the user's name, age, address, etc and persist these values as well.
 * C# - Locate and open file WelcomeUserState.cs
   - This is a C# class that defines a single property, DidBotWelcomeUser. Additional properties could be added here to this class.
@@ -28,29 +28,19 @@ Once userState has been defined for your bot, we now need to connect this servic
     - "_userState = userState;"  // use this as accessor for userState.
   - Whenever method OnMessageActivityAsync() is called, it accesses \_userState and stores the current state of _DidBotWelcomeUser_ into variable didBotWelcomeUser as follows:
     - var welcomeUserStateAccessor = _userState.CreateProperty<WelcomeUserState>(nameof(WelcomeUserState));  // create accessor.
-    - var didBotWelcomeUser = await welcomeUserStateAccessor.GetAsync(turnContext, () => new WelcomeUserState()); // use accessor.
-  
-* JS - 
-
-* Response to user input.
-  - C# - 
-  - JS - 
-
-* run bot and catch break points for both events.
-  - C# - 
-  - JS - 
+    - var didBotWelcomeUser = await welcomeUserStateAccessor.GetAsync(turnContext, () => new WelcomeUserState()); // use accessor to obtain stored value.
+* JS -
 
 
-## Add a little 'Style' to your Echo Bot
-* Personalize your bot's greeting. 
-  - C# - 
-  - JS -
+## process user input based on current userState
+* If didBotWelcomeUser is 'false' (the original initialized value) then an initial welcome message is displayed to the user and this value is set to 'true'.
+* If didBotWelcomeUser is 'true' (a persisted user value) then the user's input is processed using the bot's switch(text) statement.
 
-* Add a 'tone' to your response bot's response.
-  - C# - 
-  - JS -
+## Persist your user's state
+* Once you have used userState to process your user's input, and have potentially set didBotWelcomeUser to 'true' the userState is saved to storage to use with the next user input. The following call stores any changes to the current userState:   
+  - C# - await \_userState.SaveChangesAsync(turnContext);  // uses BotState method SaveChangesAsync() to preserve state.
+  - JS - await this.userState.saveChanges(context);  // saves changes for defined userState.
 
-* rerun your bot and see these interactions in the emulator.
 
 ## Give users additional information
 * customize your bot by adding an instructional 'what next' message following each user interaction.
