@@ -50,6 +50,9 @@ Run this bot code and test it with your emulator in the same manner as you did f
   - Stop your bot, change any message you'd like, then restart and test.
 
 ## Some user inputs return a card.
-Cards provide a useful and visual method of providing your users with both information and choices. They will be covered in detail during your next session.
+Cards provide a useful and visual method of providing your users with both information and choices. 
+* the method calls SendIntroCardAsync() (C#) and sendIntroCard() (JS) show how easy it is to create and display a card from you bot code.
 
- 
+Cards will be covered in detail during your next session.
+
+
