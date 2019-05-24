@@ -37,17 +37,19 @@ Once userState has been defined for your bot, we now need to connect this servic
 * If didBotWelcomeUser is 'true' (a persisted user value) then the user's input is processed using the bot's switch(text) statement.
 
 ## Persist your user's state
-* Once you have used userState to process your user's input, and have potentially set didBotWelcomeUser to 'true' the userState is saved to storage to use with the next user input. The following call stores any changes to the current userState:   
-  - C# - await \_userState.SaveChangesAsync(turnContext);  // uses BotState method SaveChangesAsync() to preserve state.
-  - JS - await this.userState.saveChanges(context);  // saves changes for defined userState.
+Once you have used userState to process your user's input, and have potentially set didBotWelcomeUser to 'true' the userState is saved to storage to use with the next user input. The following call stores any changes to the current userState:   
+* C# - await \_userState.SaveChangesAsync(turnContext);  // uses BotState method SaveChangesAsync() to preserve state.
+* JS - await this.userState.saveChanges(context);  // saves changes for defined userState.
 
+## Run and debug your bot
+Run this bot code and test it with your emulator in the same manner as you did for Lab 1. 
+* It may be useful to add several breakpoints in your code and hover your cursor over _didUserWelcomeBot_. 
+  - Notice how the value of _didUserWelcomeBot_ changes after the the initial welcome message is displayed.
+  - Notice what happens to the value of _didUserWelcomeBot_ once your click "Restart conversation" in your emulator.
+* Once again, you can also modify the messages displayed by your bot to make this more like your own voice.
+  - Stop your bot, change any message you'd like, then restart and test.
 
-## Give users additional information
-* customize your bot by adding an instructional 'what next' message following each user interaction.
-  - C# - 
-  - JS -
+## Some user inputs return a card.
+Cards provide a useful and visual method of providing your users with both information and choices. They will be covered in detail during your next session.
 
-* rerun your bot and test for infromation with the emulator.
-
-## More details to come
-... 
+ 
