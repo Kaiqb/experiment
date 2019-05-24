@@ -18,10 +18,19 @@ Our lab sample code uses your computer's local memory for storage. This works we
     - userState = new UserState(memoryStorage);  // defines variable userState as type UserState() built using memoryStorage.
     - const bot = new WelcomeBot(userState);  // creates your bot's main dialog and passes in the newly defined userState.
   
-## Set up Debugger for your bot.
-* New user connection.
-  - C# - 
-  - JS - 
+## Connect and use userState.
+Once userState has been defined for your bot, we now need to connect this service and add whatever user properties you want to persist. The welcome-user provides a simple example of persisting user state. The only thing saved is a boolean value, _DidBotWelcomeUser_ that tells us whether this user has perviously received our initial welcome message(s). But, this same logic and storage could be used to ask for information such as the user's name, age, address, etc and persist these values as well.
+* C# - Locate and open file WelcomeUserState.cs
+  - This is a C# class that defines a single property, DidBotWelcomeUser. Additional properties could be added here to this class.
+    - public bool DidBotWelcomeUser { get; set; } = false;
+  - Locate and open file WelcomeUserBot.cs found inside the 'Bots' folder.
+  - Note in line 44 that a new instance of the WelcomeUserBot is created, public WelcomeUserBot(UserState userState) and the passed userState is associated with BotState \_userState: 
+    - "_userState = userState;"  // use this as accessor for userState.
+  - Whenever method OnMessageActivityAsync() is called, it accesses \_userState and stores the current state of _DidBotWelcomeUser_ into variable didBotWelcomeUser as follows:
+    - var welcomeUserStateAccessor = _userState.CreateProperty<WelcomeUserState>(nameof(WelcomeUserState));  // create accessor.
+    - var didBotWelcomeUser = await welcomeUserStateAccessor.GetAsync(turnContext, () => new WelcomeUserState()); // use accessor.
+  
+* JS - 
 
 * Response to user input.
   - C# - 
