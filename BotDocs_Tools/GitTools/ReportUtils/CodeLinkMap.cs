@@ -8,7 +8,7 @@ namespace ReportUtils
     public class CodeLinkMap
     {
         /// <summary>Information about a file (doc or code) in a repo.</summary>
-        public class FileData
+        public class FileData : IEquatable<FileData>
         {
             public string BranchName { get; set; }
             public string RelFilePath { get; set; }
@@ -44,10 +44,27 @@ namespace ReportUtils
                     return obj.GetHashCode();
                 }
             }
+
+            public bool Equals(FileData other) => Comparer.Default.Equals(this, other);
+
+            public override bool Equals(object other)
+            {
+                switch (other)
+                {
+                    case FileData filedata:
+                        return Comparer.Default.Equals(this, filedata);
+                    case string path:
+                        return Comparer.Default.Equals(this.RelFilePath, path);
+                    default:
+                        return false;
+                }
+            }
+
+            public override int GetHashCode() => Comparer.Default.GetHashCode(this);
         }
 
         /// <summary>Describes a link to a code file from a doc file.</summary>
-        public class LinkData
+        public class LinkData : IEquatable<LinkData>
         {
             /// <summary>The line number in the doc file containing the link.</summary>
             public int DocLine { get; set; }
@@ -71,6 +88,12 @@ namespace ReportUtils
                     return obj?.DocLine.GetHashCode() ?? 0;
                 }
             }
+
+            public bool Equals(LinkData other) => LinkComparer.Equals(this, other);
+
+            public override bool Equals(object obj) => LinkComparer.Equals(this, obj as LinkData);
+
+            public override int GetHashCode() => LinkComparer.GetHashCode(this);
         }
 
         /// <summary>Code link index, by doc file, by code file.</summary>

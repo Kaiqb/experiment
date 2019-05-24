@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Utilities
 {
@@ -12,7 +9,10 @@ namespace Utilities
         /// <returns>The CSV-escaped string.</returns>
         public static string CsvEscape(this string value)
         {
-            if (value is null) return string.Empty;
+            if (value is null)
+            {
+                return string.Empty;
+            }
 
             var escaped = value
                 .Replace("\r", @"\r")
@@ -29,21 +29,4 @@ namespace Utilities
         }
     }
 
-    public static class HttpClientExtenstions
-    {
-        public static async Task<HttpResponseMessage> PostAsync(
-            this HttpClient client,
-            string jsonQuery)
-        {
-            using (Stream stream = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write(jsonQuery);
-                    writer.Flush();
-                }
-                return await client.PostAsync(client.BaseAddress, new StreamContent(stream));
-            }
-        }
-    }
 }

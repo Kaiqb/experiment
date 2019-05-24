@@ -4,6 +4,18 @@ using System.Collections.Generic;
 
 namespace GitHubTools
 {
+    public class GitHubData<T>
+    {
+        [JsonProperty(PropertyName = "data")]
+        public T Data { get; set; }
+    }
+
+    public class RepoData
+    {
+        [JsonProperty(PropertyName = "repository")]
+        public Repository Repository { get; set; }
+    }
+
     /// <summary>A repository contains the content for a project.</summary>
     public class Repository :
         INode, IProjectOwner, IRegistryPackageOwner, IRepositoryInfo, IStarrable, ISubscribable,
@@ -11,7 +23,7 @@ namespace GitHubTools
     {
         /// <summary>A list of issues that have been opened in the repository.</summary>
         [JsonProperty(PropertyName = "issues")]
-        public IList<IssueConnection> Issues { get; set; }
+        public IssueConnection Issues { get; set; }
 
         /// <summary>A list of pull requests that have been opened in the repository.</summary>
         [JsonProperty(PropertyName = "pullRequests")]

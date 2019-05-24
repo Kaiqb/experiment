@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using System.IO;
 using System.Windows.Forms;
 
 namespace ReportUtils

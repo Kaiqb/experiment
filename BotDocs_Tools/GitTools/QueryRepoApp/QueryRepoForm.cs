@@ -1,10 +1,9 @@
-﻿using RepoTools;
+﻿using ReportUtils;
+using RepoTools;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using ReportUtils;
 using Utilities;
 
 namespace QueryRepoApp
@@ -34,26 +33,36 @@ namespace QueryRepoApp
         private string LastDocRepoRoot { get; set; }
         private string LastCodeRepoRoot { get; set; }
         private string LastOutputDirectory { get; set; }
-        private string GitHubUserToken { get; set; }
 
         private void QueryRepoForm_Load(object sender, EventArgs e)
         {
             //DatePicker.MaxDate = DateTime.Now;
             //DatePicker.MinDate = DateTime.Now.AddMonths(-1);
 
+            //var defaultPath = Path.Combine(
+            //    Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+            //    @"..\source\repos");
+            var home = Environment.GetEnvironmentVariable("HOMEPATH");
+            var defaultPath = string.IsNullOrWhiteSpace(home)
+                ? @"c:\"
+                : Path.Combine(home, @"source\repos");
+
             LastDocRepoRoot = string.IsNullOrWhiteSpace(Properties.Settings.Default.LastDocRepoRoot)
-                ? Environment.SpecialFolder.Recent.ToString()
+                ? defaultPath
                 : Properties.Settings.Default.LastDocRepoRoot;
             LastCodeRepoRoot = string.IsNullOrWhiteSpace(Properties.Settings.Default.LastCodeRepoRoot)
-                ? Environment.SpecialFolder.Recent.ToString()
+                ? defaultPath
                 : Properties.Settings.Default.LastCodeRepoRoot;
             LastOutputDirectory = string.IsNullOrWhiteSpace(Properties.Settings.Default.LastOutputDirectory)
-                ? Environment.SpecialFolder.Recent.ToString()
+                ? @"C:\"
                 : Properties.Settings.Default.LastOutputDirectory;
-            GitHubUserToken = Properties.Settings.Default.GitHubUserToken;
 
-            RepoRootTextBox.Text = LastDocRepoRoot;
-            dlg_ChooseRepoRoot.SelectedPath = LastDocRepoRoot;
+            tb_DocRepoRoot.Text = LastDocRepoRoot;
+            tb_CodeRepoRoot.Text = LastCodeRepoRoot;
+            dateTimePicker.Checked = false;
+            dateTimePicker.MinDate = DateTime.Now.AddYears(-2);
+            dateTimePicker.MaxDate = DateTime.Now;
+            dateTimePicker.Value = DateTime.Now.AddMonths(-1);
             dlg_SaveOutput.InitialDirectory = LastOutputDirectory;
         }
 
@@ -68,18 +77,36 @@ namespace QueryRepoApp
             Properties.Settings.Default.Save();
         }
 
-        private void RepoRoot_TextChanged(object sender, EventArgs e)
-        {
-            dlg_ChooseRepoRoot.SelectedPath = RepoRootTextBox.Text;
-        }
-
-        private void SelectRepoButton_Click(object sender, EventArgs e)
+        private void SelectDocRepoButton_Click(object sender, EventArgs e)
         {
             Enabled = false;
+            dlg_ChooseRepoRoot.SelectedPath = LastDocRepoRoot;
+            dlg_ChooseRepoRoot.Description = "Choose the local folder for the doc repo";
             var result = dlg_ChooseRepoRoot.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result == DialogResult.OK
+                && tb_DocRepoRoot.Text != dlg_ChooseRepoRoot.SelectedPath)
             {
-                RepoRootTextBox.Text = dlg_ChooseRepoRoot.SelectedPath;
+                LastDocRepoRoot = dlg_ChooseRepoRoot.SelectedPath;
+                tb_DocRepoRoot.Text = LastDocRepoRoot;
+                Properties.Settings.Default.LastDocRepoRoot = LastDocRepoRoot;
+                Properties.Settings.Default.Save();
+            }
+            Enabled = true;
+        }
+
+        private void SelectCodeRepoButton_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            dlg_ChooseRepoRoot.SelectedPath = LastCodeRepoRoot;
+            dlg_ChooseRepoRoot.Description = "Choose the local folder for the code repo";
+            var result = dlg_ChooseRepoRoot.ShowDialog();
+            if (result == DialogResult.OK
+                && tb_CodeRepoRoot.Text != dlg_ChooseRepoRoot.SelectedPath)
+            {
+                LastCodeRepoRoot = dlg_ChooseRepoRoot.SelectedPath;
+                tb_CodeRepoRoot.Text = LastCodeRepoRoot;
+                Properties.Settings.Default.LastCodeRepoRoot= LastCodeRepoRoot;
+                Properties.Settings.Default.Save();
             }
             Enabled = true;
         }
@@ -92,7 +119,7 @@ namespace QueryRepoApp
 
             var report = new AkaLinkReport(rtb_Output, dlg_SaveOutput)
             {
-                DocPath = RepoRootTextBox.Text,
+                DocPath = tb_DocRepoRoot.Text,
             };
             report.Run();
 
@@ -109,8 +136,10 @@ namespace QueryRepoApp
 
             var report = new CodeLinkReport(rtb_Output, dlg_ChooseRepoRoot, dlg_SaveOutput)
             {
-                DocPath = RepoRootTextBox.Text,
+                DocPath = tb_DocRepoRoot.Text,
             };
+            if (dateTimePicker.Checked) { report.FreshnessDate = dateTimePicker.Value; }
+
             RepositoryInfo codeInfo;
             string codeRoot;
             (codeInfo, codeRoot) = SelectCodeRepo(report);
@@ -119,26 +148,6 @@ namespace QueryRepoApp
                 report.SetCodeTarget(codeInfo, codeRoot);
                 report.Run();
             }
-
-            rtb_Output.ScrollToCaret();
-            Cursor = DefaultCursor;
-            Enabled = true;
-        }
-
-        private async void RunGitHubIssuesReportAsync(object sender, EventArgs e)
-        {
-            Enabled = false;
-            Cursor = Cursors.WaitCursor;
-            rtb_Output.Clear();
-
-            if (string.IsNullOrWhiteSpace(GitHubUserToken))
-            {
-                // Get and save a user token or fail out early.
-                Properties.Settings.Default.Save();
-            }
-
-            var report = new IssuesReport(rtb_Output, dlg_ChooseRepoRoot, dlg_SaveOutput);
-            var output = await report.RunAsync();
 
             rtb_Output.ScrollToCaret();
             Cursor = DefaultCursor;
@@ -159,6 +168,20 @@ namespace QueryRepoApp
                 case 1:
                     // Just one linked [potential] code repo.
                     codeInfo = depRepos[0];
+
+                    if (!string.IsNullOrWhiteSpace(LastCodeRepoRoot))
+                    {
+                        // Is this the right directory?
+                        if (MessageBox.Show(
+                            $"{LastCodeRepoRoot}, is this the correct code directory?",
+                            "Verify directory",
+                            MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            codeRoot = LastCodeRepoRoot;
+                            break;
+                        }
+                    }
+
                     dlg_ChooseRepoRoot.Description = $"Select the local root for the {codeInfo.Branch} " +
                         $"branch of the '{codeInfo.PathToRoot}' repo.";
                     result = dlg_ChooseRepoRoot.ShowDialog();
@@ -186,6 +209,10 @@ namespace QueryRepoApp
                         break;
                     }
                     codeRoot = dlg_ChooseRepoRoot.SelectedPath;
+                    LastCodeRepoRoot = codeRoot;
+                    tb_CodeRepoRoot.Text = codeRoot;
+                    Properties.Settings.Default.LastCodeRepoRoot = codeRoot;
+                    Properties.Settings.Default.Save();
                     break;
             }
 
@@ -195,7 +222,7 @@ namespace QueryRepoApp
         // This is the old code link report
         private void Run()
         {
-            var root = RepoRootTextBox.Text;
+            var root = tb_DocRepoRoot.Text;
             Properties.Settings.Default.LastDocRepoRoot = root;
 
             if (!Directory.Exists(root))
@@ -222,7 +249,7 @@ namespace QueryRepoApp
                     //SinceDate = DatePicker.Value,
                 };
 
-                using (var repo = helper.GetRepository(RepoRootTextBox.Text))
+                using (var repo = helper.GetRepository(tb_DocRepoRoot.Text))
                 {
                     changes = helper.GetChanges(repo, DateTimeOffset.Now.AddDays(-14));
                     if (changes is null)

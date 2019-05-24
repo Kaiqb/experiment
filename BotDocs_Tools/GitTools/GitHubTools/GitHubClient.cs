@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
-using Utilities;
+using System.Windows.Forms;
 
 namespace GitHubTools
 {
@@ -26,41 +24,75 @@ namespace GitHubTools
         /// </remarks>
         private string UserToken { get; }
 
+        public RichTextBox Output { get; set; }
+
         public GitHubClient(string userToken)
         {
             UserToken = userToken;
-            InnerClient = new HttpClient { BaseAddress = new Uri(EndPoint) };
+            InnerClient = new HttpClient
+            {
+                BaseAddress = new Uri(EndPoint),
+            };
             InnerClient.DefaultRequestHeaders.Add("Bearer", userToken);
         }
 
-        private async Task<(HttpStatusCode, string)> Run(string query)
-        {
-            string result = null;
-            var response = await InnerClient.PostAsync(query);
-            if (response.IsSuccessStatusCode)
-            {
-                result = await response.Content.ReadAsStringAsync();
-            }
-            return (response.StatusCode, result);
-        }
+        //private async Task<(HttpStatusCode, string, bool)> Run(string query)
+        //{
+        //    return await InnerClient.PostAsync(query);
+        //}
 
-        public async Task<(bool, IList<Issue>)> GetIssues(string owner, string repoName,
+        public (bool, IList<Issue>) GetIssues(
+            string owner,
+            string repoName,
             DateTimeOffset sinceDate = default(DateTimeOffset))
         {
+            var uri = InnerClient.BaseAddress;
             var query = GenerateIssuesQuery(owner, repoName, sinceDate);
-            string cursor = null;
-            var more = true;
             var success = true;
             IList<Issue> issues = new List<Issue>();
-            do
+            while (true)
             {
-                var (status, result) = await Run(query);
+                //var (status, result, succeeded) = await InnerClient.PostRequestAsync(query);
+                //var (status, payload, succeeded, ex) = uri.Post(UserToken, query);
+                //if (!succeeded)
+                //{
+                //    var msg = "Request to get a page of issues failed"
+                //        + ((ex != null)
+                //            ? ":" + Environment.NewLine + ex.ToString()
+                //            : $" with status {status}.");
+                //    Output?.WriteLine(Severity.Warning, msg);
+                //    success = false;
+                //    break;
+                //}
+
                 // parse results for issues, cursor, and whether there's more.
-            } while (more);
+                //var (page, cursor, more) = ParseIssuesResult(payload);
+                //issues.AddRange(page);
+
+                //if (!more) { break; }
+
+                //query = GenerateIssuesQuery(owner, repoName, sinceDate, cursor);
+            }
 
             return (success, issues);
         }
 
+        private (IList<Issue> issues, string cursor, bool more) ParseIssuesResult(string result)
+        {
+            var repoData = JsonConvert.DeserializeObject<GitHubData<RepoData>>(result);
+            var issuesConnection = repoData.Data.Repository.Issues;
+            return (
+                issues: issuesConnection.Edges.Select(e => e.Node).ToList(),
+                cursor: issuesConnection.PageInfo.EndCursor,
+                more: issuesConnection.PageInfo.HasPreviousPage.Value);
+        }
+
+        /// <summary>Creates the query payload for retrieving issues from a repo in GitHub.</summary>
+        /// <param name="owner">The repo owner.</param>
+        /// <param name="repoName">The repo name.</param>
+        /// <param name="sinceDate">The earliest issue to include in the result.</param>
+        /// <param name="cursor">The earliest issue yet gathered, for paging.</param>
+        /// <returns>The JSON payload data to use for this request.</returns>
         private static string GenerateIssuesQuery(
             string owner,
             string repoName,

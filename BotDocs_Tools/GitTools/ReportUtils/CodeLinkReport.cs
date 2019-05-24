@@ -38,6 +38,8 @@ namespace ReportUtils
 
         public RepositoryInfo CodeInfo { get; private set; }
 
+        public DateTimeOffset? FreshnessDate { get; set; }
+
         private CodeLinkMap LinkMap { get; } = new CodeLinkMap();
 
         private bool ReadyToRun { get; set; } = false;
@@ -102,7 +104,7 @@ namespace ReportUtils
             else
             {
                 Status.WriteLine(Severity.Information, "Found links to " +
-                    $"{LinkMap.CodeFileIndex.Count} code files, linked to from" +
+                    $"{LinkMap.CodeFileIndex.Count} code files, linked to from " +
                     $"{LinkMap.DocFileIndex.Count} doc files.");
 
                 SaveDialog.Title = "Choose where to save the code link report:";
@@ -141,11 +143,11 @@ namespace ReportUtils
                     var line = lines[lineNum];
                     if (line.StartsWith(pattern1, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        var pos = line.IndexOf(pattern2);
+                        var pos = line.IndexOf(pattern2, StringComparison.InvariantCultureIgnoreCase);
                         if (pos < 0)
                         {
                             Status.WriteLine(Severity.Information,
-                                $"Ignoring other-repo code link in {relDocPath} at line {lineNum + 1}.");
+                                $"Ignoring link in {relDocPath,-64} line {lineNum + 1,3}:  {line}");
                             continue;
                         }
 
@@ -188,12 +190,14 @@ namespace ReportUtils
             IEnumerable<CodeLinkMap.FileData> files, Repository repo, RepoHelper helper)
         {
             // This is currently a very inefficient algorithm.
-
             // In theory, we just want information about the last commit to touch each file.
+
+            //var filesMap = new Dictionary<string, CodeLinkMap.FileData>(files.Count());
+            //foreach (var file in files) { filesMap[file.RelFilePath] = file; }
             var filesMap = files.ToDictionary(f => f.RelFilePath, f => f, CodeLinkMap.FileData.PathComparer);
+
             var todo = filesMap.Count;
-            Status.WriteLine(Severity.Information,
-                $"Looking for commit information for {todo} files in repo.");
+            Status.WriteLine(Severity.Information, $"Looking for commit information for {todo} files in repo.");
             Status.ScrollToCaret();
 
             // Ignore merge commits (with 2 parents).
@@ -203,10 +207,13 @@ namespace ReportUtils
                 var diff = repo.Diff.Compare<TreeChanges>(commit.Parents.First().Tree, commit.Tree);
                 foreach (var change in diff.Where(i => i.Status != ChangeKind.Unmodified))
                 {
-                    if (filesMap.ContainsKey(change.Path))
+                    // Not sure why `filesMap.ContainsKey(change.Path)` was having issues with string casing.
+                    var key = filesMap.Keys.FirstOrDefault(
+                        k => string.Equals(change.Path, k, StringComparison.InvariantCultureIgnoreCase));
+                    if (key != null)
                     {
                         // If we've found a match, fill in the commit information.
-                        var fileEntry = filesMap[change.Path];
+                        var fileEntry = filesMap[key];
 
                         fileEntry.CommitSha = commit.Id.Sha;
                         fileEntry.Author = commit.Author.Name;
@@ -214,8 +221,8 @@ namespace ReportUtils
                         fileEntry.LastChangeStatus = change.Status.ToString();
 
                         // Remove this file from the list of files to search for.
-                        // Use the key that was used to create the dictionary, not the key used to find the entry.
-                        if (filesMap.Remove(fileEntry.RelFilePath))
+                        // Use the key that was used to create the dictionary, not the path used to find the entry.
+                        if (filesMap.Remove(key))
                         {
                             todo--;
                         }
@@ -265,6 +272,9 @@ namespace ReportUtils
                     ",Code repo branch" +
                     ",Code commit author" +
                     ",Code commit date" +
+                    ",Code fresher than doc" +
+                    ",Since date" +
+                    ",Code fresher than since date" +
                     "");
 
                 // Write out all the link data.
@@ -276,19 +286,30 @@ namespace ReportUtils
                         var codeFile = subentry.Key;
                         foreach (var lineData in subentry.Value)
                         {
-                            writer.WriteLine(
-                                docFile.RelFilePath.CsvEscape()
-                                + "," + codeFile.RelFilePath.CsvEscape()
-                                + "," + lineData.DocLine
-                                + "," + lineData.QueryParams.CsvEscape()
-                                + "," + docFile.BranchName.CsvEscape()
-                                + "," + docFile.Author.CsvEscape()
-                                + "," + docFile.LastCommitDate.ToString().CsvEscape()
-                                + "," + CodeInfo.PathToRoot.CsvEscape()
-                                + "," + codeFile.BranchName.CsvEscape()
-                                + "," + codeFile.Author.CsvEscape()
-                                + "," + codeFile.LastCommitDate.ToString().CsvEscape()
-                                );
+                            writer.Write(docFile.RelFilePath.CsvEscape());
+                            writer.Write("," + codeFile.RelFilePath.CsvEscape());
+                            writer.Write("," + lineData.DocLine);
+                            writer.Write("," + lineData.QueryParams.CsvEscape());
+                                writer.Write("," + docFile.BranchName.CsvEscape());
+                            writer.Write("," + docFile.Author.CsvEscape());
+                            writer.Write("," + docFile.LastCommitDate.ToString().CsvEscape());
+                            writer.Write("," + CodeInfo.PathToRoot.CsvEscape());
+                            writer.Write("," + codeFile.BranchName.CsvEscape());
+                            writer.Write("," + codeFile.Author.CsvEscape());
+                            writer.Write("," + codeFile.LastCommitDate.ToString().CsvEscape());
+                            writer.Write("," + (codeFile.LastCommitDate > docFile.LastCommitDate));
+
+                            if (FreshnessDate.HasValue)
+                            {
+                                writer.Write("," + FreshnessDate.Value.ToString().CsvEscape());
+                                writer.Write("," + (codeFile.LastCommitDate > FreshnessDate.Value));
+                            }
+                            else
+                            {
+                                writer.Write(",na,na");
+                            }
+
+                            writer.WriteLine();
                         }
                     }
                 }
