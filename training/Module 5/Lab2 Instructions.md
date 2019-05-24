@@ -37,7 +37,7 @@ Once userState has been defined for your bot, we now need to connect this servic
     - const didBotWelcomedUser = await this.welcomedUserProperty.get(context, false);  // retrieve value into didBotWelcomeUser.
     - Note, if this is the first access of welcomedUserProperty it is intitialized to 'false'.
 
-## process user input based on current userState
+## Process user input based on current userState
 * If didBotWelcomeUser is 'false' (the original initialized value) then an initial welcome message is displayed to the user and this value is set to 'true'.
 * If didBotWelcomeUser is 'true' (a persisted user value) then the user's input is processed using the bot's switch(text) statement.
 
