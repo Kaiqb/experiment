@@ -1,6 +1,7 @@
-# Lab 2, Persisting user information
+# Lab 3, WeatherBot Cards
+In this lab we will begin with by downloading a sample weatherBot that was created based on BotBuilder-Samples/.../06.using-cards.
 
-In this lab we will begin with the downloaded welcome-user bot and explore how user information is acquired and persisted.
+!<NOTE. You will need to use the OpenWeatherMap key you obtained by request at the beginning of Session 2 for this code to properly function.>
 
 ## Define your bot's services
 Our lab sample code uses your computer's local memory for storage. This works well and is easy to configure for testing purposes. However, all stored information is lost whenever your bot is restarted. For a production bot, consider using CosmosDB or Blob storage to persist your bot's storage across multiple restarts. For now, let's look at how Memory storage is added as a service for your bot.
