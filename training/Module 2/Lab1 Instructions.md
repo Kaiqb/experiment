@@ -28,6 +28,7 @@ In this lab we wil find where each of these activities occurs, then add our own 
        - click on area to the left of this line number to add a break point.
 
 * run your bot locally, interact with your emulator, and catch break points for both events.
+  - Emulator, OpenBot, http://localhost:3978.api.messages 
   - When breakpoint is caught, you can hover over active elements to view their content. Right-click on an element to drill into that element's content.
   - Example, when user response breakpoint is caught, to see the user input captured by your bot hover over the value:
     - C# - 'Text' of turnContext.Activity.Text
