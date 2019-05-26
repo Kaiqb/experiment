@@ -1,4 +1,4 @@
-# Lab 2, Persisting user information
+# Lab 4, Building the weather bot QnA knowledgebase
 
 In this lab we will begin with the downloaded welcome-user bot and explore how user information is acquired and persisted.
 
