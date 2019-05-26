@@ -1,4 +1,4 @@
-# Lab 2, Persisting user information
+# Lab 4, Building the weather bot QnA knowledgebase
 
 In this lab we will begin with the downloaded welcome-user bot and explore how user information is acquired and persisted.
 
@@ -47,8 +47,7 @@ Once you have used userState to process your user's input, and have potentially 
 * JS - await this.userState.saveChanges(context);  // saves changes for defined userState.
 
 ## Run and debug your bot
-Run this bot code and test it with your emulator in the same manner as you did for Lab 1.
-* Emulator, OpenBot, http://localhost:3978.api.messages 
+Run this bot code and test it with your emulator in the same manner as you did for Lab 1. 
 * It may be useful to add several breakpoints in your code and hover your cursor over _didUserWelcomeBot_. 
   - Notice how the value of _didUserWelcomeBot_ changes after the the initial welcome message is displayed.
   - Notice what happens to the value of _didUserWelcomeBot_ once your click "Restart conversation" in your emulator.
