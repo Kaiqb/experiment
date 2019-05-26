@@ -51,7 +51,7 @@ Method _ChoiceCardStepAsync_
 ## Explore the running code
 As in previous labs, you can set breakpoints at various places of interest. Then:
 * Run the program and interact with it using the emulator
-  - https://localhost:3978.api.messages 
+  - Emulator, OpenBot, http://localhost:3978.api.messages  
 * Hover over values such as _stepContext_ to see how data is passed from your user to your program.
 
 ## Modify the lab code
