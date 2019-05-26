@@ -21,7 +21,12 @@ This sample code uses a Waterfall dialog to interact with your user, find their 
 This key provides you with free online access to a limited set of OpenWeatherMap API calls.
 
 ## Looking at the Waterfall
+Waterfall dialogs, once called, follow a fixed set of steps before finishing. 
+Let's look at the weatherbot Waterfall dialog.
 * Locate and open file MainDialg.cs found inside of the 'Dialogs' folder.
+* Waterfall dialog, line 33, is created with 2 steps
+  - ChoiceCardStepAsync - prompts the user to select a new weatherBot card (or retry on error).
+  - ShowCardStepAsync - reponds to user selection with a current weather conditions card.
 
 
 
