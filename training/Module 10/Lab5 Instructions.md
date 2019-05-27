@@ -1,39 +1,42 @@
 # Lab 5, Build weather bot with dispatch for multiple models
 
-In this lab we will extend our use of _Azure Cognitive Services_ by creating both natural Language Understanding (LUIS) and a Dispatch service that selects which service has the appropriate answer for your question. We will then connect these new services to this lab's DispatchWeatherBot code.
- 
+In this lab we will extend our use of _Azure Cognitive Services_ by creating both a natural Language Understanding (LUIS) and a Dispatch service that selects which service has the appropriate answer for your question. We will then connect these new services plus our QnA Maker service to this lab's DispatchWeatherBot code.
 
-## QnA Maker requires an Azure service URL
-For this portion of our lab you can follow the steps detailed in the online documentation to [set up a QnA Maker service](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/set-up-qnamaker-service-azure). 
+## Download code for Lab 5
+* Access and save locally the lab5 sample code from here: Dispatch WeatherBot [C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab5%20Dispatch)  (**add correct link when this is published**).
+ 
+## Create a LUIS weather app in the LUIS portal
+For this portion of our lab you can follow the steps detailed in the online documentation to [Add natural language understanding to your bot](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0&tabs=csharp). 
 
 * Summary of creation steps:
-  - Open and sign in to the [Azure Portal](https://portal.azure.com/signin/index).
-  - select "+ Create a resource", search for "QnA Maker", and click "Create".
-  - select a unique name for you QnA Maker service.
-  - select create new resource group, or use an existing one you already have created.
-  - pricing tier: choose F0 (free), searching "F" (free) if available.
-  - search location "West US","West US 2", or close to where you are located.
-  - App Insights - choose "Disable" to simplify this lab.
-  - Select "Create"
+  - open and sign in to the [LUIS Portal](https://www.luis.ai/home). 
+    - If you don't currently have a LUIS account, you can create one one here on this site.
+  - from the MyApps page, click "^ Import new App".
+  - click button "choose App File (JSON) format", browse on your drive to lab 5 code, select _/CognitiveModels/WeatherForecasts.json_
+  - add an optional name for your new LUIS service, then click "Done."
+  - close pop-up window (if present) and click red dotted button "Train" to train your new model.
+    - "Train" button's dot should turn to green when complete.
+  - click "Test" button and enter a question such as "Will it rain in Bellevue?"
+    - Note - this question contains both a weather word (rain) and location word (Bellevue).
+  - when LUIS provides the Top scoring intent (When_Condition) click small hot link "Inspect" on right.
+    - click right arrows ">" to close these windows.
+  - notice that LUIS returns not only your question's Top Intent but also entities for the _condition_ and _location_.
+  - now select button "Publish" and "Production" to build and publish this new LUIS app.
 
-Once deployment has successfully completed, you are done with this step.
+Once publishing is complete, we can now gather information to connect our new LUIS app to our Lab 5 sample code.
 
-## Create your knowledgebase.
-To use the Azure service you just created, sign in the [Qna Maker portal](https://qnamaker.ai/) using the same Azure credentials you used to create your QnaMaker service.
-* Select top Tab: "Create an knowledgebase"
-* scroll down to Step 2 - "Connect your QnA service to your KB."
-  - select your Azure Directory ID.
-  - select your current subscription name.
-  - select the Azure QnA service you just created.
-* Scroll down to step 3 - "Name your KB."
-  - Choose a name for your QnAWeatherBot knowledgebase.
-* Scroll down to step 4 - "Populate your KB."
-  - select "+ Add file".
-  - On your local machine, locate and select the file "_Lab4WeatherBot-KB.tsv_ that you downloaded at the end of session 8.
-  >!Note - you can if you want additionally add a "Chit-chat" voice that answers user inputs like "Hello."
-* Scroll down to step 5 and click the button "Create your KB".
+## Gather LUIS connection information.
+While still connected to your new service within the LUIS portal do the following.
+* Click the "Manage" tab located to the left of the "Train" button.
+  - copy and save locally the GUID value shown for value "Application ID."
+* From menu on left of screen, select "Keys and endpoints."
+  - copy and save locally the value shown for "Authoring Key."
+  - scroll down to the bottom of this page, copy and save locally the "Region" shown for your application.
+    - Example: this value usually contains "westus" or a simlar Azure region.
+  
+You have now gathered all of the information necessary to connect your Lab 5 code to your new LUIS weather app. You can now close your connection to the LUIS portal. 
 
-## Test your knowledgebase
+## Create a Dispatch service for your Lab 5 sample code
 Once deployed, QnA Maker opens up an interface for you within your new knowledgebase.
 * In the upper right corner, click the _<- Test_ button.
 * Enter a question that your knowledgebase should know:
