@@ -1,63 +1,96 @@
 # Lab 4, Building the weather bot QnA knowledgebase
 
-In this lab we will begin with the downloaded welcome-user bot and explore how user information is acquired and persisted.
+In this lab we will follow the steps to create a new QnA Maker Weather knowledgebase, then use our lab 4 code to send queries and process process the results from our new knowledgebase. 
 
-## Define your bot's services
-Our lab sample code uses your computer's local memory for storage. This works well and is easy to configure for testing purposes. However, all stored information is lost whenever your bot is restarted. For a production bot, consider using CosmosDB or Blob storage to persist your bot's storage across multiple restarts. For now, let's look at how Memory storage is added as a service for your bot.
-* C# - Locate and open the Startup.cs file.
-  - Services are added to your C# bot within the ConfigureServices() method.
-  - Within ConfigureServices() are two calls of interest to "services.AddSingleton" for MemoryStorage and UserState.
-    - NOTE. UserState relies on there being some form of storage available. If MemoryStorage was not also defined your bot would fail to properly load and run.
-  - Both of these services are defined within the library Microsoft.Bot.Builder and will be used by your running bot.
-* JS - Locate and open the index.js file.
-  - MemoryStorage and UserState are imported from the botbuilder librabry by the following call:
-    - const { BotFrameworkAdapter, UserState, MemoryStorage } = require('botbuilder');
-  - MemoryStorage and UserState are now defined and used by the following 4 calls:
-    - let userState;  // creates a global variable for handling user state.
-    - const memoryStorage = new MemoryStorage();  // creates a constant of type MemoryStorage().
-    - userState = new UserState(memoryStorage);  // defines variable userState as type UserState() built using memoryStorage.
-    - const bot = new WelcomeBot(userState);  // creates your bot's main dialog and passes in the newly defined userState.
+## QnA Maker requires an Azure service URL
+For this portion of our lab you can follow the steps detailed in the online documentation to [set up a QnA Maker service](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/set-up-qnamaker-service-azure). 
+
+* Summary of creation steps:
+  - Open and sign in to the [Azure Portal](https://portal.azure.com/signin/index).
+  - select "+ Create a resource", search for "QnA Maker", and click "Create".
+  - select a unique name for you QnA Maker service.
+  - select create new resource group, or use an existing one you already have created.
+  - pricing tier: choose F0 (free), searching "F" (free) if available.
+  - search location "West US","West US 2", or close to where you are located.
+  - App Insights - choose "Disable" to simplify this lab.
+  - Select "Create"
+
+Once deployment has successfully completed, you are done with this step.
+
+## Create your knowledgebase.
+To use the Azure service you just created, sign in the [Qna Maker portal](https://qnamaker.ai/) using the same Azure credentials you used to create your QnaMaker service.
+* Select top Tab: "Create an knowledgebase"
+* scroll down to Step 2 - "Connect your QnA service to your KB."
+  - select your Azure Directory ID.
+  - select your current subscription name.
+  - select the Azure QnA service you just created.
+* Scroll down to step 3 - "Name your KB."
+  - Choose a name for your QnAWeatherBot knowledgebase.
+* Scroll down to step 4 - "Populate your KB."
+  - select "+ Add file".
+  - On your local machine, locate and select the file "_Lab4WeatherBot-KB.tsv_ that you downloaded at the end of session 8.
+  >!Note - you can if you want additionally add a "Chit-chat" voice that answers user inputs like "Hello."
+* Scroll down to step 5 and click the button "Create your KB".
+
+## Test your knowledgebase
+Once deployed, QnA Maker opens up an interface for you within your new knowledgebase.
+* In the upper right corner, click the _<- Test_ button.
+* Enter a question that your knowledgebase should know:
+  - An example is entering "Why does it rain?"
+* Check that you knowledgebase returns an answer.
+* Select _-> Test_ again to close the test pop-up screen.
+
+## Publish your knowledgebase
+* Select "Save and train" button to preserve your changes
+* Now to the right of the "Edit" tab, find and select the "Publish" tab.
+  - Click the _Publish_ button.
+* Once published, scroll down, copy, and save locally all of the information presented within the *Postman* window.
+  - some of this information will be used in the next steps to connect your code to this knowledgebase.
+* You can now close your browser's QnA Maker tab (or keep it open to edit and play with your answers later).
+
+## Add connection information to your code
+We will now add the nescessary information you recorded from your QnA Maker knowledgebase into your code for lab4.
+* Open the Postman information you saved locally and find the following values:
+  - POST /knowledgebases/<*knowledge-base-id*>/generateAnswer
+  - Host: <*your-hostname*> // This is the Full URL starting with https: and ending with /qnamaker
+  - Authorization: EndpointKey <*your-endpoint-key*>
+* Open the lab4 code you downloaded at the end of session 8, or download it now from here [QnAWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab4%20QnAWeatherBot) (**add correct link when this is published**).
+* Locate and open file appsettings.json
+* Now add your saved connection values into this code:
+  ``` JSON
+  {
+     "MicrosoftAppId": "",
+     "MicrosoftAppPassword": "",
   
-## Connect and access userState.
-Once userState has been defined for your bot, we now need to connect this service and add whatever user properties you want to persist. The welcome-user provides a simple example of persisting user state. The only thing saved is a boolean value, _DidBotWelcomeUser_ that tells us whether this user has perviously received our initial welcome message(s). But, this same logic and storage could be used to ask for information such as the user's name, age, address, etc and persist these values as well.
-* C# - Locate and open file WelcomeUserState.cs
-  - This is a C# class that defines a single property, DidBotWelcomeUser. Additional properties could be added here to this class.
-    - public bool DidBotWelcomeUser { get; set; } = false;
-  - Locate and open file WelcomeUserBot.cs found inside the 'Bots' folder.
-  - Note in line 44 that a new instance of the WelcomeUserBot is created, public WelcomeUserBot(UserState userState) and the passed userState is associated with BotState \_userState: 
-    - "_userState = userState;"  // use this as accessor for userState.
-  - Whenever method OnMessageActivityAsync() is called, it accesses \_userState and stores the current state of _DidBotWelcomeUser_ into variable didBotWelcomeUser as follows:
-    - var welcomeUserStateAccessor = _userState.CreateProperty<WelcomeUserState>(nameof(WelcomeUserState));  // create accessor.
-    - var didBotWelcomeUser = await welcomeUserStateAccessor.GetAsync(turnContext, () => new WelcomeUserState()); // use accessor to obtain stored value.
-* JS - Locate and open file welcomeBot.js
-  - The following calls create an accessor for userState
-    - this.welcomedUserProperty = userState.createProperty(WELCOMED_USER);  // defines property welcomedUserProperty of userState.
-    - this.userState = userState;  // defines accessor for userState.
-  - Now each time method onMessage() is called, it accesses userState and stores the current value of _welcomedUserProperty_ into variable didBotWelcomeUser with the following call:
-    - const didBotWelcomedUser = await this.welcomedUserProperty.get(context, false);  // retrieve value into didBotWelcomeUser.
-    - Note, if this is the first access of welcomedUserProperty it is intitialized to 'false'.
-
-## Process user input based on current userState
-* If didBotWelcomeUser is 'false' (the original initialized value) then an initial welcome message is displayed to the user and this value is set to 'true'.
-* If didBotWelcomeUser is 'true' (a persisted user value) then the user's input is processed using the bot's switch(text) statement.
-
-## Persist your user's state
-Once you have used userState to process your user's input, and have potentially set didBotWelcomeUser to 'true' the userState is saved to storage to use with the next user input. The following call stores any changes to the current userState:   
-* C# - await \_userState.SaveChangesAsync(turnContext);  // uses BotState method SaveChangesAsync() to preserve state.
-* JS - await this.userState.saveChanges(context);  // saves changes for defined userState.
+     "QnA-sample-qna-kbId": "<knowledge-base-id>",
+     "QnA-sample-qna-endpointKey": "<your-endpoint-key>",
+     "QnA-sample-qna-hostname": "<your-hostname>"
+   }
+   ```
+   ---
+   
+Your code should now be able to run and connect to your QnA Maker knowledgebase.
+  
+## Explore the QnAWeatherBot 
+You will find that the code for this lab is quite simple. Most of the processing logic occurs within Azure and your QnA Maker knowledgebase.
+* Locate and open file "QnAWeatherBot.cs" found inside of the "Bots" folder.
+* Find method "OnMembersAddedAsync()" - this method is called whenever a new user connects to your bot.
+  - Notice that this method Welcomes your user and explains how to interact with your bot.
+* Now find method "OnMessageActivityAsync()" - this method is called each time a user sends a request to your bot.
+  - Notice that a new connection to your QnA Maker knowledgebase (var qnaMaker) is created using the values you added in "appsetting.json" each time a new user request is received.
+  - qnaMaker passes the user request information contained within _turnContext_ using method "GetAnswerAsync(turnContext)".
+  - Your knowledgebase response, contained within (var response), is checked for _null_ and then passed back to your user.
+These few actions cover the full logic flow for Lab 4's QnAWeatherBot code.
 
 ## Run and debug your bot
-Run this bot code and test it with your emulator in the same manner as you did for Lab 1. 
-* It may be useful to add several breakpoints in your code and hover your cursor over _didUserWelcomeBot_. 
-  - Notice how the value of _didUserWelcomeBot_ changes after the the initial welcome message is displayed.
-  - Notice what happens to the value of _didUserWelcomeBot_ once your click "Restart conversation" in your emulator.
-* Once again, you can also modify the messages displayed by your bot to make this more like your own voice.
-  - Stop your bot, change any message you'd like, then restart and test.
+Run this bot code and test it with your emulator in the same manner as you did for previous Labs.
+* Emulator, OpenBot, http://localhost:3978.api.messages
+* It may be useful to add several breakpoints in your code and hover your cursor over values of interest such as the _turnContext_ and _response_ to see how your data is being passed.
 
-## Some user inputs return a card.
-Cards provide a useful and visual method of providing your users with both information and choices. 
-* The method calls SendIntroCardAsync() (C#) and sendIntroCard() (JS) show how easy it is to create and display a card from within you bot code.
-
-Cards will be covered in detail during our next session.
+## Make this code your own
+Once this code is running successfully, you can modify both the available questions and your knowledgebase's response by opening your knowledgebase up within the QnA Maker portal and selecting the "Edit" tab. If you make changes be sure to:
+* Test your knowledgebase response using the _<- Test_ button.
+* Publish your new changes by selecting the "Publish" Tab and clicking the _Publish_ button.
+Your changes will be saved, but no changes will be made to your bot connection values, so you can now run your bot again and see any updated responses. 
 
 
