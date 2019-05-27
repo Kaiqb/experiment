@@ -28,18 +28,28 @@ Once publishing is complete, we can now gather information to connect our new LU
 ## Gather LUIS connection information.
 While still connected to your new service within the LUIS portal do the following.
 * Click the "Manage" tab located to the left of the "Train" button.
-  - copy and save locally the GUID value shown for value "Application ID."
+  - copy and save locally the GUID value shown for value "Application ID".
 * From menu on left of screen, select "Keys and endpoints."
-  - copy and save locally the value shown for "Authoring Key."
-  - scroll down to the bottom of this page, copy and save locally the "Region" shown for your application.
-    - Example: this value usually contains "westus" or a simlar Azure region.
+  - copy and save locally the value shown for "Authoring Key". Used as <your-luis-authoring-key>.
+  - scroll down to the bottom of this page, copy and save locally the "Region" shown for your application. Used as <your-region>.
+    - Example: this value usually contains "westus" or a similar Azure region.
   
 You have now gathered all of the information necessary to connect your Lab 5 code to your new LUIS weather app. You can now close your connection to the LUIS portal. 
 
 ## Create a Dispatch service for your Lab 5 sample code
-Once deployed, QnA Maker opens up an interface for you within your new knowledgebase.
-* In the upper right corner, click the _<- Test_ button.
-* Enter a question that your knowledgebase should know:
+Now that you have both a QnA Maker weather app (created in Lab 4) and a new LUIS weather app it is now time to use the connection values gathered during the building of both of these apps to create a new Dispatch model. The step-by-step instructions for this can be found in the "Create the dispatch model" section of the online documentation referenced above, or follow this summary of key steps:
+* Open a command prompt or terminal window, and change directories to the CognitiveModels directory within your locally saved copy of the lab 5 sample code..
+* Run the following 2 commands to ensure you have current versions of npm and the Dispatch tool.
+```cmd
+npm i -g npm
+npm i -g botdispatch
+```
+* Now use the _dispatch init_ command to create a .dispatch file for your dispatch model. Choose a \<filename-to-create> that you will remember.
+```cmd
+dispatch init -n <filename-to-create> --luisAuthoringKey "<your-luis-authoring-key>" --luisAuthoringRegion <your-region>
+```
+
+Create this usinga filename you will recognize
   - An example is entering "Why does it rain?"
 * Check that you knowledgebase returns an answer.
 * Select _-> Test_ again to close the test pop-up screen.
