@@ -49,7 +49,11 @@ Once deployed, QnA Maker opens up an interface for you within your new knowledge
 * You can now close your browser's QnA Maker tab (or keep it open to edit and play with your answers later).
 
 ## Add connection information to your code
-
+We will now add the nescessary information you recorded from your QnA Maker knowledgebase into your code for lab4.
+* Open the lab4 code you downloaded at the end of session 8, or download it now from here [C# Sample](https://aka.ms/cs-qna), [JavaScript Sample](https://aka.ms/js-qna-sample).
+* Open the Postman information you saved locally and find the following values:
+  - POST /knowledgebases/<*knowledge-base-id*>/generateAnswer
+  - 
 
 ## Explore the QnAWeatherBot
 
