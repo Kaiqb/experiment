@@ -33,9 +33,20 @@ To use the Azure service you just created, sign in the [Qna Maker portal](https:
 * Scroll down to step 5 and click the button "Create your KB".
 
 ## Test your knowledgebase
+Once deployed, QnA Maker opens up an interface for you within your new knowledgebase.
+* In the upper right corner, click the _<- Test_ button.
+* Enter a question that your knowledgebase should know:
+  - An example is entering "Why does it rain?"
+* Check that you knowledgebase returns an answer.
+* Select _-> Test_ again to close the test pop-up screen.
 
 ## Publish your knowledgebase
-
+* Select "Save and train" button to preserve your changes
+* Now to the right of the "Edit" tab, find and select the "Publish" tab.
+  - Click the _Publish_ button.
+* Once published, scroll down, copy, and save locally all of the information presented within the *Postman* window.
+  - some of this information will be used in the next steps to connect your code to this knowledgebase.
+* You can now close your browser's QnA Maker tab (or keep it open to edit and play with your answers later).
 
 ## Add connection information to your code
 
