@@ -55,8 +55,8 @@ We will now add the nescessary information you recorded from your QnA Maker know
   - Host: <*your-hostname*> // This is the Full URL starting with https: and ending with /qnamaker
   - Authorization: EndpointKey <*your-endpoint-key*>
 * Open the lab4 code you downloaded at the end of session 8, or download it now from here [QnAWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab4%20QnAWeatherBot) (**add correct link when this is published**).
+* Locate and open file appsettings.json
 * Now add your saved connection values into this code:
-  - C# - open appsetting.json file and add the following:
   ``` JSON
   {
      "MicrosoftAppId": "",
@@ -67,27 +67,30 @@ We will now add the nescessary information you recorded from your QnA Maker know
      "QnA-sample-qna-hostname": "<your-hostname>"
    }
    ```
-   
-   - JavaScript - open your .env file and add the following:
-   ```file
-   MicrosoftAppId=""
-   MicrosoftAppPassword=""
-
-   QnAKnowledgebaseId="<knowledge-base-id>"
-   QnAAuthKey="<your-endpoint-key>"
-   QnAEndpointHostName="<your-hostname>"
-   ```
    ---
    
 Your code should now be able to run and connect to your QnA Maker knowledgebase.
   
-## Explore the QnAWeatherBot
-
+## Explore the QnAWeatherBot 
+You will find that the code for this lab is quite simple. Most of the processing logic occurs within Azure and your QnA Maker knowledgebase.
+* Locate and open file "QnAWeatherBot.cs" found inside of the "Bots" folder.
+* Find method "OnMembersAddedAsync()" - this method is called whenever a new user connects to your bot.
+  - Notice that this method Welcomes your user and explains how to interact with your bot.
+* Now find method "OnMessageActivityAsync()" - this method is called each time a user sends a request to your bot.
+  - Notice that a new connection to your QnA Maker knowledgebase (var qnaMaker) is created using the values you added in "appsetting.json" each time a new user request is received.
+  - qnaMaker passes the user request information contained within _turnContext_ using method "GetAnswerAsync(turnContext)".
+  - Your knowledgebase response, contained within (var response), is checked for _null_ and then passed back to your user.
+These few actions cover the full logic flow for Lab 4's QnAWeatherBot code.
 
 ## Run and debug your bot
-Run this bot code and test it with your emulator in the same manner as you did for previous Labs. 
-* It may be useful to add several breakpoints in your code and hover your cursor over 
+Run this bot code and test it with your emulator in the same manner as you did for previous Labs.
+* Emulator, OpenBot, http://localhost:3978.api.messages
+* It may be useful to add several breakpoints in your code and hover your cursor over values of interest such as the _turnContext_ and _response_ to see how your data is being passed.
 
-
+## Make this code your own
+Once this code is running successfully, you can modify both the available questions and your knowledgebase's response by opening your knowledgebase up within the QnA Maker portal and selecting the "Edit" tab. If you make changes be sure to:
+* Test your knowledgebase response using the _<- Test_ button.
+* Publish your new changes by selecting the "Publish" Tab and clicking the _Publish_ button.
+Your changes will be saved, but no changes will be made to your bot connection values, so you can now run your bot again and see any updated responses. 
 
 
