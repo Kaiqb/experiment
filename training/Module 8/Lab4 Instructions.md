@@ -54,7 +54,7 @@ We will now add the nescessary information you recorded from your QnA Maker know
   - POST /knowledgebases/<*knowledge-base-id*>/generateAnswer
   - Host: <*your-hostname*> // This is the Full URL starting with https: and ending with /qnamaker
   - Authorization: EndpointKey <*your-endpoint-key*>
-* Open the lab4 code you downloaded at the end of session 8, or download it now from here [C# Sample](https://aka.ms/cs-qna), [JavaScript Sample](https://aka.ms/js-qna-sample).
+* Open the lab4 code you downloaded at the end of session 8, or download it now from here [QnAWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab4%20QnAWeatherBot), [C# generic Sample](https://aka.ms/cs-qna), [JavaScript generic Sample](https://aka.ms/js-qna-sample).
 * Now add your saved connection values into this code:
   - C# - open appsetting.json file and add the following:
   ``` JSON
