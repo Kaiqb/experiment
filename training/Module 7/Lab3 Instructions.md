@@ -61,7 +61,8 @@ If you want to make this code your own, try changing one of the cities listed in
 ## Additional Resources
 Here are the steps to obtain an OpenWeatherMap key that were provided in session 2.
 * Use your email account to register and obtain a Free Subscription API key from OpenWeatherMap APIs. 
-* You can request your free subscription key here: http://home.openweathermap.org/users/sign_in
+* You can request your free subscription key here: http://home.openweathermap.org/users/sign_in.
+
 The OpenWeatherMap free account key will be provided to you within your email inbox, but takes several hours to become active.
 
   
