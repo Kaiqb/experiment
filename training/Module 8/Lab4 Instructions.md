@@ -79,10 +79,8 @@ We will now add the nescessary information you recorded from your QnA Maker know
    ```
    ---
    
-   
+Your code should now be able to run and connect to your QnA Maker knowledgebase.
   
-  
-
 ## Explore the QnAWeatherBot
 
 
