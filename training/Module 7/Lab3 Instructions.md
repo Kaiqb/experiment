@@ -1,7 +1,7 @@
 # Lab 3, WeatherBot Cards
 In this lab we will begin with by downloading a sample weatherBot that was created based on BotBuilder-Samples/.../06.using-cards.
 
-> [!NOTE] You will need to use the OpenWeatherMap key you obtained by request at the beginning of Session 2 for this code to function properly.
+> [!NOTE] You will need to use the OpenWeatherMap key you obtained by request at the beginning of Session 2 for this code to function properly. (see OpenWeatherMap steps in the Additional Resources section below)
 
 * Download Lab3 source code from [here](../../Code/Lab3%20Cards%20MVC)   (or add different link)
 
@@ -58,5 +58,10 @@ As in previous labs, you can set breakpoints at various places of interest. Then
 If you want to make this code your own, try changing one of the cities listed in the method _GetChoices()_ from its current value to your own home town instead. Remember that you will need to change the city name in all five locations where it is found.
 * OpenWeatherMap will return the top selection for the city name you pass to it. If your home town name is the same as a much larger area, you might not receive the weather you are hoping for.
 
+## Additional Resources
+Here are the steps to obtain an OpenWeatherMap key that were provided in session 2.
+* Use your email account to register and obtain a Free Subscription API key from OpenWeatherMap APIs. 
+* You can request your free subscription key here: http://home.openweathermap.org/users/sign_in
+The OpenWeatherMap free account key will be provided to you within your email inbox, but takes several hours to become active.
 
   
