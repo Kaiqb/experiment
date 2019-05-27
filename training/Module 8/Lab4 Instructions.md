@@ -50,10 +50,38 @@ Once deployed, QnA Maker opens up an interface for you within your new knowledge
 
 ## Add connection information to your code
 We will now add the nescessary information you recorded from your QnA Maker knowledgebase into your code for lab4.
-* Open the lab4 code you downloaded at the end of session 8, or download it now from here [C# Sample](https://aka.ms/cs-qna), [JavaScript Sample](https://aka.ms/js-qna-sample).
 * Open the Postman information you saved locally and find the following values:
   - POST /knowledgebases/<*knowledge-base-id*>/generateAnswer
-  - 
+  - Host: <*your-hostname*> // This is the Full URL starting with https: and ending with /qnamaker
+  - Authorization: EndpointKey <*your-endpoint-key*>
+* Open the lab4 code you downloaded at the end of session 8, or download it now from here [C# Sample](https://aka.ms/cs-qna), [JavaScript Sample](https://aka.ms/js-qna-sample).
+* Now add your saved connection values into this code:
+  - C# - open appsetting.json file and add the following:
+  ``` JSON
+  {
+     "MicrosoftAppId": "",
+     "MicrosoftAppPassword": "",
+  
+     "QnA-sample-qna-kbId": "<knowledge-base-id>",
+     "QnA-sample-qna-endpointKey": "<your-endpoint-key>",
+     "QnA-sample-qna-hostname": "<your-hostname>"
+   }
+   ```
+   
+   - JavaScript - open your .env file and add the following:
+   ```file
+   MicrosoftAppId=""
+   MicrosoftAppPassword=""
+
+   QnAKnowledgebaseId="<knowledge-base-id>"
+   QnAAuthKey="<your-endpoint-key>"
+   QnAEndpointHostName="<your-hostname>"
+   ```
+   ---
+   
+   
+  
+  
 
 ## Explore the QnAWeatherBot
 
