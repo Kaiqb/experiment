@@ -27,7 +27,7 @@ Once publishing is complete, we can now gather information to connect our new LU
 
 ## Gather LUIS connection information.
 While still connected to your new service within the LUIS portal do the following.
-* On left of Dashboard screen, note and record locally the value displayed for "Version:". Used as \<app-version-number> by Dispatch. 
+* From left of Dashboard screen, record locally the value displayed for "Version:". Used as \<app-version-number> by Dispatch. 
   - this is typically "0.1" 
 * Click the "Manage" tab located to the left of the "Train" button.
   - copy and save locally the GUID value shown for value "Application ID". Used as \<app-id-for-weather-app>.
