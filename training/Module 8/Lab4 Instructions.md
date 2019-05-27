@@ -26,6 +26,7 @@ To use the Azure service you just created, sign in the [Qna Maker portal](https:
   - select the Azure QnA service you just created.
 * Scroll down to step 3 - "Name your KB."
   - Choose a name for your QnAWeatherBot knowledgebase.
+  - Record and save this name locally. It will later be used in Lab 5 as \<knowledge-base-name> by the Dispatch service.
 * Scroll down to step 4 - "Populate your KB."
   - select "+ Add file".
   - On your local machine, locate and select the file "_Lab4WeatherBot-KB.tsv_ that you downloaded at the end of session 8.
