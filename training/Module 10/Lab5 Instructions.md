@@ -1,6 +1,7 @@
-# Lab 4, Building the weather bot QnA knowledgebase
+# Lab 5, Build weather bot with dispatch for multiple models
 
-In this lab we will follow the steps to create a new QnA Maker Weather knowledgebase, then use our lab 4 code to send queries and process process the results from our new knowledgebase. 
+In this lab we will extend our use of _Azure Cognitive Services_ by creating both natural Language Understanding (LUIS) and a Dispatch service that selects which service has the appropriate answer for your question. We will then connect these new services to this lab's DispatchWeatherBot code.
+ 
 
 ## QnA Maker requires an Azure service URL
 For this portion of our lab you can follow the steps detailed in the online documentation to [set up a QnA Maker service](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/how-to/set-up-qnamaker-service-azure). 
@@ -54,7 +55,9 @@ We will now add the nescessary information you recorded from your QnA Maker know
   - POST /knowledgebases/<*knowledge-base-id*>/generateAnswer
   - Host: <*your-hostname*> // This is the Full URL starting with https: and ending with /qnamaker
   - Authorization: EndpointKey <*your-endpoint-key*>
-* Open the lab4 code you downloaded at the end of session 8, or download it now from here [QnAWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab4%20QnAWeatherBot) (**add correct link when this is published**).
+  
+* Open the lab5 code you downloaded at the end of session 10, or download it now from here [DispatchWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab5%20Dispatch) (**add correct link when this is published**).
+
 * Locate and open file appsettings.json
 * Now add your saved connection values into this code:
   ``` JSON
