@@ -56,19 +56,12 @@ dispatch init -n <filename-to-create> --luisAuthoringKey "<your-luis-authoring-k
 dispatch add -t luis -i "<app-id-for-weather-app>" -n "<name-of-weather-app>" -v <app-version-number> -k "<your-luis-authoring-key>" --intentName l_Weather
 dispatch add -t qna -i "<knowledge-base-id>" -n "<knowledge-base-name>" -k "<azure-qna-service-key1>" --intentName q_sample-qna
 ```
+* Now use the _dispatch create_ command to generate a dispatch model using the .dispatch file you just created and populated.
+```cmd
+dispatch create
+```
 
-Create this usinga filename you will recognize
-  - An example is entering "Why does it rain?"
-* Check that you knowledgebase returns an answer.
-* Select _-> Test_ again to close the test pop-up screen.
 
-## Publish your knowledgebase
-* Select "Save and train" button to preserve your changes
-* Now to the right of the "Edit" tab, find and select the "Publish" tab.
-  - Click the _Publish_ button.
-* Once published, scroll down, copy, and save locally all of the information presented within the *Postman* window.
-  - some of this information will be used in the next steps to connect your code to this knowledgebase.
-* You can now close your browser's QnA Maker tab (or keep it open to edit and play with your answers later).
 
 ## Add connection information to your code
 We will now add the nescessary information you recorded from your QnA Maker knowledgebase into your code for lab4.
@@ -91,20 +84,11 @@ We will now add the nescessary information you recorded from your QnA Maker know
      "QnA-sample-qna-hostname": "<your-hostname>"
    }
    ```
-   ---
    
 Your code should now be able to run and connect to your QnA Maker knowledgebase.
   
-## Explore the QnAWeatherBot 
-You will find that the code for this lab is quite simple. Most of the processing logic occurs within Azure and your QnA Maker knowledgebase.
-* Locate and open file "QnAWeatherBot.cs" found inside of the "Bots" folder.
-* Find method "OnMembersAddedAsync()" - this method is called whenever a new user connects to your bot.
-  - Notice that this method Welcomes your user and explains how to interact with your bot.
-* Now find method "OnMessageActivityAsync()" - this method is called each time a user sends a request to your bot.
-  - Notice that a new connection to your QnA Maker knowledgebase (var qnaMaker) is created using the values you added in "appsetting.json" each time a new user request is received.
-  - qnaMaker passes the user request information contained within _turnContext_ using method "GetAnswerAsync(turnContext)".
-  - Your knowledgebase response, contained within (var response), is checked for _null_ and then passed back to your user.
-These few actions cover the full logic flow for Lab 4's QnAWeatherBot code.
+## Explore the DispatchWeatherBot 
+
 
 ## Run and debug your bot
 Run this bot code and test it with your emulator in the same manner as you did for previous Labs.
@@ -112,9 +96,5 @@ Run this bot code and test it with your emulator in the same manner as you did f
 * It may be useful to add several breakpoints in your code and hover your cursor over values of interest such as the _turnContext_ and _response_ to see how your data is being passed.
 
 ## Make this code your own
-Once this code is running successfully, you can modify both the available questions and your knowledgebase's response by opening your knowledgebase up within the QnA Maker portal and selecting the "Edit" tab. If you make changes be sure to:
-* Test your knowledgebase response using the _<- Test_ button.
-* Publish your new changes by selecting the "Publish" Tab and clicking the _Publish_ button.
-Your changes will be saved, but no changes will be made to your bot connection values, so you can now run your bot again and see any updated responses. 
 
 
