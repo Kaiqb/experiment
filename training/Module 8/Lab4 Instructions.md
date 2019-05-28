@@ -13,9 +13,13 @@ For this portion of our lab you can follow the steps detailed in the online docu
   - pricing tier: choose F0 (free), searching "F" (free) if available.
   - search location "West US","West US 2", or close to where you are located.
   - App Insights - choose "Disable" to simplify this lab.
-  - Select "Create"
+  - select "Create" 
+* Following successful creation, open a window to your new service's Cognitive Services icon.
+  - click the hot link "Keys" under section 1 labeled "Grab your keys".
+  - copy and save locally the value show for "Key 1".
+    - we will use this key during Lab 5, as \<azure-qna-service-key1> to create a Dispatch model. 
 
-Once deployment has successfully completed, you are done with this step.
+You are now done with this step and can close your connection to the Azure portal.
 
 ## Create your knowledgebase.
 To use the Azure service you just created, sign in the [Qna Maker portal](https://qnamaker.ai/) using the same Azure credentials you used to create your QnaMaker service.
