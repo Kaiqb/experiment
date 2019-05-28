@@ -7,7 +7,6 @@ In this module, you'll learn what a bot is, play with with a few bots, understan
     - Web crawlers, spiders for page search engines.
     - chat bots, providing automated conversations and information. 
     - auction bots, allowing users to bid on items for sale.
-      - another indent.
     - automated trade bots, executing financial transactions based on news and current data.
     - control bots, often used for malicious activities and attacks.
 * The modern bot landscape
