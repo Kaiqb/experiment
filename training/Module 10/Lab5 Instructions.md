@@ -99,13 +99,25 @@ We will now add the nescessary information you recorded from your QnA Maker know
 
 Your code should now be able to run and connect to your QnA Maker knowledgebase.
   
-## Explore the DispatchWeatherBot 
-
+## Explore the DispatchWeatherBot
+There is quite a lot of code involved in Lab 5. For now, let's look at the main sections and logic flow.
+* Locate and open file DispatchBot.cs found inside of the 'Bots' folder.
+* Let's look at the main functionality of method OnMessageActivityAsync() called each time a user sends new input.
+  - Observe that like previous labs, we once again create both a \_conversationState and \_userState to help control your bot's logic flow.
+    - The state values used and saved can be examined within the two class files UserProfile.cs and ConversationData.cs
+    - Note, Because we store the requested "Location" within a user's profile. Subsequent queries that do not include a location can still be run by using this user's Location information!
+  - This program initially uses the call _botServices.Dispatch.RecognizeAsync()_ to pass each user input to your Dialog app and then retrieves the "TopIntent" from the recognizerResult.
+    - Based on the user input Dispatch will return one of 2 intents "l_Weather" (LUIS weather) or "q_sample-qna" (QnA Maker sample).
+  - After displaying the chosen intent to your user, the method _DispatchToTopIntentAsync()_ calls the appropriate method to contact the correct online service. 
+  - _ProcessWeatherAsync()_ - connects to your LUIS weather app to see what type of question you have asked. Conditions detected include:
+    - "Daily_Forecast", "Hourly_Forecast", "When_Condition", "When_Sun", and "User_Goodbye".
+  - Control is then passed to the proper method(s) to process and display the OpenWeatherMap results, or say "goodbye".
+  - _ProcessSampleQnAAsync()_ - simply connects to your QnA weather app and returns the rusults back to your user. 
 
 ## Run and debug your bot
 Run this bot code and test it with your emulator in the same manner as you did for previous Labs.
 * Emulator, OpenBot, http://localhost:3978.api.messages
-* It may be useful to add several breakpoints in your code and hover your cursor over values of interest such as the _turnContext_ and _response_ to see how your data is being passed.
+* It may be useful to add several breakpoints at various locations within your code and hover your cursor over values of interest.
 
 ## Make this code your own
 
