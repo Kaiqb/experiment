@@ -26,17 +26,13 @@ The Lab 5 sample code provides two ARM template files for you to choose between.
   - --proj-file-path "./DispatchWeatherBot.csproj"
   
 ## Zip up files manually
+Be sure to read and follow these instructions carefully. This one step cause more problems then most others because the "zip" file is not created at the containing folder level.
+* Using File explorer open the folder containing your Lab 5 .csproj file, "DispatchWeatherBot.csproj".
+* Select All content in this folder, Right-Click and choose "Send to >"  "Compressed (zipped) folder".
+  - Rename this .zip file to something meaningful for your project. (ex. "MyLab5Project.zip")
 
+## Deploy code to Azure
+For this step, provide the name of your newly zipped file (ex. --src "MyLab5Project.zip")
 
-
-
-
-
-
-
-
-
-
-
-
-
+## Test in Web Chat
+If your deployment to Azure has succeeded, you will now be able to test you bot, running in Azure by following the steps in this section. These steps show you how to access your bot using the Web Chat interface provided by Azure.
