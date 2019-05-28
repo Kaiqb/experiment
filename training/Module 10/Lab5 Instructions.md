@@ -121,7 +121,7 @@ Run this bot code and test it with your emulator in the same manner as you did f
 
 ## Make this code your own
 There are many ways to modify this code to help give it a bit of your own personality. Here are a few suggestions:
-* Method _OnMessageActivityAsync()_ shows the top detected intent to your user. You can comment this _SendActivityAsync()_ out to remove that none requested user information.
+* Method _OnMessageActivityAsync()_ shows the top detected intent to your user. You can comment out this _SendActivityAsync()_ call to remove the return of that non-essential information.
 * Method _FindHourlyForecast()_ by default displays (8) 3-hour time periods with each time period shown as 1 hour & 30 minutes past the beginning of the initial time block. You can adjust the values to change the number of time periods displayed or their starting times.
 * Method _SignOutUser()_ displays a "goodbye" message to your user, you can modify that to add your own voice to your bot.
 
