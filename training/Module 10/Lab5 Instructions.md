@@ -37,7 +37,7 @@ While still connected to your new service within the LUIS portal do the followin
   - scroll down to the bottom of this page, copy and save locally the "Region" shown for your application. Used as <your-region>.
     - Example: this value usually contains "westus" or a similar Azure region.
   
-You have now gathered all of the information necessary to connect your Lab 5 code to your new LUIS weather app. You can now close your connection to the LUIS portal. 
+You have now gathered all of the information necessary to connect your Lab 5 code to your new LUIS weather app. 
 
 ## Create a Dispatch service for your Lab 5 sample code
 Now that you have both a QnA Maker weather app (created in Lab 4) and a new LUIS weather app it is now time to use the connection values gathered during the building of both of these apps to create a new Dispatch model. The step-by-step instructions for this can be found in the [Create the dispatch model](https://docs.microsoft.com/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs#create-the-dispatch-model) section of the online documentation referenced above, or follow this summary of key steps:
@@ -60,31 +60,43 @@ dispatch add -t qna -i "<knowledge-base-id>" -n "<knowledge-base-name>" -k "<azu
 ```cmd
 dispatch create
 ```
-
-
+This command builds a .json file, then creates, trains, and publishes a LUIS-based dispatch app.
+* Return to the LUIS portal and open your new Dispatch app to gather the LUIS connection information.
+* Following the same steps detailed for your LUIS weather app above collect the following:
+  - \<app-id-for-dispatch-app>
+  - \<your-luis-authoring-key> - this should be the same as your weather app.
+  - \<your-region> - this too should be the same as your weather app.
+  
+These values will be used in the next section to add connection information to your Lab 5 sample code.
 
 ## Add connection information to your code
-We will now add the nescessary information you recorded from your QnA Maker knowledgebase into your code for lab4.
-* Open the Postman information you saved locally and find the following values:
-  - POST /knowledgebases/<*knowledge-base-id*>/generateAnswer
-  - Host: <*your-hostname*> // This is the Full URL starting with https: and ending with /qnamaker
-  - Authorization: EndpointKey <*your-endpoint-key*>
-  
-* Open the lab5 code you downloaded at the end of session 10, or download it now from here [DispatchWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab5%20Dispatch) (**add correct link when this is published**).
-
+We will now add the nescessary information you recorded from your QnA Maker knowledgebase into your code for Lab 5.
+* Open the lab5 code you downloaded earlier from here [DispatchWeatherBot C# Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab5%20Dispatch) (**add correct link when this is published**).
 * Locate and open file appsettings.json
 * Now add your saved connection values into this code:
   ``` JSON
-  {
+  {  
      "MicrosoftAppId": "",
      "MicrosoftAppPassword": "",
-  
-     "QnA-sample-qna-kbId": "<knowledge-base-id>",
-     "QnA-sample-qna-endpointKey": "<your-endpoint-key>",
-     "QnA-sample-qna-hostname": "<your-hostname>"
+ 
+     "DispatchLuisAppId": "<app-id-for-dispatch-app>",
+     "DispatchLuisAPIKey": "<your-luis-authoring-key>",
+     "DispatchLuisAPIHostName": "<your-region>",
+     
+     "QnAKnowledgebaseId": "<knowledge-base-id>",
+     "QnAAuthKey": "<qna-maker-resource-key>",
+     "QnAEndpointHostName": "<your-hostname>",
+     
+     "LuisAppId": "<app-id-for-weather-app>",
+     "LuisAPIKey": "<your-luis-authoring-key>",
+     "LuisAPIHostName": "<your-region>",
+
+     "OpenWeatherMapKey": "<your-openweathermap-key-here>",
+
+      "AllowedHosts": "*"
    }
    ```
-   
+
 Your code should now be able to run and connect to your QnA Maker knowledgebase.
   
 ## Explore the DispatchWeatherBot 
