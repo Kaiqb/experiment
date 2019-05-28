@@ -3,8 +3,18 @@ In this module, you'll learn what a bot is, play with with a few bots, understan
 
 ## What are bots?
 * Quick history lesson
+  - Bots have been part of the internet since the late 1980's. They have come in many forms some quite helpful, others quite harmful. Typse of applications grouped under the generic title of Bots include:
+    - Web crawlers, spiders for page search engines.
+    - chat bots, providing automated conversations and information. 
+    - auction bots, allowing users to bid on items for sale.
+    - automated trade bots, executing financial transactions based on news and current data.
+    - control bots, often used for malicious activities and attacks.
 * The modern bot landscape
+  - Today bots account for almost 1/2 of all internet traffic. Many bots use AI to generate responses and can be indistinguishable from live human conversations.
+  - Bots are also now entering the home & workplace. Just ask "Alexa", "Siri", or "Cortana".
 * Uses and benefits of bots
+  - Bots allow users to refine their searches and find useful data within a sea of data.
+  - Bots also allow companies to answer many support questions without the need for as many paid support personnel.
 
 ## Hands on experience with a few bots.
 * What are great examples of bots people could play with for reals, real time?
