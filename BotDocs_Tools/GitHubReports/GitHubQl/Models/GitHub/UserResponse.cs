@@ -3,27 +3,14 @@ using Newtonsoft.Json;
 
 namespace GitHubQl.Models.GitHub
 {
-    /// <summary></summary>
-    public class UserResponse
-    {
-        /// <summary></summary>
-        [JsonProperty("user")]
-        public User User { get; set; }
-    }
+    /// <summary>Response information for a user query.</summary>
+    //[QlObject]
+    //public class UserResponse
+    //{
+    //    public UserResponse(User user) => User = user;
 
-    public class PullRequest
-    {
-    }
-
-    public class Label
-    {
-    }
-
-    public class RepositoryCollaborator
-    {
-    }
-
-    public class Issue
-    {
-    }
+    //    /// <summary>A user is an individual's account on GitHub that owns repositories and can make new content.</summary>
+    //    [JsonProperty("user")]
+    //    public User User { get; }
+    //}
 }

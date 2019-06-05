@@ -17,7 +17,7 @@ namespace GitHubQl.Models.GraphQl
         [JsonProperty("data")]
         public T Data { get; }
 
-        /// <summary></summary>
+        /// <summary>Any errors the GitHub GraphQL service identified.</summary>
         /// <remarks>If the operation encountered any errors, the response map must contain an entry
         /// with key `errors`. The value of this entry is described in the "Errors" section. If the operation
         /// completed without encountering any errors, this entry must not be present.</remarks>

@@ -1,0 +1,43 @@
+﻿<Page
+    x:Class="UwpGitHubReports.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpGitHubReports"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#ccddff">
+
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical" Margin="4,2,4,2" MinWidth="120">
+                <StackPanel Orientation="Horizontal" Height="32" Padding="4,2,4,2">
+                    <TextBlock Text="Repo owner: " FontWeight="Bold" Width="120" VerticalAlignment="Center"/>
+                    <TextBox x:Name="_repoOwner" Text="&lt;repo-owner>"
+                         Width="160" Background="AliceBlue" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="32" Padding="4,2,4,2">
+                    <TextBlock Text="Repo name: " FontWeight="Bold" Width="120" VerticalAlignment="Center"/>
+                    <TextBox x:Name="_repoName" Text="&lt;repo-name>"
+                         Width="160" Background="AliceBlue" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="32" Padding="4,2,4,2">
+                    <TextBlock Text="User name: " FontWeight="Bold" Width="120" VerticalAlignment="Center"/>
+                    <TextBox x:Name="_userName" Text="&lt;user-name>"
+                         Width="160" Background="AliceBlue" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="32" Padding="4,2,4,2">
+                    <TextBlock Text="User token: " FontWeight="Bold" Width="120" VerticalAlignment="Center"/>
+                    <PasswordBox x:Name="_userToken" Password="&lt;user-token>"
+                             Width="160" Background="AliceBlue" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+            <Line Width="3" MinHeight="100" Stroke="Black" Fill="Blue"></Line>
+            <StackPanel Orientation="Vertical" Margin="4,2,4,2" MinWidth="128">
+                <Button Click="CheckToken_Clicked" Width="135" Margin="4,2,4,2">Check token</Button>
+                <Button Click="RunIssuesReport_Clicked" Width="135" Margin="4,2,4,2">Run issues report</Button>
+            </StackPanel>
+        </StackPanel>
+        <TextBlock x:Name="_output" Margin="10,10,10,10" IsTextSelectionEnabled="True">blah blah</TextBlock>
+    </StackPanel>
+</Page>

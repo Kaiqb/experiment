@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace GitHubQl.Models.GitHub
 {
+    [QlObject]
     public class Repository
     {
         /// <summary>A list of users that can be assigned to issues in this repository.</summary>
@@ -10,8 +11,8 @@ namespace GitHubQl.Models.GitHub
         public Connection<User> AssignableUsers { get; set; }
 
         /// <summary>A list of collaborators associated with the repository.</summary>
-        [JsonProperty("assignableUsers")]
-        public Connection<RepositoryCollaborator> Collaborators { get; set; }
+        [JsonProperty("collaborators")]
+        public Connection<User> Collaborators { get; set; }
 
         /// <summary>A list of direct forked repositories.</summary>
         [JsonProperty("forks")]
@@ -29,9 +30,17 @@ namespace GitHubQl.Models.GitHub
         [JsonProperty("pullRequests")]
         public Connection<PullRequest> PullRequests { get; set; }
 
+        ///<summary>A list of users who have starred this starrable.</summary>
+        [JsonProperty("stargazers")]
+        public Connection<User> Stargazers { get; set; }
+
+        ///<summary>A list of users watching the repository.</summary>
+        [JsonProperty("watchers")]
+        public Connection<User> Watchers { get; set; }
+
         /// <summary>Identifies the date and time when the repository was created.</summary>
         [JsonProperty("createdAt")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         /// <summary>The repository's description.</summary>
         [JsonProperty("description")]
@@ -71,6 +80,14 @@ namespace GitHubQl.Models.GitHub
         /// <summary>Identifies when the repository was last pushed to.</summary>
         [JsonProperty("pushedAt")]
         public DateTimeOffset PushedAt { get; set; }
+
+        ///<summary>A description of the repository, rendered to HTML without any links in it.</summary>
+        [JsonProperty("shortDescriptionHTML")]
+        public string ShortDescriptionHtml { get; set; }
+        
+        ///<summary>Identifies the date and time when the object was last updated.</summary>
+        [JsonProperty("updatedAt")]
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         /// <summary>The HTTP URL for this repository.</summary>
         [JsonProperty(PropertyName = "url")]

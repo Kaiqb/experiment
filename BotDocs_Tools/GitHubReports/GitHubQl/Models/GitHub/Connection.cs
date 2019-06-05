@@ -5,14 +5,15 @@ namespace GitHubQl.Models.GitHub
 {
     /// <summary>Summarizes the connections to a given type.</summary>
     /// <typeparam name="T">The type of items connected to.</typeparam>
+    [QlConnection]
     public class Connection<T>
     {
         /// <summary>The list of edges/connections.</summary>
-        [JsonProperty("egdes")]
+        [JsonProperty("egdes"), QlArray]
         public IList<Edge<T>> Edges { get; set; }
 
         /// <summary>The list of nodes/items.</summary>
-        [JsonProperty("nodes")]
+        [JsonProperty("nodes"), QlArray]
         public List<T> Nodes { get; set; }
 
         /// <summary>Pagination information.</summary>

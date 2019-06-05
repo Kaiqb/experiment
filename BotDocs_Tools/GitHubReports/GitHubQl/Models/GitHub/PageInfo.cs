@@ -3,6 +3,7 @@
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>Information about pagination in a connection.</summary>
+    [QlObject]
     public class PageInfo
     {
         /// <summary>When paginating forwards, the cursor to continue.</summary>

@@ -1,6 +1,7 @@
 ﻿namespace GitHubQl.Models.GitHub
 {
     /// <summary>The association a comment author has with a repository.</summary>
+    [QlEnum]
     public enum CommentAuthorAssociation
     {
         /// <summary>Author has been invited to collaborate on the repository.</summary>
