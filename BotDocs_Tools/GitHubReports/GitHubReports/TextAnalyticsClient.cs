@@ -21,7 +21,7 @@ namespace GitHubReports
             public const string Entities = "entities";
         }
 
-        public const string SubscriptionKey = "ba4c4b50f4aa4493942889bca80e78f6";
+        public const string SubscriptionKey = "";
     }
 
     public class TextAnalyticsService
