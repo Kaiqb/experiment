@@ -18,7 +18,8 @@ In this module, you'll learn what a bot is, play with with a few bots, understan
 
 ## Hands on experience with a few bots.
 There are many great examples of bots that people can use to become more familiar with them.
-(Instructors- chose bots of interest from this large list, or add your favorites)
+
+(**Instructors- chose bots of interest from this large list, or add your favorites**)
 * Chatbot workplace examples
   - [HipMunk](https://www.hipmunk.com/hello) is your personal travel agent that you can chat with directly inside of Microsoft Teams, Skype or Facebook Messenger. You can write a message similar to what you would say to a real travel agent. For instance, “find me the cheapest non-stop flight from Seattle to Las Vegas January 6 - 10 departing after 1pm.” One benefit of the Hipmunk bot is that it can proactively reach out to you in the future to let you know if there are any deals or discounts on the flights you searched for.
   - [Polly](https://www.polly.ai/microsoft-teams) for Microsoft Teams allows you to very quickly create polls inside your Microsoft Teams Channel. It is a great way to capture structured data with polls running in tandem with your conversations, meaning your workflow is no longer interrupted. You can also get up-to-date insights into your polls with live responses to surveys and voting stats, all within Microsoft Teams.
