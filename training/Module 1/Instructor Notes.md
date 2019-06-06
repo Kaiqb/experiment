@@ -21,23 +21,17 @@ There are many great examples of bots that people can use to become more familia
 (Instructors- chose bots of interest from this large list, or add your favorites)
 * Chatbot workplace examples
   - [HipMunk](https://www.hipmunk.com/hello) is your personal travel agent that you can chat with directly inside of Microsoft Teams, Skype or Facebook Messenger. You can write a message similar to what you would say to a real travel agent. For instance, “find me the cheapest non-stop flight from Seattle to Las Vegas January 6 - 10 departing after 1pm.” One benefit of the Hipmunk bot is that it can proactively reach out to you in the future to let you know if there are any deals or discounts on the flights you searched for.
-
   - [Polly](https://www.polly.ai/microsoft-teams) for Microsoft Teams allows you to very quickly create polls inside your Microsoft Teams Channel. It is a great way to capture structured data with polls running in tandem with your conversations, meaning your workflow is no longer interrupted. You can also get up-to-date insights into your polls with live responses to surveys and voting stats, all within Microsoft Teams.
 
 * Chatbot Customer Service examples
   - [Amy](https://www.askus.business.hsbc.com.hk/english/bot.htm?isJSEnabled=1&businessArea=Root&channel=Root&startContext=Root.Cards.Business%20MasterCard) HSBC Bank has Amy, a bot that uses AI to operate in both English and Chinese.  Amy has an embedded customer feedback feature that helps her to learn over time enabling her to deal with a wider range of queries. When navigating to this page you will notice a welcome screen that also contains usage information and notifications about privacy and data collection.
-
   - [AVA](https://support.airasia.com/s/?language=en_GB)  Low-cost carrier AirAsia's chatbot AVA (for AirAsia Virtual Allstar) is another example of a customer service based chatbot. AVA assists customers using live chat and responds to inquiries instantly in any one of these eight languages: English, Bahasa Malaysia, Thai, Bahasa Indonesia, Vietnamese, Korean, Simplified Chinese and Traditional Chinese. To encourage customers to use AVA, AirAsia initially offered users a 19% discount for bookings via the app.
-
   - [IVY](https://www.youtube.com/watch?v=b96QIK8T2Wc). A 24-hour virtual concierge service developed by Caesars Entertainment, a casino-entertainment provider with 24,000 hotel rooms and suites across nine Las Vegas resorts, and used by various hotels across the country, texts its guests automatically (no download required) and customers can respond with any/all questions they may have such as "What is the Wi-Fi password", "what time is checkout" etc. thus freeing up the staff. It can also offer customers the option to check out late for a fee, ask customers to rate their stay so far and notify management if the rating is low and based on the questions asked by customers it can notify the front desk when needed.
 
 * Chatbot marketing examples
     - [Hello Fresh](https://www.hellofresh.com/app/?redirectedFromAccountArea=true) provides a variety of well thought out prompts to help the customer determine what they want and place an order and stay away from open ended questions that are more difficult for the bot to process, which could result in a bad customer experience. They also have a built-in sales component that offers bot-exclusive discounts to encourage the use of their bot as well as helps them track the ROI of their bots.
-
     - [Dom](https://www.facebook.com/Dominos) Domino’s chatbot allows their customers to order pizzas just like they would online, and the ability to save and repeat orders makes it very convienent to order your favorite pizza without having to leave [Facebook](https://www.facebook.com/Dominos), or if watching TV [Apple TV](https://techcrunch.com/2016/08/30/you-can-now-order-pizza-from-your-apple-tv/?_ga=2.50997353.1525970220.1559158641-1926216467.1559158641).  Customer even have the option to use Domino’s chatbot with various other technologies such as Amazon Echo, Google Home, Ford Sync, SMS, Smart TV's, and even Smart Watches.
-
     - [Sephora](https://www.facebook.com/sephora). Another example of a marketing chatbot is Sephora.  Want to browse products? Book a makeover appointment? Try on makeup using augmented reality technology? This bot enables customers to do a variety of things without leaving Messenger, and demonstrates how companies can incorporate various marketing strategies into their bots to create a compelling user experience and help drive sales, both online and brick-and-mortar as this bot is able to tell you where specific products and makeovers are available nearest your current (or any specified) location. 
-
     - [Starbucks](https://botlist.co/bots/starbucks-barista) If you cannot live without your coffee and cannot communicate with people until you have had your morning dose, then the Starbucks Barista bot for Facebook Messenger may just be the most useful bot in your world, because it may just be the best way to get your morning fuel without any interaction with actual people.
 
 * Chatbot Messenger Application examples
@@ -63,9 +57,7 @@ There are many great examples of bots that people can use to become more familia
 * Maybe we could build our own fun one? How a bout a bot to tell us weather conditions in different cities?
 
 ## What is involved in making a bot?
-While bots can do the same things as other Types  of software such as computational tasks, reading from and writing to files, connecting to databases as well as using other API provided in the .NET framework, what makes bots special and unique is their ability to communicate with humans in an interactive way as one person talking to another person.  The ability to do that is provided by both the Azure Bot Service and the Bot Framework that provide all the tools needed to build, test, deploy, and manage your bot. You can use the framework provided by the SDK along with the other tools, templates, and AI services to create bots that use speech, understand natural language, handle questions and answers, and more. 
-
-The SDKs currently (as of this writing) exist for C# and JavaScript (with SDKs for Java and Python under development.) Which provides tools for the various stages of bot development to help you design and build bots.
+While bots can do the same things as other Types  of software such as computational tasks, reading from and writing to files, connecting to databases as well as using other API provided in the .NET framework, what makes bots special and unique is their ability to communicate with humans in an interactive way as one person talking to another person.  The ability to do that is provided by both the Azure Bot Service and the Bot Framework that provide all the tools needed to build, test, deploy, and manage your bot.
 
 ### The different stages of bot development
 #### Planning
@@ -113,17 +105,19 @@ You can use data collected and stored in the Azure portal to evaluate how well i
 ## Sounds easy! What is the hard part?
 * Isn’t this all about AI magic?
 * Conversational software works differently than other type of apps
-* Hidden complexity
+* Hidden complexity as you deal with conversation flow and choices.
 * Humans talk funny. Understanding exactly what they mean is hard.
 * Don't frustrate your users. Plan ahead to handle interruptions and changes of topic.
 
 ## What is the Azure Bot Service?
 * It’s an integrated set of tools and services that makes it easier to design, build, test, deploy, measure and manage bots.
-* The SDK is available in multiple languages to fit your needs
+* You can use the framework provided by the SDK along with the other tools, templates, and AI services to create bots that use speech, understand natural language, handle questions and answers, and more. 
+  - The SDKs currently (as of this writing) exist for C# and JavaScript (with SDKs for Java and Python under development.) Which provides tools for the various stages of bot development to help you design and build bots.
 
 ## Tools available for use with bots
 * NLP things, can give LUIS or QnA as an example.
 * Other tools that come in helpful?
+  - Dispatch to determine where to send a user's request.
 
 Online documentation reference: [About Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
 
