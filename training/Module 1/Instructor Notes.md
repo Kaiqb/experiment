@@ -116,8 +116,10 @@ You can use data collected and stored in the Azure portal to evaluate how well i
 
 ## Tools available for use with bots
 * NLP things, can give LUIS or QnA as an example.
+  - [LUIS](https://www.luis.ai/home). Language Understanding Intelligent Service (LUIS) offers a fast and effective way of adding language understanding to your bot. Designed to identify valuable information in conversations, LUIS is designed to interpret your customers intents by distilling the important information from their input. 
+  - [QnA](https://www.qnamaker.ai/). QnA Maker is a cloud-based API service that creates a conversational, question and answer layer over your data.
 * Other tools that come in helpful?
-  - Dispatch to determine where to send a user's request.
+  - Dispatch used to determine where to send a user's request based on the "intent" of their request.
 
 Online documentation reference: [About Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
 
