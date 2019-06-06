@@ -3,8 +3,8 @@ In this module, you'll learn how to process incoming message event to access and
 
 ## Simple Welcome for User
 * OnMembersAddedAsync (C#) or onMembersAdded (JS)
-  - 1 event per joining user
-  - sendActivity creates simple welcome message.
+  - 1 event per new user joining the conversation.
+  - sendActivity displays a simple welcome message to the user.
 
 ## Find user input
 * What is turn context?
