@@ -3,8 +3,8 @@ using GitHubQl.Models.GraphQl;
 using Polly;
 using Refit;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -14,10 +14,21 @@ namespace GitHubQl
 {
     public static class GitHubQlService
     {
+        /// <summary>Sets the user access token to use with the service.</summary>
+        /// <param name="bearerToken">The user's bearer token.</param>
+        /// <remarks>This needs to be set for the calls into the GitHub GraphQL to work.</remarks>
+        public static void SetAuthToken(string bearerToken)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(bearerToken));
+            _authorization = $"bearer {bearerToken.Trim()}";
+        }
+        private static string _authorization = null;
+
         /// <summary>Creates an HTTP client.</summary>
         /// <returns>The HTTP client.</returns>
         private static HttpClient CreateHttpClient()
         {
+            Contract.Requires(!string.IsNullOrEmpty(_authorization));
             return new HttpClient(new HttpClientHandler { AutomaticDecompression = System.Net.DecompressionMethods.GZip })
             {
                 BaseAddress = new Uri(GitHubConstants.APIUrl)
@@ -40,7 +51,7 @@ namespace GitHubQl
                                 .WaitAndRetryAsync(
                                     numRetries,
                                     pollyRetryAttempt)
-                                .ExecuteAsync(() => GitHubApiClient.Query(new GraphQLRequest(query)))
+                                .ExecuteAsync(() => GitHubApiClient.Query(new GraphQLRequest(query), _authorization))
                                 .ConfigureAwait(false);
 
 

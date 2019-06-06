@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace GitHubQl
 {
@@ -30,14 +31,6 @@ namespace GitHubQl
         public const string APIUrl = "https://api.github.com/graphql";
 
         public const int QueryPageSize = 100;
-
-        /// <summary>The GitHub user name of the person running the report.</summary>
-        /// <remarks>This should be a user property in the app project.</remarks>
-        public const string UserName = "JonathanFingold";
-
-        /// <summary>The GitHub user token for the person running the report.</summary>
-        /// <remarks>This should be a user property in the app project.</remarks>
-        public const string PersonalAccessToken = "b51e2f3bb07ba873bb7e8252f9fa5bbccc78d854";
 
         /// <summary>The repositories we already know about and can run automated reports against.</summary>
         /// <remarks>This should be an app property in the app project.</remarks>

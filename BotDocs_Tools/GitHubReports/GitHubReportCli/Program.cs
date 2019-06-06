@@ -20,9 +20,40 @@ namespace GitHubReportCli
         // TODO Add command line args to allow the user to change things, or set this up with some sort of GUI.
         public static async Task Main(string[] args)
         {
+            if (args.Any(p => p.Equals("clear", StringComparison.InvariantCultureIgnoreCase))) SecretsManager.Clear();
+
+
+            if (!GetSecret(SecretsManager.GitHubUsername, "What is your GitHub user name?", out var userName))
+            {
+                Console.WriteLine("This is needed...exiting");
+                return;
+            }
+            else
+            {
+                SecretsManager.Set(SecretsManager.GitHubUsername, userName);
+                Console.WriteLine($"Your GitHub username is {SecretsManager.Get(SecretsManager.GitHubUsername)}.");
+            }
+            Console.WriteLine();
+
+            if (!GetSecret(SecretsManager.GitHubUserToken, "What is your GitHub user token?", out var userToken))
+            {
+                Console.WriteLine("This is needed...exiting");
+                return;
+            }
+            else
+            {
+                SecretsManager.Set(SecretsManager.GitHubUserToken, userToken);
+                GitHubQlService.SetAuthToken(userToken);
+                Console.WriteLine("Your GitHub auth token is set.");
+            }
+            Console.WriteLine();
+
+            SecretsManager.Save();
+            Console.WriteLine("You can clear both of these by running this command with a `clear` argument.");
+            Console.WriteLine();
+
             var nameToGet = "bot-docs";
 
-            var userName = GitHubConstants.UserName;
             var repo = GitHubConstants.KnownRepos.FirstOrDefault(
                 r => r.Name.Equals(nameToGet, StringComparison.InvariantCultureIgnoreCase));
 
@@ -40,7 +71,7 @@ namespace GitHubReportCli
             var outputPath = Path.Combine(outputRoot, reportDirectory);
             if (Directory.Exists(outputPath))
             {
-                Console.Write($"The output directory '{outputPath}' already exists. Cober existing reports? (y/N)");
+                Console.Write($"The output directory '{outputPath}' already exists. Clobber existing reports? (y/N)");
                 var key = Console.ReadKey();
                 Console.WriteLine();
                 switch (key.Key)
@@ -133,14 +164,14 @@ namespace GitHubReportCli
                     i?.Labels.Concat(", ", l => l.Name)
                     + (i?.Labels.PageInfo.HasPreviousPage == true ? ",..." : string.Empty) },
                 { "Comment count", i => i?.Comments?.TotalCount?.ToString() ?? string.Empty },
-                { "Created at", i => i?.CreatedAt.ToString() },
+                { "Created at", i => i?.CreatedAt.ToShortLocal() },
                 //{ "Published at", i => i?.PublishedAt.ToString() },
                 //{ "Last edited at", i => i?.LastEditedAt.ToString() },
                 //{ "Updated at", i => i?.UpdatedAt.ToString() },
-                { "Closed at", i => i?.ClosedAt.ToString() },
+                { "Closed at", i => i?.ClosedAt.ToShortLocal() },
 
                 { "Last comment author", i => i?.Comments?.Nodes?.FirstOrDefault()?.Author?.Login },
-                { "Last comment date", i => i?.Comments?.Nodes?.FirstOrDefault()?.CreatedAt.ToString() },
+                { "Last comment date", i => i?.Comments?.Nodes?.FirstOrDefault()?.CreatedAt.ToShortLocal() },
 
                 // "Derived" information:
                 { "Active since closed?",  i => HasCommentsSinceClosing(i).ToString() },
@@ -150,7 +181,7 @@ namespace GitHubReportCli
 
             Console.Write("Gatering issue data for the repo a page at a time");
             var issues = new List<Issue>();
-            Func<string, string> queryWithStartCursor = (string start) => Requests.GetAllIssues(repo, start);
+            string queryWithStartCursor(string start) => Requests.GetAllIssues(repo, start);
             await foreach (var sublist in GitHubQlService.GetConnectionAsync(
                 queryWithStartCursor, d => d.Repository.Issues, c => c.Nodes, new CancellationToken()))
             {
@@ -199,6 +230,21 @@ namespace GitHubReportCli
             Console.WriteLine();
         }
 
+        private static bool GetSecret(string id, string prompt, out string value)
+        {
+            if (SecretsManager.TryGet(id, out value)
+                && !string.IsNullOrWhiteSpace(value))
+            {
+                return true;
+            }
+
+            Console.Write(prompt + " ");
+            value = Console.ReadLine();
+            value = value.Trim();
+
+            return !string.IsNullOrEmpty(value);
+        }
+
         private static double? GetIdleDays(Issue issue)
         {
             if (issue is null
@@ -209,13 +255,13 @@ namespace GitHubReportCli
                 && issue.Comments.TotalCount > 0
                 && issue.Comments.Nodes != null
                 && issue.Comments.Nodes.Count > 0
-                && issue.Comments.Nodes[0].CreatedAt !=null
+                && issue.Comments.Nodes[0].CreatedAt != null
                 && issue.Comments.Nodes[0].CreatedAt.HasValue)
             {
                 lastCommentDate = issue.Comments.Nodes[0].CreatedAt.Value;
             }
 
-            return (DateTimeOffset.Now - lastCommentDate).TotalDays;
+            return Math.Round((DateTimeOffset.Now - lastCommentDate).TotalDays, 2);
         }
 
         private static bool HasCommentsSinceClosing(Issue issue)

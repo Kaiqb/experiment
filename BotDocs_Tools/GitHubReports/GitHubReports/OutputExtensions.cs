@@ -1,13 +1,7 @@
 ﻿using GitHubQl.Models.GitHub;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Reflection;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using System.Collections;
-using GitHubQl;
+using System.Text;
 
 namespace GitHubReports
 {
@@ -110,6 +104,15 @@ namespace GitHubReports
                 .Replace("\"", "\"\"");
 
             return '"' + escaped + '"';
+        }
+
+        public static string ToShortLocal(this DateTimeOffset? time)
+        {
+            if (time is null || !time.HasValue) return string.Empty;
+
+            var local = time.Value.ToLocalTime();
+
+            return local.ToString("MM/dd/yyyy HH:mm");
         }
     }
 }

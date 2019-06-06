@@ -11,7 +11,7 @@ namespace GitHubQl
     [Headers(
         "Accept-Encoding: gzip",
         "Content-Type: application/json",
-        "Authorization: bearer " + GitHubConstants.PersonalAccessToken,
+        //"Authorization: bearer " + GitHubConstants.PersonalAccessToken,
         "User-Agent: GitHubExplorer")]
     public interface IGitHubAPI
     {
@@ -20,7 +20,9 @@ namespace GitHubQl
         /// <returns>A task that represents the work queued to execute.</returns>
         /// <remarks>If the task is successful, the result contains the GitHub response payload.
         [Post("")]
-        Task<GraphQLResponse<GitHubQlData>> Query([Body] GraphQLRequest request);
+        Task<GraphQLResponse<GitHubQlData>> Query(
+            [Body] GraphQLRequest request,
+            [Header("Authorization")] string authorization);
     }
 
     public delegate Task<GraphQLResponse<GitHubQlData>> QueryFunc([Body] GraphQLRequest request);
