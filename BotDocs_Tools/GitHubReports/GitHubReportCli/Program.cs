@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,10 +17,23 @@ namespace GitHubReportCli
 {
     class Program
     {
+        private static class Strings
+        {
+            public const string About = @"
+This tool uses the GitHub GraphQL API to gather repository information from GitHub. You will need a
+personal access token that the tool can use to access GitHub on your behalf. See the GitHub API docs
+for more information (https://developer.github.com/v4/guides/forming-calls/#authenticating-with-graphql).
+This tool will remember your GitHub user name and token, after you enter them. If you need to change
+these later. run the tool with the 'clear' argument.
+";
+        }
+
         // To simplify things, the initial report uses constants.
         // TODO Add command line args to allow the user to change things, or set this up with some sort of GUI.
         public static async Task Main(string[] args)
         {
+            Console.WriteLine(Strings.About);
+
             if (args.Any(p => p.Equals("clear", StringComparison.InvariantCultureIgnoreCase))) SecretsManager.Clear();
 
 
@@ -166,7 +180,7 @@ namespace GitHubReportCli
                 { "Comment count", i => i?.Comments?.TotalCount?.ToString() ?? string.Empty },
                 { "Created at", i => i?.CreatedAt.ToShortLocal() },
                 //{ "Published at", i => i?.PublishedAt.ToString() },
-                //{ "Last edited at", i => i?.LastEditedAt.ToString() },
+                { "Last edited at", i => i?.LastEditedAt.ToString() },
                 //{ "Updated at", i => i?.UpdatedAt.ToString() },
                 { "Closed at", i => i?.ClosedAt.ToShortLocal() },
 
