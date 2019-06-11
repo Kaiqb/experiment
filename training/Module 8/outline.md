@@ -31,8 +31,8 @@ You can use QnA Maker service to add question and answer support to your bot. In
   - New feature in version 4.4.0 and above.
   
 ## Download Lab 4 sample code
-* Download BotBuilder sample "11.qnamaker" for your language: [C# Sample](https://aka.ms/cs-qna), [JavaScript Sample](https://aka.ms/js-qna-sample)
-* Download Lab4WeatherBot-KB.tsv (add location, found at: "Lab4 WeatherBot/CognitiveModels/lab4WeatherBot-KB.tsv)
+* Download [C# QnAWeatherBot Sample](https://github.com/Kaiqb/experiment/tree/master/training/Code/Lab4%20QnAWeatherBot) (**add correct link when this is published**)
+* Download Lab4WeatherBot-KB.tsv (**add location**, found at: "Lab4 WeatherBot/CognitiveModels/lab4WeatherBot-KB.tsv)
 
 Online documentation reference: [Use QnA Maker to answer questions](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-qna?view=azure-bot-service-4.0&tabs=cs)
 

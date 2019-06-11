@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyVersion>0.3.1.0</AssemblyVersion>
-    <FileVersion>0.3.1.0</FileVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <AssemblyVersion>0.3.1.0</AssemblyVersion>
+        <FileVersion>0.3.1.0</FileVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.CognitiveServices.Language.TextAnalytics" Version="3.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Azure.CognitiveServices.Language.TextAnalytics" Version="3.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\GitHubQl\GitHubQl.csproj" />
-    <ProjectReference Include="..\GitHubReports\GitHubReports.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\GitHubQl\GitHubQl.csproj" />
+        <ProjectReference Include="..\GitHubReports\GitHubReports.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -82,7 +82,7 @@ namespace DispatchWeatherBot
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome to Dispatch bot {member.Name}. {WelcomeText}"), cancellationToken);
+                    await turnContext.SendActivityAsync(MessageFactory.Text($"Welcome to our Dispatch Weather Bot {member.Name}. {WelcomeText}"), cancellationToken);
                 }
             }
         }

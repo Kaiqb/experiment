@@ -80,29 +80,22 @@ namespace Microsoft.BotBuilderSamples
             // Decide which type of card(s) we are going to show the user
             switch (((FoundChoice)stepContext.Result).Value)
             {
+                // Display an Adaptive Card
                 case "Miami":
-                    // Display an Adaptive Card
                     reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Miami", jsonResult));
                     break;
                 case "Chicago":
-                    // Display an AnimationCard.
                     reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Chicago", jsonResult));
                     break;
                 case "Seattle":
-                    // Display an AudioCard
                     reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Seattle", jsonResult));
                     break;
                 case "London":
-                    // Display an AudioCard
                     reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("London", jsonResult));
                     break;
                 case "Sydney":
-                    // Display an AudioCard
                     reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Sydney", jsonResult));
                     break;
-                    //default:
-                    //    // Display a carousel of all the citys.
-                    //    break;
             }
 
             // Send the card(s) to the user as an attachment to the activity
