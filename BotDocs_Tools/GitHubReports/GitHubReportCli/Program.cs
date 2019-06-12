@@ -2,14 +2,10 @@
 using GitHubQl.Models.GitHub;
 using GitHubReports;
 using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,6 +26,7 @@ these later. run the tool with the 'clear' argument.
 
         // To simplify things, the initial report uses constants.
         // TODO Add command line args to allow the user to change things, or set this up with some sort of GUI.
+        // TODO Refactor so this isn't a monolithic method.
         public static async Task Main(string[] args)
         {
             Console.WriteLine(Strings.About);
@@ -177,7 +174,7 @@ these later. run the tool with the 'clear' argument.
                 { "Labels", i =>
                     i?.Labels.Concat(", ", l => l.Name)
                     + (i?.Labels.PageInfo.HasPreviousPage == true ? ",..." : string.Empty) },
-                { "Comment count", i => i?.Comments?.TotalCount?.ToString() ?? string.Empty },
+                { "Comment count", i => i?.Comments?.TotalCount?.ToString() },
                 { "Created at", i => i?.CreatedAt.ToShortLocal() },
                 //{ "Published at", i => i?.PublishedAt.ToString() },
                 { "Last edited at", i => i?.LastEditedAt.ToString() },
@@ -189,7 +186,7 @@ these later. run the tool with the 'clear' argument.
 
                 // "Derived" information:
                 { "Active since closed?",  i => HasCommentsSinceClosing(i).ToString() },
-                { "Time idle (open w/o comment)", i => GetIdleDays(i).ToString() }
+                { "Time idle (open w/o comment)", i => GetIdleDays(i)?.ToString() }
             };
 
 
@@ -244,6 +241,13 @@ these later. run the tool with the 'clear' argument.
             Console.WriteLine();
         }
 
+        /// <summary>Wraps a call to the secrets manager, and queries the user for a value, if one
+        /// isn't already on record.</summary>
+        /// <param name="id">The secret's ID.</param>
+        /// <param name="prompt">The string with which to ask the user for a value.</param>
+        /// <param name="value">When this returns, contains the secret; or the null or empty string
+        /// if the retrieval failed.</param>
+        /// <returns>True if the retrieval or prompt succeeded; otherwise, false.</returns>
         private static bool GetSecret(string id, string prompt, out string value)
         {
             if (SecretsManager.TryGet(id, out value)
@@ -259,27 +263,52 @@ these later. run the tool with the 'clear' argument.
             return !string.IsNullOrEmpty(value);
         }
 
+        /// <summary>Returns the number of days since the last comment was made to an issue.</summary>
+        /// <param name="issue">The issue to get the value for.</param>
+        /// <returns>The number of days since the last comment; or null if the issue contains 
+        /// insufficient information.</returns>
         private static double? GetIdleDays(Issue issue)
         {
             if (issue is null
                 || issue.Closed == true) return null;
 
-            var lastCommentDate = issue.CreatedAt.Value;
+            DateTimeOffset lasstActivityDate;
             if (issue.Comments != null
-                && issue.Comments.TotalCount > 0
-                && issue.Comments.Nodes != null
-                && issue.Comments.Nodes.Count > 0
-                && issue.Comments.Nodes[0].CreatedAt != null
-                && issue.Comments.Nodes[0].CreatedAt.HasValue)
+                && issue.Comments.TotalCount > 0)
             {
-                lastCommentDate = issue.Comments.Nodes[0].CreatedAt.Value;
+                if (issue.Comments.Nodes != null
+                    && issue.Comments.Nodes.Count > 0
+                    && issue.Comments.Nodes[0].CreatedAt != null
+                    && issue.Comments.Nodes[0].CreatedAt.HasValue)
+                {
+                    lasstActivityDate = issue.Comments.Nodes[0].CreatedAt.Value;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else if (issue.CreatedAt != null
+                && issue.CreatedAt.HasValue)
+            {
+                lasstActivityDate = issue.CreatedAt.Value;
+            }
+            else
+            {
+                return null;
             }
 
-            return Math.Round((DateTimeOffset.Now - lastCommentDate).TotalDays, 2);
+            return Math.Round((DateTimeOffset.Now - lasstActivityDate).TotalDays, 2);
         }
 
-        private static bool HasCommentsSinceClosing(Issue issue)
+        /// <summary>Indicates whether any comments were made to an issue since it was closed.</summary>
+        /// <param name="issue">The issue to check.</param>
+        /// <returns>True if there was activity since closing, false if not, or null if there's
+        /// insufficient information.</returns>
+        private static bool? HasCommentsSinceClosing(Issue issue)
         {
+            if (!(issue?.CreatedAt.HasValue == true)) return null;
+
             return issue?.Closed == true
                 && issue.Comments?.TotalCount > 0
                 && issue.Comments.Nodes?.FirstOrDefault()?.CreatedAt > issue.ClosedAt;
