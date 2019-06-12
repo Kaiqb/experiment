@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>Represents a Git tree.</summary>
-    [QlObject]
     public class Tree
     {
         ///<summary>The HTTP URL for this Git object.</summary>

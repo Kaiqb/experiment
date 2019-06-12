@@ -33,7 +33,6 @@ these later. run the tool with the 'clear' argument.
 
             if (args.Any(p => p.Equals("clear", StringComparison.InvariantCultureIgnoreCase))) SecretsManager.Clear();
 
-
             if (!GetSecret(SecretsManager.GitHubUsername, "What is your GitHub user name?", out var userName))
             {
                 Console.WriteLine("This is needed...exiting");
@@ -116,16 +115,17 @@ these later. run the tool with the 'clear' argument.
             }
             Console.WriteLine();
 
-            // This relies on the format of the query used to retrieve the data from GitHub.
+            // These entries define the columns to include in the CSV file.
+            // This relies on the response payload, which is based on what was requested in the GitHub request payload.
             var repoFormatter = new Dictionary<string, Func<Repository, string>>
             {
                 { "ID", r => r?.Id.CsvEscape() },
                 { "Parent", r => r?.Parent?.NameWithOwner ?? r?.Parent?.Name ?? r?.Parent?.Id },
                 { "URL", r => r?.Url },
                 { "Is private", r => r?.IsPrivate.ToString() },
-                { "Created at", r => r?.CreatedAt.ToString() },
-                { "Pushed at", r => r?.PushedAt.ToString() },
-                { "Updated at", r => r?.UpdatedAt.ToString() },
+                { "Created at", r => r?.CreatedAt.ToShortLocal() },
+                { "Pushed at", r => r?.PushedAt.ToShortLocal() },
+                { "Updated at", r => r?.UpdatedAt.ToShortLocal() },
                 { "Name", r => r?.Name },
                 { "Name with owner", r => r?.NameWithOwner },
                 { "Owner", r => r?.Owner?.Login ?? r?.Owner?.Id },
@@ -153,7 +153,8 @@ these later. run the tool with the 'clear' argument.
             }
             Console.WriteLine();
 
-            // This relies on the format of the query used to retrieve the data from GitHub.
+            // These entries define the columns to include in the CSV file.
+            // This relies on the response payload, which is based on what was requested in the GitHub request payload.
             var issueFormatter = new Dictionary<string, Func<Issue, string>>
             {
                 { "Repository", i => i?.Repository?.NameWithOwner ?? i?.Repository?.Name },
@@ -176,9 +177,9 @@ these later. run the tool with the 'clear' argument.
                     + (i?.Labels.PageInfo.HasPreviousPage == true ? ",..." : string.Empty) },
                 { "Comment count", i => i?.Comments?.TotalCount?.ToString() },
                 { "Created at", i => i?.CreatedAt.ToShortLocal() },
-                //{ "Published at", i => i?.PublishedAt.ToString() },
-                { "Last edited at", i => i?.LastEditedAt.ToString() },
-                //{ "Updated at", i => i?.UpdatedAt.ToString() },
+                //{ "Published at", i => i?.PublishedAt.ToShortLocal() },
+                { "Last edited at", i => i?.LastEditedAt.ToShortLocal() },
+                //{ "Updated at", i => i?.UpdatedAt.ToShortLocal() },
                 { "Closed at", i => i?.ClosedAt.ToShortLocal() },
 
                 { "Last comment author", i => i?.Comments?.Nodes?.FirstOrDefault()?.Author?.Login },
@@ -238,7 +239,18 @@ these later. run the tool with the 'clear' argument.
                     Text = i.Body,
                 }).ToList(),
             };
+            // TODO Make the call(s) to the Text Analytics service, aggregate results, generate a report.
             Console.WriteLine();
+
+            // Other reports that might be useful:
+            // - Issues in other repos that have the "Docs" label applied.
+            // - PRs in the main code repos that are labeled as "DCR".
+            // - Merge activity in the samples repo.
+            // - An orphaned or stale branch report for bot-docs-pr.
+
+            // Any reports that crawl the file content may be better suited to the other tool:
+            // - Topics that need review, such as their ms.date attribute is getting old, the author
+            //   or manager is no longer on the team, or any other metadata maintenance we might need to do.
         }
 
         /// <summary>Wraps a call to the secrets manager, and queries the user for a value, if one

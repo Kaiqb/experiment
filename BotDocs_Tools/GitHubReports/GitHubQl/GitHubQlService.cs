@@ -45,7 +45,7 @@ namespace GitHubQl
         /// <returns>The `data` object returned by the query.</returns>
         public static async Task<GitHubQlData> ExecuteGraphQLRequest(string query, int numRetries = 3)
         {
-            TimeSpan pollyRetryAttempt(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(2, attemptNumber));
+            static TimeSpan pollyRetryAttempt(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(2, attemptNumber));
             var response = await Policy
                                 .Handle<Exception>()
                                 .WaitAndRetryAsync(
@@ -79,25 +79,5 @@ namespace GitHubQl
             }
             while (!cancellationToken.IsCancellationRequested && connection?.PageInfo?.HasPreviousPage is true);
         }
-
-        /// <summary>Runs an issues query against a repo, returning one page of issues at a time.</summary>
-        /// <param name="queryWithStartCursor">A function that takes a start cursor (or null) and returns a complete query.</param>
-        /// <param name="getNodes">A function paired to the query that can get a list of nodes from the query results.</param>
-        /// <param name="cancellationToken">A cancellation token for the async operation.</param>
-        /// <returns>An async enumeration of the pages of issues.</returns>
-        //public static async IAsyncEnumerable<List<Issue>> GetIssues(
-        //    Func<string, string> queryWithStartCursor,
-        //    Func<Connection<Issue>, List<Issue>> getNodes,
-        //    CancellationToken cancellationToken = default)
-        //{
-        //    await foreach (var issues in GetConnectionAsync(
-        //        queryWithStartCursor,
-        //        rr => rr.Repository.Issues,
-        //        getNodes,
-        //        cancellationToken))
-        //    {
-        //        yield return issues;
-        //    }
-        //}
     }
 }

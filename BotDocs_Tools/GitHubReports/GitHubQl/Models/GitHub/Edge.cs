@@ -4,7 +4,6 @@ namespace GitHubQl.Models.GitHub
 {
     /// <summary>Represents a connection to an item.</summary>
     /// <typeparam name="T">The type of the item connected to.</typeparam>
-    [QlEdge]
     public class Edge<T>
     {
         /// <summary>A cursor for use in pagination.</summary>

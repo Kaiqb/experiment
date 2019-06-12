@@ -3,7 +3,6 @@
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>A file changed in a pull request.</summary>
-    [QlObject]
     public class PullRequestChangedFile
     {
         /// <summary>The number of additions to the file.</summary>

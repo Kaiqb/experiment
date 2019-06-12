@@ -3,7 +3,6 @@
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>Represents a Git object.</summary>
-    [QlObject]
     public class GitObject
     {
         ///<summary>An abbreviated version of the Git object ID.</summary>

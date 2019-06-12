@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 namespace GitHubQl.Models.GitHub
 {
     /// <summary></summary>
-    [QlObject]
     public class PullRequest
     {
         /// <summary>A list of Users assigned to this object.</summary>

@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>A user is an individual's account on GitHub that owns repositories and can make new content.</summary>
-    [QlObject]
     public class User
     {
         /// <summary>A list of users the given user is followed by.</summary>

@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>A label for categorizing Issues or Milestones with a given Repository.</summary>
-    [QlObject]
     public class Label
     {
         ///<summary>A list of issues associated with this label.</summary>

@@ -4,6 +4,7 @@ using System.Dynamic;
 
 namespace GitHubQl
 {
+    /// <summary>Contains some of the static information needed to run the GitHub queries.</summary>
     public static class GitHubConstants
     {
         [Flags]

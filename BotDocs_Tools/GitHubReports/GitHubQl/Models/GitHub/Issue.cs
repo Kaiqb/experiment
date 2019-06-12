@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>An Issue is a place to discuss ideas, enhancements, tasks, and bugs for a project.</summary>
-    [QlObject]
     public class Issue
     {
         ///<summary>A list of Users assigned to this object.</summary>

@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace GitHubQl.Models.GitHub
 {
-    [QlObject]
     public class Repository
     {
         /// <summary>A list of users that can be assigned to issues in this repository.</summary>
@@ -79,7 +78,7 @@ namespace GitHubQl.Models.GitHub
 
         /// <summary>Identifies when the repository was last pushed to.</summary>
         [JsonProperty("pushedAt")]
-        public DateTimeOffset PushedAt { get; set; }
+        public DateTimeOffset? PushedAt { get; set; }
 
         ///<summary>A description of the repository, rendered to HTML without any links in it.</summary>
         [JsonProperty("shortDescriptionHTML")]
