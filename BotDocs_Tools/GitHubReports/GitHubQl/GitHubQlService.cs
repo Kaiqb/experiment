@@ -70,7 +70,7 @@ namespace GitHubQl
             Connection<T> connection = null;
             do
             {
-                var startCursor = connection?.PageInfo?.StartCursor;
+                 var startCursor = connection?.PageInfo?.StartCursor;
                 var query = queryWithStartCursor(startCursor);
 
                 connection = getConnection(await ExecuteGraphQLRequest(query).ConfigureAwait(false));

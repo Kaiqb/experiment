@@ -3,6 +3,7 @@ using GitHubQl.Models.GitHub;
 using GitHubReports;
 using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -190,8 +191,105 @@ these later. run the tool with the 'clear' argument.
                 { "Time idle (open w/o comment)", i => GetIdleDays(i)?.ToString() }
             };
 
+            await GetDocRepoIssues(repo, outputPath, issueFormatter);
 
-            Console.Write("Gatering issue data for the repo a page at a time");
+            var filePath = Path.Combine(outputPath, "CodeRepoIssues.csv");
+            var repos = GitHubConstants.KnownRepos.Where(
+                r => RepoIsOfType(r, GitHubConstants.RepoTypes.Code));
+            var stateFilter = new IssueState[] { IssueState.OPEN };
+            var labelFilter = new string[] { "documentation", "Docs", "DCR" };
+
+            await GenerateIssuesReport(repos, issueFormatter, filePath, stateFilter, labelFilter);
+
+            filePath = Path.Combine(outputPath, "DocRepoIssues.csv");
+            repos = GitHubConstants.KnownRepos.Where(
+                r => RepoIsOfType(r, GitHubConstants.RepoTypes.Docs | GitHubConstants.RepoTypes.Private));
+
+            //await GenerateIssuesReport(repos, issueFormatter, filePath);
+
+            //var taClient = new TextAnalyticsService("westus2");
+
+            //// The "documents" to analyze. These mat need to be batched. Review
+            //// [Text Analytics Overview > Data limits](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/overview#data-limits).
+            //var input = issues.Select(i => new MultiLanguageInput("en", i.Number.ToString(), i.BodyText)).ToList();
+
+            //// Once we're done, this will be the aggregated output from analysis.
+            //var output = new List<SentimentBatchResultItem>();
+
+            //// TODO track what we've already analyzed, so that:
+            //// 1. We don't reanalyze the same issue twice.
+            //// 1. We can sanely add to the existing data set.
+
+            //var docData = new CognitiveServicesDocData
+            //{
+            //    Docs = issues.Select(i => new CognitiveServicesDoc
+            //    {
+            //        Language = "en",
+            //        Id = i.Number.ToString(),
+            //        Text = i.Body,
+            //    }).ToList(),
+            //};
+            //// TODO Make the call(s) to the Text Analytics service, aggregate results, generate a report.
+            //Console.WriteLine();
+
+            // Other reports that might be useful:
+            // - Issues in other repos that have the "Docs" label applied.
+            // - PRs in the main code repos that are labeled as "DCR".
+            // - Merge activity in the samples repo.
+            // - An orphaned or stale branch report for bot-docs-pr.
+
+            // Any reports that crawl the file content may be better suited to the other tool:
+            // - Topics that need review, such as their ms.date attribute is getting old, the author
+            //   or manager is no longer on the team, or any other metadata maintenance we might need to do.
+        }
+
+        private static bool RepoIsOfType(GitHubConstants.RepoParams repo, GitHubConstants.RepoTypes type)
+        {
+            return (repo.Type & type) == type;
+        }
+
+        private static async Task GenerateIssuesReport(
+            IEnumerable<GitHubConstants.RepoParams> repos,
+            Dictionary<string, Func<Issue, string>> issueFormatter,
+            string filePath,
+            IssueState[] stateFilter = null,
+            string[] labelFilter = null)
+        {
+            var issues = new List<Issue>();
+
+            foreach (var repo in repos)
+            {
+                Console.Write($"Gatering issue data for the {repo.Owner}/{repo.Name} repo");
+                string queryWithStartCursor(string start) => Requests.GetAllIssues(repo, start, stateFilter, labelFilter);
+                await foreach (var sublist in GitHubQlService.GetConnectionAsync(
+                    queryWithStartCursor, d => d.Repository.Issues, c => c.Nodes, new CancellationToken()))
+                {
+                    Console.Write(".");
+                    issues.AddRange(sublist);
+                }
+                Console.WriteLine("done!");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine($"Writing issue information to '{filePath}'...");
+            using (TextWriter writer = new StreamWriter(filePath, false))
+            {
+                writer.WriteLine(string.Join(',', issueFormatter.Keys));
+                foreach (var issue in issues)
+                {
+                    writer.WriteLine(string.Join(',',
+                        issueFormatter.Values.Select(func => func(issue)?.CsvEscape() ?? string.Empty)));
+                }
+            }
+            Console.WriteLine();
+        }
+
+        private static async Task GetDocRepoIssues(
+            GitHubConstants.RepoParams repo,
+            string outputPath,
+            Dictionary<string, Func<Issue, string>> issueFormatter)
+        {
+            Console.Write("Gatering issue data for the docs repo a page at a time");
             var issues = new List<Issue>();
             string queryWithStartCursor(string start) => Requests.GetAllIssues(repo, start);
             await foreach (var sublist in GitHubQlService.GetConnectionAsync(
@@ -203,7 +301,7 @@ these later. run the tool with the 'clear' argument.
             Console.WriteLine("done!");
             Console.WriteLine();
 
-            var issueReport = Path.Combine(outputPath, "Issues.csv");
+            var issueReport = Path.Combine(outputPath, "DocRepoIssues.csv");
             Console.WriteLine($"Writing issue information to '{issueReport}'...");
             using (TextWriter writer = new StreamWriter(issueReport, false))
             {
@@ -215,42 +313,6 @@ these later. run the tool with the 'clear' argument.
                 }
             }
             Console.WriteLine();
-
-
-            var taClient = new TextAnalyticsService("westus2");
-
-            // The "documents" to analyze. These mat need to be batched. Review
-            // [Text Analytics Overview > Data limits](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/overview#data-limits).
-            var input = issues.Select(i => new MultiLanguageInput("en", i.Number.ToString(), i.BodyText)).ToList();
-
-            // Once we're done, this will be the aggregated output from analysis.
-            var output = new List<SentimentBatchResultItem>();
-
-            // TODO track what we've already analyzed, so that:
-            // 1. We don't reanalyze the same issue twice.
-            // 1. We can sanely add to the existing data set.
-
-            var docData = new CognitiveServicesDocData
-            {
-                Docs = issues.Select(i => new CognitiveServicesDoc
-                {
-                    Language = "en",
-                    Id = i.Number.ToString(),
-                    Text = i.Body,
-                }).ToList(),
-            };
-            // TODO Make the call(s) to the Text Analytics service, aggregate results, generate a report.
-            Console.WriteLine();
-
-            // Other reports that might be useful:
-            // - Issues in other repos that have the "Docs" label applied.
-            // - PRs in the main code repos that are labeled as "DCR".
-            // - Merge activity in the samples repo.
-            // - An orphaned or stale branch report for bot-docs-pr.
-
-            // Any reports that crawl the file content may be better suited to the other tool:
-            // - Topics that need review, such as their ms.date attribute is getting old, the author
-            //   or manager is no longer on the team, or any other metadata maintenance we might need to do.
         }
 
         /// <summary>Wraps a call to the secrets manager, and queries the user for a value, if one
