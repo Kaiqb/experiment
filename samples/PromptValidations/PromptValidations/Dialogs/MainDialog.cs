@@ -26,7 +26,7 @@ namespace PromptValidations.Dialogs
                 LastStepAsync,
             };
 
-            AddDialog(new PromptsDialog(nameof(PromptsDialog)));
+            AddDialog(new FileUploadDialog(nameof(FileUploadDialog)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
 
             InitialDialogId = nameof(WaterfallDialog);
@@ -35,7 +35,7 @@ namespace PromptValidations.Dialogs
         private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             await stepContext.Context.SendActivityAsync("Let's get started.");
-            return await stepContext.BeginDialogAsync(nameof(PromptsDialog), null, cancellationToken);
+            return await stepContext.BeginDialogAsync(nameof(FileUploadDialog), null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> LastStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -44,26 +44,15 @@ namespace PromptValidations.Dialogs
             {
                 case UserProfile profile:
 
-                    if (profile is null)
-                    {
-                        goto default;
-                    }
-
                     await _userProfileAccessor.SetAsync(stepContext.Context, profile, cancellationToken);
                     await _userState.SaveChangesAsync(stepContext.Context, false, cancellationToken);
 
                     await stepContext.Context.SendActivityAsync($"Thanks {profile.Name}.");
                     break;
 
-                case bool succeeded:
-
-                    if (succeeded)
-                    {
-                        goto default;
-                    }
+                case bool success:
 
                     await stepContext.Context.SendActivityAsync("Operation cancelled.");
-
                     break;
 
                 default:
