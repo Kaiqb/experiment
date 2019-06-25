@@ -1,7 +1,6 @@
 ﻿namespace GitHubQl.Models.GitHub
 {
     /// <summary>The possible commit status states.</summary>
-    [QlEnum]
     public enum StatusState
     {
         /// <summary>Status is errored.</summary>

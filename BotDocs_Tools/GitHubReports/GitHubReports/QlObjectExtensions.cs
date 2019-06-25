@@ -6,11 +6,19 @@ using System.Text;
 
 namespace GitHubReports
 {
+    /// <summary>Contains extension methods for working with GraphQL objects.</summary>
     public static class QlObjectExtensions
     {
+        /// <summary>Gets the number of items contained in a connection object.</summary>
+        /// <typeparam name="T">The type of objects contained in the connection.</typeparam>
+        /// <param name="conn">The connection object.</param>
+        /// <returns>A representation of the number of items in the connection.</returns>
         public static string GetCount<T>(this Connection<T> conn)
         {
             if (conn is null) return string.Empty;
+
+            // TODO Review logic and figure out how to represent the count when we don't know
+            //      the total but do know there are more pages of data.
 
             string count = null;
             if (conn?.Edges != null)
@@ -31,9 +39,18 @@ namespace GitHubReports
                 : $"{count} of {tot}";
         }
 
+        /// <summary>Converts a connection to a string representing the connection's contained items.</summary>
+        /// <typeparam name="T">The type of objects contained in the connection.</typeparam>
+        /// <param name="conn">The connection object.</param>
+        /// <param name="sep">A string to use to separate each item in the connection.</param>
+        /// <param name="op">A function for converting an item to a string.</param>
+        /// <returns>A representation to the connection as a list of its items.</returns>
         public static string Concat<T>(this Connection<T> conn, string sep, Func<T, string> op)
         {
             if (conn is null) return string.Empty;
+
+            // TODO Review logic and figure out how to represent the list when we know there are
+            //      more pages of data.
 
             if (conn.Nodes != null)
             {

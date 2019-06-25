@@ -3,7 +3,6 @@
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>An account on GitHub, with one or more owners, that has repositories, members and teams.</summary>
-    [QlObject]
     public class Organization
     {
         /// <summary>A list of users who are members of this organization.</summary>

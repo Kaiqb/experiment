@@ -4,6 +4,7 @@ using System.Dynamic;
 
 namespace GitHubQl
 {
+    /// <summary>Contains some of the static information needed to run the GitHub queries.</summary>
     public static class GitHubConstants
     {
         [Flags]
@@ -47,7 +48,11 @@ namespace GitHubQl
                 new RepoParams {
                     Owner = "microsoft", Name = "botbuilder-js", Type = RepoTypes.Code | RepoTypes.Public },
                 new RepoParams {
-                    Owner = "microsoft", Name = "BotBuilder-Samples", Type = RepoTypes.Code | RepoTypes.Public },
+                    Owner = "microsoft", Name = "botbuilder-samples", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams {
+                    Owner = "microsoft", Name = "botbuilder-python", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams {
+                    Owner = "microsoft", Name = "botbuilder-java", Type = RepoTypes.Code | RepoTypes.Public },
             };
     }
 }

@@ -7,6 +7,9 @@ namespace GitHubReports
 {
     public static class OutputExtensions
     {
+        /// <summary>Formats information about a user in a Console-compatible fashion.</summary>
+        /// <param name="user">The user object to convert.</param>
+        /// <returns>A Console-compatible string.</returns>
         public static string ForConsole(this User user)
         {
             var sb = new StringBuilder();
@@ -26,7 +29,7 @@ namespace GitHubReports
             {
                 sb.Append($"  Organizations({user.Organizations.TotalCount}): ");
                 sb.AppendLine((user.Organizations.Nodes != null && user.Organizations.Nodes.Count > 0)
-                    ? $"{string.Join(", ", user.Organizations?.Nodes?.Select(o => (o?.Name) ?? "?"))}"
+                    ? $"{string.Join(", ", user.Organizations?.Nodes?.Select(o => o?.Name ?? o?.Login ?? "?"))}"
                     : string.Empty);
             }
             if (user.Url != null) { sb.AppendLine($"  URL: {user.Url}"); }
@@ -34,6 +37,9 @@ namespace GitHubReports
             return sb.ToString();
         }
 
+        /// <summary>Formats information about a repository in a Console-compatible fashion.</summary>
+        /// <param name="repo">The repository object to convert.</param>
+        /// <returns>A Console-compatible string.</returns>
         public static string ForConsole(this Repository repo)
         {
             var sb = new StringBuilder();
@@ -58,6 +64,10 @@ namespace GitHubReports
             return sb.ToString();
         }
 
+        /// <summary>Formats information about an issue in a Console-compatible fashion.</summary>
+        /// <param name="issue">The issue object to convert.</param>
+        /// <param name="indent">An optional indentation string to prepend to each line.</param>
+        /// <returns>A Console-compatible string.</returns>
         public static string ForConsole(this Issue issue, string indent = null)
         {
             var pad = indent ?? string.Empty;
@@ -106,6 +116,9 @@ namespace GitHubReports
             return '"' + escaped + '"';
         }
 
+        /// <summary>Outputs a GitHub DateTime value to an Excel-friendly date-time string.</summary>
+        /// <param name="time">The value to convert.</param>
+        /// <returns>The Excel-friendly date-time string.</returns>
         public static string ToShortLocal(this DateTimeOffset? time)
         {
             if (time is null || !time.HasValue) return string.Empty;

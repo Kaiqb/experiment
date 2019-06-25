@@ -3,7 +3,6 @@
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>Represents a commit status.</summary>
-    [QlObject]
     public class Status
     {
         ///<summary>The commit this status is attached to.</summary>

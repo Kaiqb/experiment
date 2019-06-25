@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>Represents a Git commit.</summary>
-    [QlObject]
     public class Commit
     {
         /// <summary>The pull requests associated with a commit.</summary>

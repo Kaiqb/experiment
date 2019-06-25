@@ -3,7 +3,6 @@ using System;
 
 namespace GitHubQl.Models.GitHub
 {
-    [QlObject]
     public class IssueComment
     {
         /// <summary>The actor who authored the comment.</summary>

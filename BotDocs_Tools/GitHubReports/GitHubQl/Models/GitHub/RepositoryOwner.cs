@@ -2,7 +2,6 @@
 
 namespace GitHubQl.Models.GitHub
 {
-    [QlObject]
     public class RepositoryOwner
     {
         /// <summary>A URL pointing to the user's public avatar.</summary>

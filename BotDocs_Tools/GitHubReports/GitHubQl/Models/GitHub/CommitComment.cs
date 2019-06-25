@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace GitHubQl.Models.GitHub
 {
-    [QlObject]
     public class CommitComment
     {
 

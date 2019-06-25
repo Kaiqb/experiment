@@ -3,7 +3,6 @@
 namespace GitHubQl.Models.GitHub
 {
     /// <summary>Represents a Git tree entry.</summary>
-    [QlObject]
     public class TreeEntry
     {
         ///<summary>Entry file mode.</summary>

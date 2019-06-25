@@ -2,7 +2,6 @@
 
 namespace GitHubQl.Models.GitHub
 {
-    [QlObject]
     public class Actor
     {
         /// <summary>A URL pointing to the actor's public avatar.</summary>
