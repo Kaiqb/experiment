@@ -38,16 +38,17 @@ namespace PromptValidations.Dialogs
         /// </summary>
         private static class Messages
         {
-            public const string ImageRestrictions = "Please upload one to three PNG images as inline content.";
-            public const string VideoRestrictions = "Please upload only one short MP4 video as inline content.";
+            public static readonly string ImageRestrictions = "";
+            public static readonly string VideoRestrictions = "";
 
             public static readonly Activity EnterName = MessageFactory.Text("What is your name?");
             public static readonly Activity EnterAge = MessageFactory.Text("How many years old are you?");
             public static readonly Activity ChooseFileType = MessageFactory.Text("What type of media do you want to upload?");
-            public static readonly Activity UploadImage = MessageFactory.Text($"Please send the image. {Messages.ImageRestrictions}");
-            public static readonly Activity UploadVideo = MessageFactory.Text($"Please send the video. {Messages.VideoRestrictions}");
+            public static readonly Activity UploadImage = MessageFactory.Text("Please attach an image file.");
+            public static readonly Activity UploadVideo = MessageFactory.Text("Please attach a video file.");
             public static readonly Activity AddDescription = MessageFactory.Text("Enter a description for the file. ()");
             public static readonly Activity ConfirmInformation = MessageFactory.Text("Is this information correct?");
+     
         }
 
         /// <summary>
@@ -182,7 +183,7 @@ namespace PromptValidations.Dialogs
             AddDialog(new ChoicePrompt(Ids.ChoicePrompt, ChoiceValidatorAsync) { Style = ListStyle.Auto });
             AddDialog(new AttachmentPrompt(Ids.ImagePrompt, ImageValidatorAsync));
             AddDialog(new AttachmentPrompt(Ids.VideoPrompt, VideoValidatorAsync));
-            AddDialog(new TextPrompt(Ids.DescriptionPrompt));
+            AddDialog(new TextPrompt(Ids.DescriptionPrompt, DescriptionValidatorAsync));
             AddDialog(new ConfirmPrompt(Ids.ConfirmPrompt, ConfirmValidatorAsync));
 
             // Explicitly set the intial dialog for the component.
@@ -399,8 +400,18 @@ namespace PromptValidations.Dialogs
                 return await stepContext.EndDialogAsync(false, cancellationToken);
             }
 
-            // Record the user's selection in dialog state.
-            stepContext.Values[Ids.ChoicePrompt] = ((FoundChoice)stepContext.Result).Value;
+            // Record the user's selection, or exit.
+            switch (stepContext.Result)
+            {
+                case FoundChoice choice:
+
+                    stepContext.Values[Ids.ChoicePrompt] = choice.Value;
+                    break;
+
+                default:
+
+                    return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
 
             // Prompt the user to send an attachment.
             switch (stepContext.Values[Ids.ChoicePrompt])
@@ -409,13 +420,10 @@ namespace PromptValidations.Dialogs
 
                     var imageOptions = new PromptOptions
                     {
-                        Prompt = Messages.UploadImage,
-                        Validations = new AttachmentValidationOptions
+                        Prompt = MessageFactory.Text($"Please send the image. {Messages.ImageRestrictions}"),
+                        Validations = new ValidationOptions
                         {
                             DefaultErrorMessage = Messages.ImageRestrictions,
-                            MinAttachments = 1,
-                            MaxAttachments = 3,
-                            SupportedMimeTypes = new List<string> { "image/png" },
                         },
                     };
 
@@ -425,13 +433,10 @@ namespace PromptValidations.Dialogs
 
                     var videoOptions = new PromptOptions
                     {
-                        Prompt = Messages.UploadVideo,
-                        Validations = new AttachmentValidationOptions
+                        Prompt = MessageFactory.Text($"Please send the video. {Messages.VideoRestrictions}"),
+                        Validations = new ValidationOptions
                         {
                             DefaultErrorMessage = Messages.VideoRestrictions,
-                            MinAttachments = 1,
-                            MaxAttachments = 1,
-                            SupportedMimeTypes = new List<string> { "video/mp4" },
                         },
                     };
 
@@ -445,29 +450,15 @@ namespace PromptValidations.Dialogs
 
         }
 
-        /// <summary>
-        /// Runs custom validation logic for the image attachment prompt.
-        /// </summary>
-        /// <param name="promptContext">The prompt validation context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        /// <remarks>Return <code>true</code> to indicate that the input is valid; otherwise,
-        /// <code>false</code>.</remarks>
         private async Task<bool> ImageValidatorAsync(
             PromptValidatorContext<IList<Attachment>> promptContext,
             CancellationToken cancellationToken)
         {
-            var options = promptContext.Options.Validations as AttachmentValidationOptions;
+            var options = promptContext.Options.Validations as ValidationOptions;
             var success = promptContext.Recognized.Succeeded;
             var attachments = promptContext.Recognized.Value;
 
-            if (success
-                && attachments != null
-                && attachments.Count() >= options.MinAttachments
-                && attachments.Count() <= options.MaxAttachments
-                && attachments.All(attachment => options.SupportedMimeTypes.Contains(attachment.ContentType))
-                && attachments.All(attachment => attachment.ContentUrl != null))
+            if (success)
             {
                 return true;
             }
@@ -476,29 +467,15 @@ namespace PromptValidations.Dialogs
             return await FailValidation(promptContext, options, cancellationToken);
         }
 
-        /// <summary>
-        /// Runs custom validation logic for the video attachment prompt.
-        /// </summary>
-        /// <param name="promptContext">The prompt validation context.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        /// <remarks>Return <code>true</code> to indicate that the input is valid; otherwise,
-        /// <code>false</code>.</remarks>
         private async Task<bool> VideoValidatorAsync(
             PromptValidatorContext<IList<Attachment>> promptContext,
             CancellationToken cancellationToken)
         {
-            var options = promptContext.Options.Validations as AttachmentValidationOptions;
+            var options = promptContext.Options.Validations as ValidationOptions;
             var success = promptContext.Recognized.Succeeded;
             var attachments = promptContext.Recognized.Value;
 
-            if (success
-                && attachments != null
-                && attachments.Count() >= options.MinAttachments
-                && attachments.Count() <= options.MaxAttachments
-                && attachments.All(attachment => options.SupportedMimeTypes.Contains(attachment.ContentType))
-                && attachments.All(attachment => attachment.ContentUrl != null))
+            if (success)
             {
                 return true;
             }
@@ -546,13 +523,39 @@ namespace PromptValidations.Dialogs
             // Prompt the user to add a description.
             var options = new PromptOptions
             {
-                Prompt = MessageFactory.Text("Please add a description. Type `no` or `none` to omit a description."),
+                Prompt = MessageFactory.Text("Please add a description. Type `no` or `none` to omit a description. Your description should be within 100 characters. "),
                 Choices = AttachmentChoices,
                 Validations = new ValidationOptions(),
             };
 
             return await stepContext.PromptAsync(Ids.DescriptionPrompt, options, cancellationToken);
         }
+
+        private async Task<bool> DescriptionValidatorAsync(
+           PromptValidatorContext<string> promptContext,
+           CancellationToken cancellationToken)
+        {
+            // Pull key information from the prompt validator context.
+            var options = promptContext.Options.Validations as ValidationOptions;
+            var success = promptContext.Recognized.Succeeded;
+            var value = promptContext.Recognized.Value?.Trim();
+            var maxLength = value.Length;
+
+            // If the input is not empty and the length of the string is within maxLength, 
+            // allow the prompt to succeed, and return the trimmed value.
+            // if the length of the string value exceeds maxLength, this attempts failed. 
+            if (success && !string.IsNullOrEmpty(value) && maxLength <= 100)
+
+            {
+                    promptContext.Recognized.Value = value;
+                    return true;
+                    
+            }
+
+            // Otherwise, this attempt failed.
+            return await FailValidation(promptContext, options, cancellationToken);
+        }
+
 
         /// <summary>
         /// Step to ask the user to confirm the collected information.
