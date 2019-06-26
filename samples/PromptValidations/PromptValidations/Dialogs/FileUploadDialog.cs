@@ -38,14 +38,14 @@ namespace PromptValidations.Dialogs
         /// </summary>
         private static class Messages
         {
-            public static readonly string ImageRestrictions = "";
-            public static readonly string VideoRestrictions = "";
+            public const string ImageRestrictions = "Please upload one to three PNG images as inline content.";
+            public const string VideoRestrictions = "Please upload only one short MP4 video as inline content.";
 
             public static readonly Activity EnterName = MessageFactory.Text("What is your name?");
             public static readonly Activity EnterAge = MessageFactory.Text("How many years old are you?");
             public static readonly Activity ChooseFileType = MessageFactory.Text("What type of media do you want to upload?");
-            public static readonly Activity UploadImage = MessageFactory.Text("Please attach an image file.");
-            public static readonly Activity UploadVideo = MessageFactory.Text("Please attach a video file.");
+            public static readonly Activity UploadImage = MessageFactory.Text($"Please send the image. {Messages.ImageRestrictions}");
+            public static readonly Activity UploadVideo = MessageFactory.Text($"Please send the video. {Messages.VideoRestrictions}");
             public static readonly Activity AddDescription = MessageFactory.Text("Enter a description for the file. ()");
             public static readonly Activity ConfirmInformation = MessageFactory.Text("Is this information correct?");
         }
@@ -399,18 +399,8 @@ namespace PromptValidations.Dialogs
                 return await stepContext.EndDialogAsync(false, cancellationToken);
             }
 
-            // Record the user's selection, or exit.
-            switch (stepContext.Result)
-            {
-                case FoundChoice choice:
-
-                    stepContext.Values[Ids.ChoicePrompt] = choice.Value;
-                    break;
-
-                default:
-
-                    return await stepContext.EndDialogAsync(null, cancellationToken);
-            }
+            // Record the user's selection in dialog state.
+            stepContext.Values[Ids.ChoicePrompt] = ((FoundChoice)stepContext.Result).Value;
 
             // Prompt the user to send an attachment.
             switch (stepContext.Values[Ids.ChoicePrompt])
@@ -419,10 +409,13 @@ namespace PromptValidations.Dialogs
 
                     var imageOptions = new PromptOptions
                     {
-                        Prompt = MessageFactory.Text($"Please send the image. {Messages.ImageRestrictions}"),
-                        Validations = new ValidationOptions
+                        Prompt = Messages.UploadImage,
+                        Validations = new AttachmentValidationOptions
                         {
                             DefaultErrorMessage = Messages.ImageRestrictions,
+                            MinAttachments = 1,
+                            MaxAttachments = 3,
+                            SupportedMimeTypes = new List<string> { "image/png" },
                         },
                     };
 
@@ -432,10 +425,13 @@ namespace PromptValidations.Dialogs
 
                     var videoOptions = new PromptOptions
                     {
-                        Prompt = MessageFactory.Text($"Please send the video. {Messages.VideoRestrictions}"),
-                        Validations = new ValidationOptions
+                        Prompt = Messages.UploadVideo,
+                        Validations = new AttachmentValidationOptions
                         {
                             DefaultErrorMessage = Messages.VideoRestrictions,
+                            MinAttachments = 1,
+                            MaxAttachments = 1,
+                            SupportedMimeTypes = new List<string> { "video/mp4" },
                         },
                     };
 
@@ -449,15 +445,29 @@ namespace PromptValidations.Dialogs
 
         }
 
+        /// <summary>
+        /// Runs custom validation logic for the image attachment prompt.
+        /// </summary>
+        /// <param name="promptContext">The prompt validation context.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>Return <code>true</code> to indicate that the input is valid; otherwise,
+        /// <code>false</code>.</remarks>
         private async Task<bool> ImageValidatorAsync(
             PromptValidatorContext<IList<Attachment>> promptContext,
             CancellationToken cancellationToken)
         {
-            var options = promptContext.Options.Validations as ValidationOptions;
+            var options = promptContext.Options.Validations as AttachmentValidationOptions;
             var success = promptContext.Recognized.Succeeded;
             var attachments = promptContext.Recognized.Value;
 
-            if (success)
+            if (success
+                && attachments != null
+                && attachments.Count() >= options.MinAttachments
+                && attachments.Count() <= options.MaxAttachments
+                && attachments.All(attachment => options.SupportedMimeTypes.Contains(attachment.ContentType))
+                && attachments.All(attachment => attachment.ContentUrl != null))
             {
                 return true;
             }
@@ -466,15 +476,29 @@ namespace PromptValidations.Dialogs
             return await FailValidation(promptContext, options, cancellationToken);
         }
 
+        /// <summary>
+        /// Runs custom validation logic for the video attachment prompt.
+        /// </summary>
+        /// <param name="promptContext">The prompt validation context.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>Return <code>true</code> to indicate that the input is valid; otherwise,
+        /// <code>false</code>.</remarks>
         private async Task<bool> VideoValidatorAsync(
             PromptValidatorContext<IList<Attachment>> promptContext,
             CancellationToken cancellationToken)
         {
-            var options = promptContext.Options.Validations as ValidationOptions;
+            var options = promptContext.Options.Validations as AttachmentValidationOptions;
             var success = promptContext.Recognized.Succeeded;
             var attachments = promptContext.Recognized.Value;
 
-            if (success)
+            if (success
+                && attachments != null
+                && attachments.Count() >= options.MinAttachments
+                && attachments.Count() <= options.MaxAttachments
+                && attachments.All(attachment => options.SupportedMimeTypes.Contains(attachment.ContentType))
+                && attachments.All(attachment => attachment.ContentUrl != null))
             {
                 return true;
             }
