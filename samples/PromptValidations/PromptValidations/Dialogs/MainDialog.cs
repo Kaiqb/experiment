@@ -1,9 +1,6 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,6 +41,7 @@ namespace PromptValidations.Dialogs
             {
                 case UserProfile profile:
 
+                    // On success, the file upload dialog returns a user profile object.
                     await _userProfileAccessor.SetAsync(stepContext.Context, profile, cancellationToken);
                     await _userState.SaveChangesAsync(stepContext.Context, false, cancellationToken);
 
@@ -52,6 +50,7 @@ namespace PromptValidations.Dialogs
 
                 case bool success:
 
+                    // On failure, the file upload dialog returns false (a Boolean object).
                     await stepContext.Context.SendActivityAsync("Operation cancelled.");
                     break;
 

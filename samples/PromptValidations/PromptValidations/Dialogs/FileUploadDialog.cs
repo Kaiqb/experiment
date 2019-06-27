@@ -528,25 +528,16 @@ namespace PromptValidations.Dialogs
             // Get the user profile for the dialog.
             var profile = (UserProfile)stepContext.Values[Ids.UserProfile];
 
-            // Record the user's attachment, or exit.
-            switch (stepContext.Result)
-            {
-                case IList<Attachment> attachments:
-
-                    // TODO Determine what information to save here.
-                    profile.Media = attachments[0].Content;
-                    profile.MediaMimeType = attachments[0].ContentType;
-                    break;
-
-                default:
-
-                    return await stepContext.EndDialogAsync(null, cancellationToken);
-            }
+            // Record the content URLs for the user's attachments.
+            var attachments = (IList<Attachment>)stepContext.Result;
+            profile.MediaUrls = attachments.Select(attachment => attachment.ContentUrl).ToList();
 
             // Prompt the user to add a description.
             var options = new PromptOptions
             {
-                Prompt = MessageFactory.Text("Please add a description. Type `no` or `none` to omit a description. Your description should be within 100 characters. "),
+                Prompt = MessageFactory.Text("Please add a description. " +
+                    "Type `no` or `none` to omit a description. " +
+                    "Your description should be 100 characters or less."),
                 Choices = AttachmentChoices,
                 Validations = new ValidationOptions(),
             };
@@ -554,6 +545,15 @@ namespace PromptValidations.Dialogs
             return await stepContext.PromptAsync(Ids.DescriptionPrompt, options, cancellationToken);
         }
 
+        /// <summary>
+        /// Runs custom validation logic for the description prompt.
+        /// </summary>
+        /// <param name="promptContext">The prompt validation context.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>Return <code>true</code> to indicate that the input is valid; otherwise,
+        /// <code>false</code>.</remarks>
         private async Task<bool> DescriptionValidatorAsync(
            PromptValidatorContext<string> promptContext,
            CancellationToken cancellationToken)
@@ -570,9 +570,9 @@ namespace PromptValidations.Dialogs
             if (success && !string.IsNullOrEmpty(value) && maxLength <= 100)
 
             {
-                    promptContext.Recognized.Value = value;
-                    return true;
-                    
+                promptContext.Recognized.Value = value;
+                return true;
+
             }
 
             // Otherwise, this attempt failed.
@@ -593,42 +593,44 @@ namespace PromptValidations.Dialogs
             WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
-            // There's no prompt validator for description.
+            if (DidPrmptFail(stepContext))
+            {
+                return await stepContext.EndDialogAsync(false, cancellationToken);
+            }
 
             // Get the user profile for the dialog.
             var profile = (UserProfile)stepContext.Values[Ids.UserProfile];
 
             // Record the user's description, if one was provided.
-            switch (stepContext.Result)
+            var value = (string)stepContext.Result;
+            if (HasMatch(Synonyms.NoDescription, value))
             {
-                case string value:
-
-                    if (HasMatch(Synonyms.NoDescription, value))
-                    {
-                        profile.MediaDescription = string.Empty;
-                    }
-                    else
-                    {
-                        profile.MediaDescription = value?.Trim() ?? string.Empty;
-                    }
-
-                    break;
-
-                default:
-
-                    return await stepContext.EndDialogAsync(null, cancellationToken);
+                profile.MediaDescription = string.Empty;
+            }
+            else
+            {
+                profile.MediaDescription = value?.Trim() ?? string.Empty;
             }
 
-            // Prompt the user to confirm this information.
             var options = new PromptOptions
             {
                 Prompt = MessageFactory.Text(profile.GetDescription() + " Is this correct?"),
                 Validations = new ValidationOptions(),
             };
 
+            // Prompt the user to confirm this information.
             return await stepContext.PromptAsync(Ids.ConfirmPrompt, options, cancellationToken);
         }
 
+        /// <summary>
+        /// Runs custom validation logic for the confirm prompt.
+        /// </summary>
+        /// <param name="promptContext">The prompt validation context.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>Return <code>true</code> to indicate that the input is valid; otherwise,
+        /// <code>false</code>.</remarks>
         private async Task<bool> ConfirmValidatorAsync(
             PromptValidatorContext<bool> promptContext,
             CancellationToken cancellationToken)
@@ -642,8 +644,9 @@ namespace PromptValidations.Dialogs
             {
                 return true;
             }
-            else if (Synonyms.Maybe.Any(s => string.Equals(s, text, StringComparison.InvariantCultureIgnoreCase)))
+            else if (HasMatch(Synonyms.Maybe, text))
             {
+                // Interpret a 'maybe' as a no.
                 promptContext.Recognized.Value = false;
                 return true;
             }
@@ -689,7 +692,7 @@ namespace PromptValidations.Dialogs
                 await stepContext.Context.SendActivityAsync(
                     "Cancelling.",
                     cancellationToken: cancellationToken);
-                return await stepContext.EndDialogAsync(null, cancellationToken);
+                return await stepContext.EndDialogAsync(false, cancellationToken);
             }
         }
 
