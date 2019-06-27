@@ -1,9 +1,6 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +23,7 @@ namespace PromptValidations.Dialogs
                 LastStepAsync,
             };
 
-            AddDialog(new PromptsDialog(nameof(PromptsDialog)));
+            AddDialog(new FileUploadDialog(nameof(FileUploadDialog)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
 
             InitialDialogId = nameof(WaterfallDialog);
@@ -35,7 +32,7 @@ namespace PromptValidations.Dialogs
         private async Task<DialogTurnResult> FirstStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             await stepContext.Context.SendActivityAsync("Let's get started.");
-            return await stepContext.BeginDialogAsync(nameof(PromptsDialog), null, cancellationToken);
+            return await stepContext.BeginDialogAsync(nameof(FileUploadDialog), null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> LastStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -44,26 +41,17 @@ namespace PromptValidations.Dialogs
             {
                 case UserProfile profile:
 
-                    if (profile is null)
-                    {
-                        goto default;
-                    }
-
+                    // On success, the file upload dialog returns a user profile object.
                     await _userProfileAccessor.SetAsync(stepContext.Context, profile, cancellationToken);
                     await _userState.SaveChangesAsync(stepContext.Context, false, cancellationToken);
 
                     await stepContext.Context.SendActivityAsync($"Thanks {profile.Name}.");
                     break;
 
-                case bool succeeded:
+                case bool success:
 
-                    if (succeeded)
-                    {
-                        goto default;
-                    }
-
+                    // On failure, the file upload dialog returns false (a Boolean object).
                     await stepContext.Context.SendActivityAsync("Operation cancelled.");
-
                     break;
 
                 default:
