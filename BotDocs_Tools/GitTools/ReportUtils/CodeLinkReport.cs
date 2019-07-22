@@ -55,11 +55,19 @@ namespace ReportUtils
         {
             base.Run();
 
-            Contract.Requires(DocPath != null);
-            Contract.Requires(Directory.Exists(DocPath));
-            Contract.Requires(Directory.Exists(Path.Combine(DocPath, ".git")));
-            Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot)));
-            Contract.Requires(File.Exists(Path.Combine(DocPath, DocConfigFile)));
+            try
+            {
+                Contract.Requires(DocPath != null);
+                Contract.Requires(Directory.Exists(DocPath));
+                Contract.Requires(Directory.Exists(Path.Combine(DocPath, ".git")));
+                Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot)));
+                Contract.Requires(File.Exists(Path.Combine(DocPath, DocConfigFile)));
+            }
+            catch
+            {
+                MessageBox.Show("Invalid docs directory.");
+                return null;
+            }
 
             var file = Path.Combine(DocPath, DocConfigFile);
             var config = JsonConvert.DeserializeObject<PublishConfig>(File.ReadAllText(file));
@@ -81,8 +89,16 @@ namespace ReportUtils
                     "Application error. Must choose the code repo against which to run this report.");
             }
 
-            Contract.Requires(Directory.Exists(CodePath));
-            Contract.Requires(Directory.Exists(Path.Combine(CodePath, ".git")));
+            try
+            {
+                Contract.Requires(Directory.Exists(CodePath));
+                Contract.Requires(Directory.Exists(Path.Combine(CodePath, ".git")));
+            }
+            catch
+            {
+                MessageBox.Show("Invalid code directory.");
+                return false;
+            }
 
             LinkMap.Clear();
 
@@ -290,7 +306,7 @@ namespace ReportUtils
                             writer.Write("," + codeFile.RelFilePath.CsvEscape());
                             writer.Write("," + lineData.DocLine);
                             writer.Write("," + lineData.QueryParams.CsvEscape());
-                                writer.Write("," + docFile.BranchName.CsvEscape());
+                            writer.Write("," + docFile.BranchName.CsvEscape());
                             writer.Write("," + docFile.Author.CsvEscape());
                             writer.Write("," + docFile.LastCommitDate.ToString().CsvEscape());
                             writer.Write("," + CodeInfo.PathToRoot.CsvEscape());
