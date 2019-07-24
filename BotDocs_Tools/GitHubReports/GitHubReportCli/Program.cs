@@ -194,16 +194,19 @@ these later. run the tool with the 'clear' argument.
             await GetDocRepoIssues(repo, outputPath, issueFormatter);
 
             var filePath = Path.Combine(outputPath, "CodeRepoIssues.csv");
-            var repos = GitHubConstants.KnownRepos.Where(
-                r => RepoIsOfType(r, GitHubConstants.RepoTypes.Code));
+            var repos = GitHubConstants.KnownRepos.Where(r => RepoIsOfType(r, GitHubConstants.RepoTypes.Code));
             var stateFilter = new IssueState[] { IssueState.OPEN };
             var labelFilter = new string[] { "documentation", "Docs", "DCR" };
 
             await GenerateIssuesReport(repos, issueFormatter, filePath, stateFilter, labelFilter);
 
-            filePath = Path.Combine(outputPath, "DocRepoIssues.csv");
-            repos = GitHubConstants.KnownRepos.Where(
-                r => RepoIsOfType(r, GitHubConstants.RepoTypes.Docs | GitHubConstants.RepoTypes.Private));
+            filePath = Path.Combine(outputPath, "SlaIssuesReport.csv");
+            repos = GitHubConstants.KnownRepos.Where(r => r.Name.Equals("botframework-solutions", StringComparison.CurrentCultureIgnoreCase));
+
+            await GenerateIssuesReport(repos, issueFormatter, filePath, null, null);
+
+            //filePath = Path.Combine(outputPath, "DocRepoIssues.csv");
+            //repos = GitHubConstants.KnownRepos.Where(r => RepoIsOfType(r, GitHubConstants.RepoTypes.Docs | GitHubConstants.RepoTypes.Private));
 
             //await GenerateIssuesReport(repos, issueFormatter, filePath);
 

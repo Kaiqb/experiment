@@ -60,7 +60,32 @@ namespace GitHubReports
             return sb.ToString();
         }
 
-        private static string CreateIssueArguments(string cursor, IssueState[] states, string[] labels)
+        public static string GetSlaIssues(
+            RepoParams repo,
+            string cursor,
+            IEnumerable<IssueState> states = null,
+            IEnumerable<string> labels = null)
+        {
+            var issueArgs = CreateIssueArguments(cursor, states, labels);
+
+            var sb = new StringBuilder();
+
+            sb.Append("{ ");
+            sb.Append($"repository(owner:\"{repo.Owner}\" name:\"{repo.Name}\")" + " { ");
+            sb.Append($"issues({issueArgs})" + " { ");
+
+            sb.Append("nodes { " + IssueData + " } ");
+            sb.Append("pageInfo { hasPreviousPage, startCursor } ");
+
+            sb.Append("} } }");
+
+            return sb.ToString();
+        }
+
+        private static string CreateIssueArguments(
+            string cursor,
+            IEnumerable<IssueState> states,
+            IEnumerable<string> labels)
         {
             var issueArgs = $"last: {QueryPageSize}";
 
@@ -69,13 +94,13 @@ namespace GitHubReports
                 issueArgs += $" before: \"{cursor}\"";
             }
 
-            if (states != null && states.Length > 0)
+            if (states != null && states.Count() > 0)
             {
                 var list = states.Select(s => Enum.GetName(typeof(IssueState), s));
                 issueArgs += $" states: [{string.Join(' ', list)}]";
             }
 
-            if (labels != null && labels.Length > 0)
+            if (labels != null && labels.Count() > 0)
             {
                 var list = labels.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => $"\"{l}\"");
                 if (list.Count() > 0)
@@ -95,7 +120,7 @@ namespace GitHubReports
             "title bodyText " +
             "assignees(last: 10) { totalCount nodes { login } pageInfo { hasPreviousPage } } " +
             "participants(last: 25) { totalCount nodes { login } pageInfo { hasPreviousPage } } " +
-            "comments(last: 1) { totalCount nodes { author { login } createdAt } } " +
+            "comments(last: 20) { totalCount nodes { author { login } createdAt } } " +
             "createdAt publishedAt lastEditedAt updatedAt closedAt";
 
         /// <summary>Generates a payload for general information about a specific repository.</summary>
