@@ -37,22 +37,15 @@ namespace GitHubQl
         /// <remarks>This should be an app property in the app project.</remarks>
         public static IReadOnlyList<RepoParams> KnownRepos { get; } =
             new List<RepoParams> {
-                new RepoParams {
-                    Owner = "MicrosoftDocs", Name = "bot-docs", Type = RepoTypes.Docs | RepoTypes.Public },
-                new RepoParams {
-                    Owner = "MicrosoftDocs", Name = "bot-docs-pr", Type = RepoTypes.Docs | RepoTypes.Private },
-                new RepoParams {
-                    Owner = "microsoft", Name = "botframework-sdk", Type = RepoTypes.Specs | RepoTypes.Public },
-                new RepoParams {
-                    Owner = "microsoft", Name = "botbuilder-dotnet", Type = RepoTypes.Code | RepoTypes.Public },
-                new RepoParams {
-                    Owner = "microsoft", Name = "botbuilder-js", Type = RepoTypes.Code | RepoTypes.Public },
-                new RepoParams {
-                    Owner = "microsoft", Name = "botbuilder-samples", Type = RepoTypes.Code | RepoTypes.Public },
-                new RepoParams {
-                    Owner = "microsoft", Name = "botbuilder-python", Type = RepoTypes.Code | RepoTypes.Public },
-                new RepoParams {
-                    Owner = "microsoft", Name = "botbuilder-java", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams { Owner = "MicrosoftDocs", Name = "bot-docs", Type = RepoTypes.Docs | RepoTypes.Public },
+                new RepoParams { Owner = "MicrosoftDocs", Name = "bot-docs-pr", Type = RepoTypes.Docs | RepoTypes.Private },
+                new RepoParams { Owner = "microsoft", Name = "botframework-sdk", Type = RepoTypes.Specs | RepoTypes.Public },
+                new RepoParams { Owner = "microsoft", Name = "botbuilder-dotnet", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams { Owner = "microsoft", Name = "botbuilder-js", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams { Owner = "microsoft", Name = "botbuilder-python", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams { Owner = "microsoft", Name = "botbuilder-java", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams { Owner = "microsoft", Name = "botbuilder-samples", Type = RepoTypes.Code | RepoTypes.Public },
+                new RepoParams { Owner = "microsoft", Name = "botframework-solutions", Type = RepoTypes.Code | RepoTypes.Public },
             };
     }
 }

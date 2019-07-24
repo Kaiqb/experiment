@@ -140,9 +140,7 @@ namespace QueryRepoApp
             };
             if (dateTimePicker.Checked) { report.FreshnessDate = dateTimePicker.Value; }
 
-            RepositoryInfo codeInfo;
-            string codeRoot;
-            (codeInfo, codeRoot) = SelectCodeRepo(report);
+            var (codeInfo, codeRoot) = SelectCodeRepo(report);
             if (codeRoot != null)
             {
                 report.SetCodeTarget(codeInfo, codeRoot);
@@ -220,114 +218,114 @@ namespace QueryRepoApp
         }
 
         // This is the old code link report
-        private void Run()
-        {
-            var root = tb_DocRepoRoot.Text;
-            Properties.Settings.Default.LastDocRepoRoot = root;
+        //private void Run()
+        //{
+        //    var root = tb_DocRepoRoot.Text;
+        //    Properties.Settings.Default.LastDocRepoRoot = root;
 
-            if (!Directory.Exists(root))
-            {
-                Warning($"Repo directory `{root}` does not exist!");
-                return;
-            }
-            if (!Directory.Exists(Path.Combine(root, ".git")))
-            {
-                Warning($"Repo directory `{root}` does not contain a repository!");
-                return;
-            }
+        //    if (!Directory.Exists(root))
+        //    {
+        //        Warning($"Repo directory `{root}` does not exist!");
+        //        return;
+        //    }
+        //    if (!Directory.Exists(Path.Combine(root, ".git")))
+        //    {
+        //        Warning($"Repo directory `{root}` does not contain a repository!");
+        //        return;
+        //    }
 
-            Dictionary<string, ChangeInfo> changes = null;
-            using (var writer = new StringWriter())
-            {
-                Console.SetOut(writer);
-                Console.SetError(writer);
+        //    Dictionary<string, ChangeInfo> changes = null;
+        //    using (var writer = new StringWriter())
+        //    {
+        //        Console.SetOut(writer);
+        //        Console.SetError(writer);
 
-                var helper = new RepoHelper
-                {
-                    AcceptableDirectories = RepoDirectories,
-                    AcceptableExtensions = FileExtensions,
-                    //SinceDate = DatePicker.Value,
-                };
+        //        var helper = new RepoHelper
+        //        {
+        //            AcceptableDirectories = RepoDirectories,
+        //            AcceptableExtensions = FileExtensions,
+        //            //SinceDate = DatePicker.Value,
+        //        };
 
-                using (var repo = helper.GetRepository(tb_DocRepoRoot.Text))
-                {
-                    changes = helper.GetChanges(repo, DateTimeOffset.Now.AddDays(-14));
-                    if (changes is null)
-                    {
-                        Error("Failed to generate content for the log.");
-                    }
-                }
+        //        using (var repo = helper.GetRepository(tb_DocRepoRoot.Text))
+        //        {
+        //            changes = helper.GetChanges(repo, DateTimeOffset.Now.AddDays(-14));
+        //            if (changes is null)
+        //            {
+        //                Error("Failed to generate content for the log.");
+        //            }
+        //        }
 
-                Console.Out.Flush();
-                Console.Error.Flush();
-                Message(writer.ToString());
-            }
+        //        Console.Out.Flush();
+        //        Console.Error.Flush();
+        //        Message(writer.ToString());
+        //    }
 
-            if (changes != null && changes.Count > 0)
-            {
-                try
-                {
-                    Info($"Found {changes.Count} changed files.");
-                    rtb_Output.ScrollToCaret();
+        //    if (changes != null && changes.Count > 0)
+        //    {
+        //        try
+        //        {
+        //            Info($"Found {changes.Count} changed files.");
+        //            rtb_Output.ScrollToCaret();
 
-                    var now = DateTimeOffset.Now;
-                    outfile = outputFileBase + now.AsShortDate() + ".csv";
-                    dlg_SaveOutput.FileName = Path.Combine(dlg_SaveOutput.InitialDirectory, outfile);
-                    var result = dlg_SaveOutput.ShowDialog();
+        //            var now = DateTimeOffset.Now;
+        //            outfile = outputFileBase + now.AsShortDate() + ".csv";
+        //            dlg_SaveOutput.FileName = Path.Combine(dlg_SaveOutput.InitialDirectory, outfile);
+        //            var result = dlg_SaveOutput.ShowDialog();
 
-                    if (result is DialogResult.OK)
-                    {
-                        outfile = dlg_SaveOutput.FileName;
-                        Properties.Settings.Default.LastOutputDirectory = Path.GetDirectoryName(outfile);
+        //            if (result is DialogResult.OK)
+        //            {
+        //                outfile = dlg_SaveOutput.FileName;
+        //                Properties.Settings.Default.LastOutputDirectory = Path.GetDirectoryName(outfile);
 
-                        Info($"Generating log `{outfile}`...");
-                        using (TextWriter writer = new StreamWriter(outfile, false))
-                        {
-                            writer.WriteLine(ChangeInfo.CsvHeader);
-                            foreach (var change in changes.Values)
-                            {
-                                writer.WriteLine(change.AsCsv);
-                            }
+        //                Info($"Generating log `{outfile}`...");
+        //                using (TextWriter writer = new StreamWriter(outfile, false))
+        //                {
+        //                    writer.WriteLine(ChangeInfo.CsvHeader);
+        //                    foreach (var change in changes.Values)
+        //                    {
+        //                        writer.WriteLine(change.AsCsv);
+        //                    }
 
-                            writer.Flush();
-                            writer.Close();
-                        }
-                        Info("Done");
-                    }
-                    else
-                    {
-                        Info("No report saved.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Warning($"{ex.GetType().Name} encountered writing output:" + Environment.NewLine + ex.Message);
-                }
-            }
-            else
-            {
-                Info("No information gathered to report.");
-            }
-        }
+        //                    writer.Flush();
+        //                    writer.Close();
+        //                }
+        //                Info("Done");
+        //            }
+        //            else
+        //            {
+        //                Info("No report saved.");
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Warning($"{ex.GetType().Name} encountered writing output:" + Environment.NewLine + ex.Message);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Info("No information gathered to report.");
+        //    }
+        //}
 
-        private void Message(string message)
-        {
-            rtb_Output.WriteLine(Severity.Messgae, message);
-        }
+        //private void Message(string message)
+        //{
+        //    rtb_Output.WriteLine(Severity.Messgae, message);
+        //}
 
-        private void Info(string message)
-        {
-            rtb_Output.WriteLine(Severity.Information, message);
-        }
+        //private void Info(string message)
+        //{
+        //    rtb_Output.WriteLine(Severity.Information, message);
+        //}
 
-        private void Warning(string message)
-        {
-            rtb_Output.WriteLine(Severity.Warning, message);
-        }
+        //private void Warning(string message)
+        //{
+        //    rtb_Output.WriteLine(Severity.Warning, message);
+        //}
 
-        private void Error(string message)
-        {
-            rtb_Output.WriteLine(Severity.Error, message);
-        }
+        //private void Error(string message)
+        //{
+        //    rtb_Output.WriteLine(Severity.Error, message);
+        //}
     }
 }
