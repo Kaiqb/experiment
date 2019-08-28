@@ -25,6 +25,8 @@ these later. run the tool with the 'clear' argument.
 ";
         }
 
+        private static DateTimeOffset Now = DateTimeOffset.Now;
+
         // To simplify things, the initial report uses constants.
         // TODO Add command line args to allow the user to change things, or set this up with some sort of GUI.
         // TODO Refactor so this isn't a monolithic method.
@@ -91,7 +93,7 @@ these later. run the tool with the 'clear' argument.
                         break;
                     case ConsoleKey.N:
                     default:
-                        Console.WriteLine("Ok. Operation cancelled; exiting.");
+                        Console.WriteLine("OK. Operation canceled; exiting.");
                         return;
                 }
             }
@@ -165,10 +167,9 @@ these later. run the tool with the 'clear' argument.
                 { "Author", i => i?.Author?.Login },
                 { "Author association", i => i?.AuthorAssociation.ToString() },
                 //{ "Editor", i => i?.Editor?.Login },
-                { "State", i => i?.State.ToString() },
                 //{ "Closed", i => i?.Closed.ToString() },
                 { "Title", i => i?.Title },
-                { "Body text", i => i?.BodyText },
+                { "Body text", i => i?.BodyText.Truncate(1023) },
                 { "Assignees", i =>
                     i?.Assignees.Concat(", ", u => u?.Login)
                     + (i?.Assignees.PageInfo.HasPreviousPage==true ? ",..." : string.Empty) },
@@ -177,18 +178,21 @@ these later. run the tool with the 'clear' argument.
                     i?.Labels.Concat(", ", l => l.Name)
                     + (i?.Labels.PageInfo.HasPreviousPage == true ? ",..." : string.Empty) },
                 { "Comment count", i => i?.Comments?.TotalCount?.ToString() },
+
                 { "Created at", i => i?.CreatedAt.ToShortLocal() },
                 //{ "Published at", i => i?.PublishedAt.ToShortLocal() },
                 { "Last edited at", i => i?.LastEditedAt.ToShortLocal() },
                 //{ "Updated at", i => i?.UpdatedAt.ToShortLocal() },
-                { "Closed at", i => i?.ClosedAt.ToShortLocal() },
-
                 { "Last comment author", i => i?.Comments?.Nodes?.FirstOrDefault()?.Author?.Login },
                 { "Last comment date", i => i?.Comments?.Nodes?.FirstOrDefault()?.CreatedAt.ToShortLocal() },
+                { "Closed at", i => i?.ClosedAt.ToShortLocal() },
+
+                { "State", i => i?.State.ToString() },
 
                 // "Derived" information:
                 { "Active since closed?",  i => HasCommentsSinceClosing(i).ToString() },
-                { "Time idle (open w/o comment)", i => GetIdleDays(i)?.ToString() }
+                { "Open w/o comment (days)", i => GetIdleDays(i)?.ToString() },
+                { "Age (days)", i => GetAgeInDays(i)?.ToString() },
             };
 
             await GetDocRepoIssues(repo, outputPath, issueFormatter);
@@ -262,7 +266,7 @@ these later. run the tool with the 'clear' argument.
 
             foreach (var repo in repos)
             {
-                Console.Write($"Gatering issue data for the {repo.Owner}/{repo.Name} repo");
+                Console.Write($"Gathering issue data for the {repo.Owner}/{repo.Name} repo");
                 string queryWithStartCursor(string start) => Requests.GetAllIssues(repo, start, stateFilter, labelFilter);
                 await foreach (var sublist in GitHubQlService.GetConnectionAsync(
                     queryWithStartCursor, d => d.Repository.Issues, c => c.Nodes, new CancellationToken()))
@@ -292,7 +296,7 @@ these later. run the tool with the 'clear' argument.
             string outputPath,
             Dictionary<string, Func<Issue, string>> issueFormatter)
         {
-            Console.Write("Gatering issue data for the docs repo a page at a time");
+            Console.Write("Gathering issue data for the docs repo a page at a time");
             var issues = new List<Issue>();
             string queryWithStartCursor(string start) => Requests.GetAllIssues(repo, start);
             await foreach (var sublist in GitHubQlService.GetConnectionAsync(
@@ -340,6 +344,17 @@ these later. run the tool with the 'clear' argument.
             return !string.IsNullOrEmpty(value);
         }
 
+        private static double? GetAgeInDays(Issue issue)
+        {
+            if (issue is null || !issue.CreatedAt.HasValue) return null;
+
+            var span = (issue.ClosedAt.HasValue)
+                ? issue.ClosedAt.Value - issue.CreatedAt.Value
+                : Now - issue.CreatedAt.Value;
+
+            return Math.Round(span.TotalDays, 2);
+        }
+
         /// <summary>Returns the number of days since the last comment was made to an issue.</summary>
         /// <param name="issue">The issue to get the value for.</param>
         /// <returns>The number of days since the last comment; or null if the issue contains 
@@ -347,9 +362,11 @@ these later. run the tool with the 'clear' argument.
         private static double? GetIdleDays(Issue issue)
         {
             if (issue is null
-                || issue.Closed == true) return null;
+                || issue.CreatedAt is null
+                || !issue.CreatedAt.HasValue
+                || issue.Closed is true) return null;
 
-            DateTimeOffset lasstActivityDate;
+            DateTimeOffset lastActivityDate;
             if (issue.Comments != null
                 && issue.Comments.TotalCount > 0)
             {
@@ -358,24 +375,19 @@ these later. run the tool with the 'clear' argument.
                     && issue.Comments.Nodes[0].CreatedAt != null
                     && issue.Comments.Nodes[0].CreatedAt.HasValue)
                 {
-                    lasstActivityDate = issue.Comments.Nodes[0].CreatedAt.Value;
+                    lastActivityDate = issue.Comments.Nodes[0].CreatedAt.Value;
                 }
                 else
                 {
                     return null;
                 }
             }
-            else if (issue.CreatedAt != null
-                && issue.CreatedAt.HasValue)
-            {
-                lasstActivityDate = issue.CreatedAt.Value;
-            }
             else
             {
-                return null;
+                lastActivityDate = issue.CreatedAt.Value;
             }
 
-            return Math.Round((DateTimeOffset.Now - lasstActivityDate).TotalDays, 2);
+            return Math.Round((DateTimeOffset.Now - lastActivityDate).TotalDays, 2);
         }
 
         /// <summary>Indicates whether any comments were made to an issue since it was closed.</summary>

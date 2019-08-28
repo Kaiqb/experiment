@@ -49,8 +49,9 @@ namespace GitHubReports
 
         public async Task<SentimentBatchResult> SentimentAnalysis(List<MultiLanguageInput> input)
         {
-            var result = await Client.SentimentAsync(false, new MultiLanguageBatchInput(input));
-            return result;
+            throw new NotImplementedException();
+            //var result = await Client.SentimentAsync(false, new MultiLanguageBatchInput(input));
+            //return result;
         }
     }
 

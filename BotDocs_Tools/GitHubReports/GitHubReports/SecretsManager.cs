@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace GitHubReports
 {
@@ -56,7 +56,7 @@ namespace GitHubReports
         {
             using (Stream stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             {
-                _secrets = JsonSerializer.ReadAsync<Dictionary<string, string>>(stream).Result;
+                _secrets = JsonSerializer.DeserializeAsync<Dictionary<string, string>>(stream).Result;
             }
 
             Dirty = false;
@@ -69,7 +69,7 @@ namespace GitHubReports
 
             using (Stream stream = new FileStream(FilePath, FileMode.Create, FileAccess.ReadWrite))
             {
-                JsonSerializer.WriteAsync(_secrets, stream).Wait();
+                JsonSerializer.SerializeAsync<Dictionary<string, string>>(stream, _secrets).Wait();
             }
 
             Dirty = false;
