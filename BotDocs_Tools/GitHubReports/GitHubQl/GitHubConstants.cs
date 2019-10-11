@@ -31,7 +31,7 @@ namespace GitHubQl
         /// <summary>The base URL for GitHub GraphQL endpoint queries.</summary>
         public const string APIUrl = "https://api.github.com/graphql";
 
-        public const int QueryPageSize = 100;
+        public const int QueryPageSize = 25;
 
         /// <summary>The repositories we already know about and can run automated reports against.</summary>
         /// <remarks>This should be an app property in the app project.</remarks>

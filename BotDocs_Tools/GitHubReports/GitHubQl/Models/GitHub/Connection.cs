@@ -8,7 +8,7 @@ namespace GitHubQl.Models.GitHub
     public class Connection<T>
     {
         /// <summary>The list of edges/connections.</summary>
-        [JsonProperty("egdes")]
+        [JsonProperty("edges")]
         public IList<Edge<T>> Edges { get; set; }
 
         /// <summary>The list of nodes/items.</summary>
