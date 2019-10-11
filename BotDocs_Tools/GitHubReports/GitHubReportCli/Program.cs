@@ -1,9 +1,7 @@
 ﻿using GitHubQl;
 using GitHubQl.Models.GitHub;
 using GitHubReports;
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +23,7 @@ these later. run the tool with the 'clear' argument.
 ";
         }
 
-        private static DateTimeOffset Now = DateTimeOffset.Now;
+        private static readonly DateTimeOffset Now = DateTimeOffset.Now;
 
         // To simplify things, the initial report uses constants.
         // TODO Add command line args to allow the user to change things, or set this up with some sort of GUI.
@@ -36,37 +34,21 @@ these later. run the tool with the 'clear' argument.
 
             if (args.Any(p => p.Equals("clear", StringComparison.InvariantCultureIgnoreCase))) SecretsManager.Clear();
 
-            if (!GetSecret(SecretsManager.GitHubUsername, "What is your GitHub user name?", out var userName))
+            // Check for and collect credentials.
+            if (!TryGetCredentials(out var userName, out var userToken))
             {
-                Console.WriteLine("This is needed...exiting");
                 return;
             }
-            else
-            {
-                SecretsManager.Set(SecretsManager.GitHubUsername, userName);
-                Console.WriteLine($"Your GitHub username is {SecretsManager.Get(SecretsManager.GitHubUsername)}.");
-            }
-            Console.WriteLine();
 
-            if (!GetSecret(SecretsManager.GitHubUserToken, "What is your GitHub user token?", out var userToken))
+            // Check for and create the output directory.
+            var outputPath = TryCreateOutputDirectory(GitHubConstants.DefaultOutputRoot);
+            if (outputPath is null)
             {
-                Console.WriteLine("This is needed...exiting");
                 return;
             }
-            else
-            {
-                SecretsManager.Set(SecretsManager.GitHubUserToken, userToken);
-                GitHubQlService.SetAuthToken(userToken);
-                Console.WriteLine("Your GitHub auth token is set.");
-            }
-            Console.WriteLine();
 
-            SecretsManager.Save();
-            Console.WriteLine("You can clear both of these by running this command with a `clear` argument.");
-            Console.WriteLine();
-
+            // Test the credentials.
             var nameToGet = "bot-docs";
-
             var repo = GitHubConstants.KnownRepos.FirstOrDefault(
                 r => r.Name.Equals(nameToGet, StringComparison.InvariantCultureIgnoreCase));
 
@@ -75,34 +57,6 @@ these later. run the tool with the 'clear' argument.
                 Console.WriteLine($"Sorry, The '{nameToGet}' repo is not defined in the constants file; exiting.");
                 return;
             }
-
-            var outputRoot = GitHubConstants.DefaultOutputRoot;
-            if (!Directory.Exists(outputRoot)) { Directory.CreateDirectory(outputRoot); }
-
-            var reportDirectory = "Output_" + DateTime.Now.ToString("yyyy_MM_dd");
-
-            var outputPath = Path.Combine(outputRoot, reportDirectory);
-            if (Directory.Exists(outputPath))
-            {
-                Console.Write($"The output directory '{outputPath}' already exists. Clobber existing reports? (y/N)");
-                var key = Console.ReadKey();
-                Console.WriteLine();
-                switch (key.Key)
-                {
-                    case ConsoleKey.Y:
-                        break;
-                    case ConsoleKey.N:
-                    default:
-                        Console.WriteLine("OK. Operation canceled; exiting.");
-                        return;
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory(outputPath);
-                Console.WriteLine($"Reports will be written to '{outputPath}'.");
-            }
-            Console.WriteLine();
 
             Console.WriteLine("Testing your user token...");
             try
@@ -115,99 +69,40 @@ these later. run the tool with the 'clear' argument.
             catch (Exception ex)
             {
                 Console.WriteLine($"{ex.GetType().Name} encountered: {ex.Message}...exiting.");
+                return;
             }
             Console.WriteLine();
 
-            // These entries define the columns to include in the CSV file.
-            // This relies on the response payload, which is based on what was requested in the GitHub request payload.
-            var repoFormatter = new Dictionary<string, Func<Repository, string>>
-            {
-                { "ID", r => r?.Id.CsvEscape() },
-                { "Parent", r => r?.Parent?.NameWithOwner ?? r?.Parent?.Name ?? r?.Parent?.Id },
-                { "URL", r => r?.Url },
-                { "Is private", r => r?.IsPrivate.ToString() },
-                { "Created at", r => r?.CreatedAt.ToShortLocal() },
-                { "Pushed at", r => r?.PushedAt.ToShortLocal() },
-                { "Updated at", r => r?.UpdatedAt.ToShortLocal() },
-                { "Name", r => r?.Name },
-                { "Name with owner", r => r?.NameWithOwner },
-                { "Owner", r => r?.Owner?.Login ?? r?.Owner?.Id },
-                { "Description", r => r?.Description },
-                { "Short description HTML", r => r?.ShortDescriptionHtml },
-                { "Fork count", r => r?.ForkCount.ToString() },
-                { "Assignable users", r => r?.AssignableUsers.GetCount() },
-                { "Collaborators", r => r?.Collaborators.GetCount() },
-                { "Issues", r => r?.Issues.GetCount() },
-                { "Labels", r => r?.Labels.GetCount() },
-                { "Pull requests", r => r?.PullRequests.GetCount() },
-                { "Stargazers", r => r?.Stargazers.GetCount() },
-                { "Watchers", r => r?.Watchers.GetCount() },
-            };
-
+            // Generate a simple bot-docs report summarizing the contents of the repo.
+            var summaryHelper = new RepoHelper(Now);
             var query = Requests.GetRepository(repo);
             var rData = await GitHubQlService.ExecuteGraphQLRequest(query);
             var repoReport = Path.Combine(outputPath, "Repository.csv");
-            Console.WriteLine($"Writing general information about the repository to '{repoReport}'...");
+            Console.Write($"Writing general information about the repository to '{repoReport}'...");
             using (TextWriter writer = new StreamWriter(repoReport, false))
             {
-                writer.WriteLine(string.Join(',', repoFormatter.Keys));
+                writer.WriteLine(string.Join(',', summaryHelper.DefaultFormatter.Keys));
                 writer.WriteLine(string.Join(',',
-                    repoFormatter.Values.Select(func => func(rData.Repository)?.CsvEscape() ?? string.Empty)));
+                    summaryHelper.DefaultFormatter.Values.Select(func => func(rData.Repository)?.CsvEscape() ?? string.Empty)));
             }
+            Console.WriteLine("done.");
             Console.WriteLine();
 
-            // These entries define the columns to include in the CSV file.
-            // This relies on the response payload, which is based on what was requested in the GitHub request payload.
-            var issueFormatter = new Dictionary<string, Func<Issue, string>>
-            {
-                { "Repository", i => i?.Repository?.NameWithOwner ?? i?.Repository?.Name },
-                { "Number", i => i?.Number.ToString() },
-                { "URL", i => i?.Url },
-                //{ "ID", i => i?.Id },
-                { "Author", i => i?.Author?.Login },
-                { "Author association", i => i?.AuthorAssociation.ToString() },
-                //{ "Editor", i => i?.Editor?.Login },
-                //{ "Closed", i => i?.Closed.ToString() },
-                { "Title", i => i?.Title },
-                { "Body text", i => i?.BodyText.Truncate(1023) },
-                { "Assignees", i =>
-                    i?.Assignees.Concat(", ", u => u?.Login)
-                    + (i?.Assignees.PageInfo.HasPreviousPage==true ? ",..." : string.Empty) },
-                { "Participants", i => i?.Participants.GetCount() },
-                { "Labels", i =>
-                    i?.Labels.Concat(", ", l => l.Name)
-                    + (i?.Labels.PageInfo.HasPreviousPage == true ? ",..." : string.Empty) },
-                { "Comment count", i => i?.Comments?.TotalCount?.ToString() },
+            // Generate an issues report against the bot-docs repo.
+            var issueHelper = new IssueHelper(Now);
+            await GetDocRepoIssues(repo, outputPath, issueHelper.DefaultFormatter);
 
-                { "Created at", i => i?.CreatedAt.ToShortLocal() },
-                //{ "Published at", i => i?.PublishedAt.ToShortLocal() },
-                { "Last edited at", i => i?.LastEditedAt.ToShortLocal() },
-                //{ "Updated at", i => i?.UpdatedAt.ToShortLocal() },
-                { "Last comment author", i => i?.Comments?.Nodes?.FirstOrDefault()?.Author?.Login },
-                { "Last comment date", i => i?.Comments?.Nodes?.FirstOrDefault()?.CreatedAt.ToShortLocal() },
-                { "Closed at", i => i?.ClosedAt.ToShortLocal() },
-
-                { "State", i => i?.State.ToString() },
-
-                // "Derived" information:
-                { "Active since closed?",  i => HasCommentsSinceClosing(i).ToString() },
-                { "Open w/o comment (days)", i => GetIdleDays(i)?.ToString() },
-                { "Age (days)", i => GetAgeInDays(i)?.ToString() },
-            };
-
-            await GetDocRepoIssues(repo, outputPath, issueFormatter);
-
+            // Generate report for open doc issues in the code repos.
             var filePath = Path.Combine(outputPath, "CodeRepoIssues.csv");
             var repos = GitHubConstants.KnownRepos.Where(r => RepoIsOfType(r, GitHubConstants.RepoTypes.Code));
             var stateFilter = new IssueState[] { IssueState.OPEN };
             var labelFilter = new string[] { "documentation", "Docs", "DCR" };
+            await GenerateIssuesReport(repos, issueHelper.DefaultFormatter, filePath, stateFilter, labelFilter);
 
-            await GenerateIssuesReport(repos, issueFormatter, filePath, stateFilter, labelFilter);
-
+            // Generate an issues report against the botframework-solutions repo.
             filePath = Path.Combine(outputPath, "SlaIssuesReport.csv");
             repos = GitHubConstants.KnownRepos.Where(r => r.Name.Equals("botframework-solutions", StringComparison.CurrentCultureIgnoreCase));
-
-            await GenerateIssuesReport(repos, issueFormatter, filePath, null, null);
+            await GenerateIssuesReport(repos, issueHelper.DefaultFormatter, filePath, null, null);
 
             //filePath = Path.Combine(outputPath, "DocRepoIssues.csv");
             //repos = GitHubConstants.KnownRepos.Where(r => RepoIsOfType(r, GitHubConstants.RepoTypes.Docs | GitHubConstants.RepoTypes.Private));
@@ -250,6 +145,74 @@ these later. run the tool with the 'clear' argument.
             //   or manager is no longer on the team, or any other metadata maintenance we might need to do.
         }
 
+        private static bool TryGetCredentials(out string userName, out string userToken)
+        {
+            userName = userToken = null;
+            if (!GetSecret(SecretsManager.GitHubUsername, "What is your GitHub user name?", out userName))
+            {
+                Console.WriteLine("This is needed...exiting");
+                userName = userToken = null;
+                return false;
+            }
+            else
+            {
+                SecretsManager.Set(SecretsManager.GitHubUsername, userName);
+                Console.WriteLine($"Your GitHub username is {SecretsManager.Get(SecretsManager.GitHubUsername)}.");
+            }
+
+            if (!GetSecret(SecretsManager.GitHubUserToken, "What is your GitHub user token?", out userToken))
+            {
+                Console.WriteLine("This is needed...exiting");
+                userName = userToken = null;
+                return false;
+            }
+            else
+            {
+                SecretsManager.Set(SecretsManager.GitHubUserToken, userToken);
+                GitHubQlService.SetAuthToken(userToken);
+                Console.WriteLine("Your GitHub auth token is set.");
+            }
+            Console.WriteLine();
+
+            SecretsManager.Save();
+            Console.WriteLine("You can clear both of these by running this command with a `clear` argument.");
+            Console.WriteLine();
+
+            return true;
+        }
+
+        private static string TryCreateOutputDirectory(string outputRoot)
+        {
+            if (!Directory.Exists(outputRoot)) { Directory.CreateDirectory(outputRoot); }
+
+            var reportDirectory = "Output_" + DateTime.Now.ToString("yyyy_MM_dd");
+
+            var outputPath = Path.Combine(outputRoot, reportDirectory);
+            if (Directory.Exists(outputPath))
+            {
+                Console.Write($"The output directory '{outputPath}' already exists. Clobber existing reports? (y/N)");
+                var key = Console.ReadKey();
+                Console.WriteLine();
+                switch (key.Key)
+                {
+                    case ConsoleKey.Y:
+                        break;
+                    case ConsoleKey.N:
+                    default:
+                        Console.WriteLine("OK. Operation canceled; exiting.");
+                        return null;
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(outputPath);
+                Console.WriteLine($"Reports will be written to '{outputPath}'.");
+            }
+            Console.WriteLine();
+
+            return outputPath;
+        }
+
         private static bool RepoIsOfType(GitHubConstants.RepoParams repo, GitHubConstants.RepoTypes type)
         {
             return (repo.Type & type) == type;
@@ -275,10 +238,9 @@ these later. run the tool with the 'clear' argument.
                     issues.AddRange(sublist);
                 }
                 Console.WriteLine("done!");
-                Console.WriteLine();
             }
 
-            Console.WriteLine($"Writing issue information to '{filePath}'...");
+            Console.Write($"Writing issue information to '{filePath}'...");
             using (TextWriter writer = new StreamWriter(filePath, false))
             {
                 writer.WriteLine(string.Join(',', issueFormatter.Keys));
@@ -288,9 +250,17 @@ these later. run the tool with the 'clear' argument.
                         issueFormatter.Values.Select(func => func(issue)?.CsvEscape() ?? string.Empty)));
                 }
             }
+            Console.WriteLine("done!");
             Console.WriteLine();
         }
 
+        /// <summary>Generates an issues report against a specific GitHu repo.</summary>
+        /// <param name="repo">Description of the repo to generate the repo for.</param>
+        /// <param name="outputPath">Path of the directory in which to generate the report.</param>
+        /// <param name="issueFormatter">Map of the columns to include in the report. Associates a column name
+        /// with a function for extracting the associated data from an issue object.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>The task is successful if it queries GitHub and generates the report.</remarks>
         private static async Task GetDocRepoIssues(
             GitHubConstants.RepoParams repo,
             string outputPath,
@@ -305,11 +275,10 @@ these later. run the tool with the 'clear' argument.
                 Console.Write(".");
                 issues.AddRange(sublist);
             }
-            Console.WriteLine("done!");
-            Console.WriteLine();
+            Console.WriteLine("done. ");
 
             var issueReport = Path.Combine(outputPath, "DocRepoIssues.csv");
-            Console.WriteLine($"Writing issue information to '{issueReport}'...");
+            Console.Write($"Writing issue information to '{issueReport}'...");
             using (TextWriter writer = new StreamWriter(issueReport, false))
             {
                 writer.WriteLine(string.Join(',', issueFormatter.Keys));
@@ -319,6 +288,7 @@ these later. run the tool with the 'clear' argument.
                         issueFormatter.Values.Select(func => func(issue)?.CsvEscape() ?? string.Empty)));
                 }
             }
+            Console.WriteLine("done!");
             Console.WriteLine();
         }
 
@@ -342,17 +312,6 @@ these later. run the tool with the 'clear' argument.
             value = value.Trim();
 
             return !string.IsNullOrEmpty(value);
-        }
-
-        private static double? GetAgeInDays(Issue issue)
-        {
-            if (issue is null || !issue.CreatedAt.HasValue) return null;
-
-            var span = (issue.ClosedAt.HasValue)
-                ? issue.ClosedAt.Value - issue.CreatedAt.Value
-                : Now - issue.CreatedAt.Value;
-
-            return Math.Round(span.TotalDays, 2);
         }
 
         /// <summary>Returns the number of days since the last comment was made to an issue.</summary>

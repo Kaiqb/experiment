@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,16 +62,30 @@ namespace GitHubQl
             return response.Data;
         }
 
+        /// <summary>
+        /// Retrieves a page of data at a time from GitHub's GraphQL service until all pages have
+        /// been retrieved.
+        /// </summary>
+        /// <typeparam name="T">The type of items to retrieve from GitHub.</typeparam>
+        /// <param name="queryWithStartCursor">A function that accepts a start cursor and generates
+        /// the GraphQL query.</param>
+        /// <param name="getConnection">A function that takes a GraphQL data object and returns the
+        /// connection that we're interested in.</param>
+        /// <param name="connectionToList">A function that converts a GraphQL connection into a list
+        /// of items to return for this page.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>Supports asynchronous iteration over each page of results until done.</returns>
         public static async IAsyncEnumerable<List<T>> GetConnectionAsync<T>(
             Func<string, string> queryWithStartCursor,
             Func<GitHubQlData, Connection<T>> getConnection,
             Func<Connection<T>, List<T>> connectionToList,
-            CancellationToken cancellationToken = default)
+            [EnumeratorCancellation]CancellationToken cancellationToken = default)
         {
             Connection<T> connection = null;
             do
             {
-                 var startCursor = connection?.PageInfo?.StartCursor;
+                var startCursor = connection?.PageInfo?.StartCursor;
                 var query = queryWithStartCursor(startCursor);
 
                 connection = getConnection(await ExecuteGraphQLRequest(query).ConfigureAwait(false));
