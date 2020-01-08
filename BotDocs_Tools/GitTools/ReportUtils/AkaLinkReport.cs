@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Windows.Forms;
 using Utilities;
 
@@ -53,10 +55,10 @@ namespace ReportUtils
             else
             {
                 Status.WriteLine(Severity.Information, $"Found {linkCount} aka links: " +
-                    $"{LinkMap.FileIndex.Count} unique files, {LinkMap.LinkIndex.Count} unique urls.");
+                    $"{LinkMap.FileIndex.Count} unique files, {LinkMap.LinkIndex.Count} unique URLs.");
                 SaveDialog.Title = "Choose where to save the aka link report:";
-                var result = SaveDialog.ShowDialog();
-                if (result == DialogResult.OK)
+                var dlgResult = SaveDialog.ShowDialog();
+                if (dlgResult == DialogResult.OK)
                 {
                     using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
                     {
@@ -75,7 +77,53 @@ namespace ReportUtils
                     }
                 }
                 Status.WriteLine(Severity.Information, $"Report written to {SaveDialog.FileName}.");
+
+                if (MessageBox.Show("Do you want to test the aka links?", "Test links?",
+                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    var results = new Dictionary<string, (string Status, string Reason)>(LinkMap.LinkIndex.Count);
+
+                    Status.WriteLine(Severity.Information, $"Attempting to resolve {LinkMap.LinkIndex.Count} links.");
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.ExpectContinue = false;
+                        client.Timeout = TimeSpan.FromSeconds(.5);
+                        CollectResults(results, client);
+                    }
+                    SaveDialog.Title = "Choose where to save the aka link resolution report:";
+                    dlgResult = SaveDialog.ShowDialog();
+                    if (dlgResult == DialogResult.OK)
+                    {
+                        using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
+                        {
+                            writer.WriteLine("Short URL,Status code,Reason");
+                            foreach (var entry in results)
+                            {
+                                writer.WriteLine(
+                                    $"{entry.Key.CsvEscape()}" +
+                                    $",{entry.Value.Status.CsvEscape()}" +
+                                    $",{entry.Value.Reason.CsvEscape()}"
+                                    );
+                            }
+                            writer.Flush();
+                            writer.Close();
+                        }
+                        Status.WriteLine(Severity.Information, "done.");
+                    }
+                }
+
                 return true;
+            }
+        }
+
+        private async System.Threading.Tasks.Task CollectResults(
+            Dictionary<string, (string Status, string Reason)> results,
+            HttpClient client)
+        {
+            foreach (var linkInfo in LinkMap.LinkIndex.Values)
+            {
+                Status.Write(".");
+                results[linkInfo.Url] = HttpHelpers.TestUrl(linkInfo.Url);
             }
         }
 
