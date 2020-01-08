@@ -13,6 +13,11 @@ namespace Utilities
             rtb.AppendText(message + Environment.NewLine);
         }
 
+        public static void Write(this RichTextBox rtb, string message)
+        {
+            rtb.AppendText(message);
+        }
+
         public static void WriteLine(this RichTextBox rtb, Severity sev, string message)
         {
             if (rtb is null) { return; }
