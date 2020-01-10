@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -81,26 +82,23 @@ namespace ReportUtils
                 if (MessageBox.Show("Do you want to test the aka links?", "Test links?",
                      MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    var results = new Dictionary<string, (string Status, string Reason)>(LinkMap.LinkIndex.Count);
+                    var results = new ConcurrentDictionary<string, UrlTestResult>(8, LinkMap.LinkIndex.Count);
 
                     Status.WriteLine(Severity.Information, $"Attempting to resolve {LinkMap.LinkIndex.Count} links.");
-                    using (HttpClient client = new HttpClient())
-                    {
-                        client.DefaultRequestHeaders.ExpectContinue = false;
-                        client.Timeout = TimeSpan.FromSeconds(.5);
-                        CollectResults(results, client);
-                    }
+                    CollectResults(results).Wait();
+                    
                     SaveDialog.Title = "Choose where to save the aka link resolution report:";
                     dlgResult = SaveDialog.ShowDialog();
                     if (dlgResult == DialogResult.OK)
                     {
                         using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
                         {
-                            writer.WriteLine("Short URL,Status code,Reason");
+                            writer.WriteLine("Short URL,Target URL,Status code,Reason");
                             foreach (var entry in results)
                             {
                                 writer.WriteLine(
                                     $"{entry.Key.CsvEscape()}" +
+                                    $",{entry.Value.Target.CsvEscape()}" +
                                     $",{entry.Value.Status.CsvEscape()}" +
                                     $",{entry.Value.Reason.CsvEscape()}"
                                     );
@@ -116,9 +114,7 @@ namespace ReportUtils
             }
         }
 
-        private async System.Threading.Tasks.Task CollectResults(
-            Dictionary<string, (string Status, string Reason)> results,
-            HttpClient client)
+        private async System.Threading.Tasks.Task CollectResults(ConcurrentDictionary<string, UrlTestResult> results)
         {
             foreach (var linkInfo in LinkMap.LinkIndex.Values)
             {
