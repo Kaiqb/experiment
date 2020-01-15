@@ -5,26 +5,20 @@ using System.Threading.Tasks;
 
 namespace Utilities
 {
+    public class UrlTestResult
+    {
+        public UrlTestResult(string url, string target, string status, string reason) =>
+            (Url, Target, Status, Reason) = (url, target, status, reason);
+
+        public string Url { get; private set; }
+        public string Target { get; private set; }
+        public string Status { get; private set; }
+        public string Reason { get; private set; }
+    }
     public static class HttpHelpers
     {
-        public static async Task<(HttpStatusCode statusCode, string errorMessage)> TestUriAsync(
-            this HttpClient client,
-            string uri)
-        {
-            try
-            {
-                var result = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
-                var content = result.Content.ReadAsStringAsync();
-                return (result.StatusCode, result.ReasonPhrase);
-            }
-            catch (Exception ex)
-            {
-                return (HttpStatusCode.BadRequest, $"{ex.GetType().Name}: {ex.Message}");
-            }
-        }
-
-        public static (string Status, string Reason) TestUrl(string url) => TestUrl(new Uri(url));
-        public static (string Status, string Reason) TestUrl(Uri url)
+        public static async Task<UrlTestResult> TestUrl(string url) => await TestUrl(new Uri(url));
+        public static async Task<UrlTestResult> TestUrl(Uri url)
         {
             using (var client = new HttpClient(new HttpClientHandler()
             { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip }))
@@ -35,6 +29,7 @@ namespace Utilities
                     Method = HttpMethod.Get,
                 };
 
+                Uri target = url;
                 try
                 {
                     var response = client.SendAsync(request).Result;
@@ -43,19 +38,23 @@ namespace Utilities
                     // We want to handle redirects ourselves so that we can determine the final redirect Location (via header)
                     if (statusCode >= 300 && statusCode <= 399)
                     {
-                        var redirectUri = response.Headers.Location;
-                        if (!redirectUri.IsAbsoluteUri)
+                        target = response.Headers.Location;
+                        if (!target.IsAbsoluteUri)
                         {
-                            redirectUri = new Uri(request.RequestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
+                            target = new Uri(request.RequestUri.GetLeftPart(UriPartial.Authority) + target);
                         }
-                        var r2 = TestUrl(redirectUri);
-                        reason = $"{statusCode} Redirect to {redirectUri} > ({r2.Status}) {r2.Reason}";
+                        var r2 = await TestUrl(target);
+                        reason = $"{statusCode} Redirect to {target} > ({r2.Status}) {r2.Reason}";
                     }
-                    return (statusCode.ToString(), reason);
+                    return new UrlTestResult(
+                        url.AbsoluteUri,
+                        response.RequestMessage.RequestUri.AbsoluteUri,
+                        statusCode.ToString(),
+                        reason);
                 }
                 catch (Exception ex)
                 {
-                    return ("400", $"{ex.GetType().Name}: {ex.Message}");
+                    return new UrlTestResult(url.AbsoluteUri, target.AbsoluteUri, "400", $"{ex.GetType().Name}: {ex.Message}");
                 }
             }
         }

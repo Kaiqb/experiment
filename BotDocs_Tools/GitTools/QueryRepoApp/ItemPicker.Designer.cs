@@ -36,7 +36,8 @@
             // btn_Ok
             // 
             this.btn_Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btn_Ok.Location = new System.Drawing.Point(12, 168);
+            this.btn_Ok.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btn_Ok.Location = new System.Drawing.Point(12, 142);
             this.btn_Ok.Name = "btn_Ok";
             this.btn_Ok.Size = new System.Drawing.Size(115, 23);
             this.btn_Ok.TabIndex = 0;
@@ -47,7 +48,7 @@
             // 
             this.btn_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btn_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_Cancel.Location = new System.Drawing.Point(133, 168);
+            this.btn_Cancel.Location = new System.Drawing.Point(133, 142);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(115, 23);
             this.btn_Cancel.TabIndex = 1;
@@ -63,7 +64,7 @@
             this.listBox.ItemHeight = 16;
             this.listBox.Location = new System.Drawing.Point(12, 12);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(435, 132);
+            this.listBox.Size = new System.Drawing.Size(435, 100);
             this.listBox.TabIndex = 1;
             // 
             // ItemPicker
