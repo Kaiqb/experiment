@@ -17,8 +17,8 @@ namespace Utilities
     }
     public static class HttpHelpers
     {
-        public static UrlTestResult TestUrl(string url) => TestUrl(new Uri(url));
-        public static UrlTestResult TestUrl(Uri url)
+        public static async Task<UrlTestResult> TestUrl(string url) => await TestUrl(new Uri(url));
+        public static async Task<UrlTestResult> TestUrl(Uri url)
         {
             using (var client = new HttpClient(new HttpClientHandler()
             { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip }))
@@ -38,19 +38,23 @@ namespace Utilities
                     // We want to handle redirects ourselves so that we can determine the final redirect Location (via header)
                     if (statusCode >= 300 && statusCode <= 399)
                     {
-                        var redirectUri = response.Headers.Location;
-                        if (!redirectUri.IsAbsoluteUri)
+                        target = response.Headers.Location;
+                        if (!target.IsAbsoluteUri)
                         {
-                            redirectUri = new Uri(request.RequestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
+                            target = new Uri(request.RequestUri.GetLeftPart(UriPartial.Authority) + target);
                         }
-                        var r2 = TestUrl(redirectUri);
-                        reason = $"{statusCode} Redirect to {redirectUri} > ({r2.Status}) {r2.Reason}";
+                        var r2 = await TestUrl(target);
+                        reason = $"{statusCode} Redirect to {target} > ({r2.Status}) {r2.Reason}";
                     }
-                    return new UrlTestResult(url.AbsolutePath, target.AbsolutePath, statusCode.ToString(), reason);
+                    return new UrlTestResult(
+                        url.AbsoluteUri,
+                        response.RequestMessage.RequestUri.AbsoluteUri,
+                        statusCode.ToString(),
+                        reason);
                 }
                 catch (Exception ex)
                 {
-                    return new UrlTestResult(url.AbsolutePath, target.AbsolutePath, "400", $"{ex.GetType().Name}: {ex.Message}");
+                    return new UrlTestResult(url.AbsoluteUri, target.AbsoluteUri, "400", $"{ex.GetType().Name}: {ex.Message}");
                 }
             }
         }

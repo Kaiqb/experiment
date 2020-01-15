@@ -124,15 +124,13 @@ namespace ReportUtils
                     $"{LinkMap.DocFileIndex.Count} doc files.");
 
                 SaveDialog.Title = "Choose where to save the code link report:";
-                var result = SaveDialog.ShowDialog();
-                if (result == DialogResult.OK)
+                var result = SaveDialog.TrySave((writer) => { WriteReport(writer); });
+                Status.WriteLine(result.Sev, result.Message);
+                if (result.Reason == DialogResult.OK)
                 {
-                    WriteReport();
-                    Status.WriteLine(Severity.Information, $"Report written to {SaveDialog.FileName}.");
                     return true;
                 }
             }
-            Status.WriteLine(Severity.Warning, "No report written.");
             return false;
         }
 
@@ -272,67 +270,67 @@ namespace ReportUtils
             }
         }
 
-        private void WriteReport()
+        private void WriteReport(TextWriter writer)
         {
-            using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
+            //using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
+            //{
+            writer.WriteLine(
+                "Doc file path" +
+                ",Code file path" +
+                ",Line in doc" +
+                ",Code query params" +
+                ",Doc repo branch" +
+                ",Doc commit author" +
+                ",Doc commit date" +
+                ",Code repo handle" +
+                ",Code repo branch" +
+                ",Code commit author" +
+                ",Code commit date" +
+                ",Code fresher than doc" +
+                ",Since date" +
+                ",Code fresher than since date" +
+                "");
+
+            // Write out all the link data.
+            foreach (var entry in LinkMap.DocFileIndex)
             {
-                writer.WriteLine(
-                    "Doc file path" +
-                    ",Code file path" +
-                    ",Line in doc" +
-                    ",Code query params" +
-                    ",Doc repo branch" +
-                    ",Doc commit author" +
-                    ",Doc commit date" +
-                    ",Code repo handle" +
-                    ",Code repo branch" +
-                    ",Code commit author" +
-                    ",Code commit date" +
-                    ",Code fresher than doc" +
-                    ",Since date" +
-                    ",Code fresher than since date" +
-                    "");
-
-                // Write out all the link data.
-                foreach (var entry in LinkMap.DocFileIndex)
+                var docFile = entry.Key;
+                foreach (var subentry in entry.Value)
                 {
-                    var docFile = entry.Key;
-                    foreach (var subentry in entry.Value)
+                    var codeFile = subentry.Key;
+                    foreach (var lineData in subentry.Value)
                     {
-                        var codeFile = subentry.Key;
-                        foreach (var lineData in subentry.Value)
+                        writer.Write(docFile.RelFilePath.CsvEscape());
+                        writer.Write("," + codeFile.RelFilePath.CsvEscape());
+                        writer.Write("," + lineData.DocLine);
+                        writer.Write("," + lineData.QueryParams.CsvEscape());
+                        writer.Write("," + docFile.BranchName.CsvEscape());
+                        writer.Write("," + docFile.Author.CsvEscape());
+                        writer.Write("," + docFile.LastCommitDate.ToString().CsvEscape());
+                        writer.Write("," + CodeInfo.PathToRoot.CsvEscape());
+                        writer.Write("," + codeFile.BranchName.CsvEscape());
+                        writer.Write("," + codeFile.Author.CsvEscape());
+                        writer.Write("," + codeFile.LastCommitDate.ToString().CsvEscape());
+                        writer.Write("," + (codeFile.LastCommitDate > docFile.LastCommitDate));
+
+                        if (FreshnessDate.HasValue)
                         {
-                            writer.Write(docFile.RelFilePath.CsvEscape());
-                            writer.Write("," + codeFile.RelFilePath.CsvEscape());
-                            writer.Write("," + lineData.DocLine);
-                            writer.Write("," + lineData.QueryParams.CsvEscape());
-                            writer.Write("," + docFile.BranchName.CsvEscape());
-                            writer.Write("," + docFile.Author.CsvEscape());
-                            writer.Write("," + docFile.LastCommitDate.ToString().CsvEscape());
-                            writer.Write("," + CodeInfo.PathToRoot.CsvEscape());
-                            writer.Write("," + codeFile.BranchName.CsvEscape());
-                            writer.Write("," + codeFile.Author.CsvEscape());
-                            writer.Write("," + codeFile.LastCommitDate.ToString().CsvEscape());
-                            writer.Write("," + (codeFile.LastCommitDate > docFile.LastCommitDate));
-
-                            if (FreshnessDate.HasValue)
-                            {
-                                writer.Write("," + FreshnessDate.Value.ToString().CsvEscape());
-                                writer.Write("," + (codeFile.LastCommitDate > FreshnessDate.Value));
-                            }
-                            else
-                            {
-                                writer.Write(",na,na");
-                            }
-
-                            writer.WriteLine();
+                            writer.Write("," + FreshnessDate.Value.ToString().CsvEscape());
+                            writer.Write("," + (codeFile.LastCommitDate > FreshnessDate.Value));
                         }
+                        else
+                        {
+                            writer.Write(",na,na");
+                        }
+
+                        writer.WriteLine();
                     }
                 }
-
-                writer.Flush();
-                writer.Close();
             }
+
+            //    writer.Flush();
+            //    writer.Close();
+            //}
         }
     }
 }

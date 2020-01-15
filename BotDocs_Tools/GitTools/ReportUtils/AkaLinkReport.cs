@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Windows.Forms;
 using Utilities;
 
@@ -58,68 +55,58 @@ namespace ReportUtils
                 Status.WriteLine(Severity.Information, $"Found {linkCount} aka links: " +
                     $"{LinkMap.FileIndex.Count} unique files, {LinkMap.LinkIndex.Count} unique URLs.");
                 SaveDialog.Title = "Choose where to save the aka link report:";
-                var dlgResult = SaveDialog.ShowDialog();
-                if (dlgResult == DialogResult.OK)
+                var result = SaveDialog.TrySave((writer) =>
                 {
-                    using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
+                    writer.WriteLine("In file,Aka link,Short URL");
+                    foreach (var entry in LinkMap.FileIndex.Values)
                     {
-                        writer.WriteLine("In file,Aka link,Short URL");
-                        foreach (var entry in LinkMap.FileIndex.Values)
+                        foreach (var url in entry.ContainedAkaLinks)
                         {
-                            foreach (var url in entry.ContainedAkaLinks)
-                            {
-                                writer.WriteLine($"{entry.FullPath.CsvEscape()}" +
-                                    $",{url.CsvEscape()}" +
-                                    $",{AkaLinkData.GetShortUrl(url).CsvEscape()}");
-                            }
+                            writer.WriteLine($"{entry.FullPath.CsvEscape()}" +
+                                $",{url.CsvEscape()}" +
+                                $",{AkaLinkData.GetShortUrl(url).CsvEscape()}");
                         }
-                        writer.Flush();
-                        writer.Close();
                     }
-                }
-                Status.WriteLine(Severity.Information, $"Report written to {SaveDialog.FileName}.");
+                });
+                Status.WriteLine(result.Sev, result.Message);
 
                 if (MessageBox.Show("Do you want to test the aka links?", "Test links?",
                      MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    var results = new ConcurrentDictionary<string, UrlTestResult>(8, LinkMap.LinkIndex.Count);
+                    var results = new Dictionary<string, UrlTestResult>(LinkMap.LinkIndex.Count);
 
                     Status.WriteLine(Severity.Information, $"Attempting to resolve {LinkMap.LinkIndex.Count} links.");
-                    CollectResults(results).Wait();
-                    
+                    CollectResults(results);
+
                     SaveDialog.Title = "Choose where to save the aka link resolution report:";
-                    dlgResult = SaveDialog.ShowDialog();
-                    if (dlgResult == DialogResult.OK)
+                    result = SaveDialog.TrySave((writer) =>
                     {
-                        using (TextWriter writer = new StreamWriter(SaveDialog.FileName, false))
+                        writer.WriteLine("Short URL,Target URL,Status code,Reason");
+                        foreach (var entry in results)
                         {
-                            writer.WriteLine("Short URL,Target URL,Status code,Reason");
-                            foreach (var entry in results)
-                            {
-                                writer.WriteLine(
-                                    $"{entry.Key.CsvEscape()}" +
-                                    $",{entry.Value.Target.CsvEscape()}" +
-                                    $",{entry.Value.Status.CsvEscape()}" +
-                                    $",{entry.Value.Reason.CsvEscape()}"
-                                    );
-                            }
-                            writer.Flush();
-                            writer.Close();
+                            writer.WriteLine(
+                                $"{entry.Key.CsvEscape()}" +
+                                $",{entry.Value.Target.CsvEscape()}" +
+                                $",{entry.Value.Status.CsvEscape()}" +
+                                $",{entry.Value.Reason.CsvEscape()}"
+                                );
                         }
-                        Status.WriteLine(Severity.Information, "done.");
-                    }
+                    });
+                    Status.WriteLine(result.Sev, result.Message);
                 }
 
                 return true;
             }
         }
 
-        private async System.Threading.Tasks.Task CollectResults(ConcurrentDictionary<string, UrlTestResult> results)
+        private void CollectResults(Dictionary<string, UrlTestResult> results)
         {
+            // Given that the HTTP requests block each other, no use in trying to parallelize this test.
             foreach (var linkInfo in LinkMap.LinkIndex.Values)
             {
                 Status.Write(".");
-                results[linkInfo.Url] = HttpHelpers.TestUrl(linkInfo.Url);
+                var result = HttpHelpers.TestUrl(linkInfo.Url).Result;
+                results[linkInfo.Url] = result;
             }
         }
 

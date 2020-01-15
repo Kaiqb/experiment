@@ -55,6 +55,7 @@
     <Compile Include="RichTextBoxExtensions.cs" />
     <Compile Include="Severity.cs" />
     <Compile Include="StringExtensions.cs" />
+    <Compile Include="WindowsDialogs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
