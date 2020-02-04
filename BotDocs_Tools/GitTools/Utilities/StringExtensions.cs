@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Utilities
 {
@@ -26,6 +27,19 @@ namespace Utilities
         public static int IndexOf(this string s, Func<char, bool> predicate, int start = 0)
         {
             return s.ToCharArray().IndexOf(predicate, start);
+        }
+
+        public static bool IsCultureId(this string value)
+        {
+            try
+            {
+                CultureInfo.GetCultureInfo(value);
+                return true;
+            }
+            catch (CultureNotFoundException)
+            {
+                return false;
+            }
         }
     }
 
