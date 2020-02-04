@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
@@ -57,45 +58,67 @@ namespace ReportUtils
                 SaveDialog.Title = "Choose where to save the aka link report:";
                 var result = SaveDialog.TrySave((writer) =>
                 {
-                    writer.WriteLine("In file,Aka link,Short URL");
-                    foreach (var entry in LinkMap.FileIndex.Values)
+                    if (MessageBox.Show("Do you want to test the aka links?", "Test links?",
+                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        foreach (var url in entry.ContainedAkaLinks)
-                        {
-                            writer.WriteLine($"{entry.FullPath.CsvEscape()}" +
-                                $",{url.CsvEscape()}" +
-                                $",{AkaLinkData.GetShortUrl(url).CsvEscape()}");
-                        }
+                        var results = new Dictionary<string, UrlTestResult>(LinkMap.LinkIndex.Count);
+
+                        Status.WriteLine(Severity.Information, $"Attempting to resolve {LinkMap.LinkIndex.Count} links.");
+                        CollectResults(results);
+                        Status.WriteLine(Severity.Information, "done.");
+
+                        WriteLongReport(writer);
                     }
+                    else
+                        WriteShortReport(writer);
                 });
                 Status.WriteLine(result.Sev, result.Message);
 
-                if (MessageBox.Show("Do you want to test the aka links?", "Test links?",
-                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    var results = new Dictionary<string, UrlTestResult>(LinkMap.LinkIndex.Count);
-
-                    Status.WriteLine(Severity.Information, $"Attempting to resolve {LinkMap.LinkIndex.Count} links.");
-                    CollectResults(results);
-
-                    SaveDialog.Title = "Choose where to save the aka link resolution report:";
-                    result = SaveDialog.TrySave((writer) =>
-                    {
-                        writer.WriteLine("Short URL,Target URL,Status code,Reason");
-                        foreach (var entry in results)
-                        {
-                            writer.WriteLine(
-                                $"{entry.Key.CsvEscape()}" +
-                                $",{entry.Value.Target.CsvEscape()}" +
-                                $",{entry.Value.Status.CsvEscape()}" +
-                                $",{entry.Value.Reason.CsvEscape()}"
-                                );
-                        }
-                    });
-                    Status.WriteLine(result.Sev, result.Message);
-                }
-
                 return true;
+            }
+        }
+
+        private void WriteLongReport(TextWriter writer)
+        {
+            var issueColumns = EnumerableExtensions.GetValues<AkaLinkData.IssueType>();
+            var headings =
+                "In file,Short URL,Aka link,Target URL,Status,Reason,"
+                + string.Join(",", issueColumns.Select(t => AkaLinkData.AvailableIssues[t].Description));
+            writer.WriteLine(headings);
+            foreach (var entry in LinkMap.FileIndex.Values)
+            {
+                foreach (var url in entry.ContainedAkaLinks)
+                {
+                    var linkData = LinkMap.LinkIndex[url];
+                    var issues = string.Join(",",
+                        issueColumns.Select(i => linkData.Issues.Contains(i)
+                            ? AkaLinkData.AvailableIssues[i].Severity.ToString() : "0"));
+                    writer.WriteLine(
+                        $"{entry.FullPath.CsvEscape()}" +
+                        $",{AkaLinkData.GetShortUrl(url).CsvEscape()}" +
+                        $",{url.CsvEscape()}" +
+                        $",{linkData.TargetUrl.CsvEscape()}" +
+                        $",{linkData.Status.CsvEscape()}" +
+                        $",{linkData.Reason.CsvEscape()}" +
+                        $",{issues}"
+                        );
+                }
+            }
+        }
+
+        private void WriteShortReport(TextWriter writer)
+        {
+            writer.WriteLine("In file,Short URL,Aka link");
+            foreach (var entry in LinkMap.FileIndex.Values)
+            {
+                foreach (var url in entry.ContainedAkaLinks)
+                {
+                    writer.WriteLine(
+                        $"{entry.FullPath.CsvEscape()}" +
+                        $",{AkaLinkData.GetShortUrl(url).CsvEscape()}" +
+                        $",{url.CsvEscape()}"
+                        );
+                }
             }
         }
 
@@ -105,8 +128,19 @@ namespace ReportUtils
             foreach (var linkInfo in LinkMap.LinkIndex.Values)
             {
                 Status.Write(".");
+
                 var result = HttpHelpers.TestUrl(linkInfo.Url).Result;
                 results[linkInfo.Url] = result;
+
+                linkInfo.TargetUrl = result.Target;
+                linkInfo.Status = result.Status;
+                linkInfo.Reason = result.Reason;
+
+                linkInfo.Issues = new List<AkaLinkData.IssueType>();
+                foreach (var issue in AkaLinkData.AvailableIssues.Values)
+                {
+                    if (issue.Rule(linkInfo)) { linkInfo.Issues.Add(issue.Type); }
+                }
             }
         }
 
