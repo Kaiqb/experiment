@@ -161,7 +161,7 @@ namespace GitHubReports
             var sb = new StringBuilder();
 
             sb.Append("{ ");
-            sb.Append($"user(login:{username})" + " { ");
+            sb.Append($"user(login:\"{username}\")" + " { ");
 
             sb.Append(UserData);
 
