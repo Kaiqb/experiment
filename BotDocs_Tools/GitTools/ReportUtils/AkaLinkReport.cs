@@ -29,10 +29,10 @@ namespace ReportUtils
             Contract.Requires(DocPath != null);
             Contract.Requires(Directory.Exists(DocPath));
             Contract.Requires(Directory.Exists(Path.Combine(DocPath, ".git")));
-            Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot)));
+            Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot1)));
 
             LinkMap.Clear();
-            var dir = Path.Combine(DocPath, ArticlesRoot);
+            var dir = Path.Combine(DocPath, ArticlesRoot1);
             var files = Directory.GetFiles(dir, "*.md", SearchOption.AllDirectories);
             var links = new HashSet<string>();
             var linkCount = 0;

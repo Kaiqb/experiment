@@ -7,7 +7,8 @@ namespace ReportUtils
     {
         public const string DocConfigFile = ".openpublishing.publish.config.json";
 
-        public const string ArticlesRoot = "articles";
+        public const string ArticlesRoot1 = "articles";
+        public const string ArticlesRoot2 = "composer-docs";
 
         public RichTextBox Status { get; private set; }
 
