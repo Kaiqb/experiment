@@ -31,9 +31,21 @@ namespace ReportUtils
             Contract.Requires(Directory.Exists(Path.Combine(DocPath, ".git")));
             Contract.Requires(Directory.Exists(Path.Combine(DocPath, ArticlesRoot1)));
 
+            // try directory 1 (SDK docs) else directory 2 (Composer docs).
             LinkMap.Clear();
-            var dir = Path.Combine(DocPath, ArticlesRoot1);
-            var files = Directory.GetFiles(dir, "*.md", SearchOption.AllDirectories);
+            string dir;
+            string[] files;
+            try
+            {
+                dir = Path.Combine(DocPath, ArticlesRoot1);
+                files = Directory.GetFiles(dir, "*.md", SearchOption.AllDirectories);
+            }
+            catch (IOException)
+            {
+                dir = Path.Combine(DocPath, ArticlesRoot2);
+                files = Directory.GetFiles(dir, "*.md", SearchOption.AllDirectories);
+            }
+
             var links = new HashSet<string>();
             var linkCount = 0;
             foreach (var file in files)
