@@ -104,32 +104,39 @@ namespace ReportUtils
 
             var helper = new RepoHelper();
 
-            using (var docRepo = helper.GetRepository(DocPath))
-            using (var codeRepo = helper.GetRepository(CodePath))
+            try
             {
-                FindRelevantCodeLinks(docRepo, codeRepo);
-                BackfillCommitDates(LinkMap.DocFileIndex.Keys, docRepo, helper);
-                BackfillCommitDates(LinkMap.CodeFileIndex.Keys, codeRepo, helper);
-            }
-
-            if (LinkMap.IsEmpty)
-            {
-                Status.WriteLine(Severity.Warning, "No code links found in this repo.");
-                return false;
-            }
-            else
-            {
-                Status.WriteLine(Severity.Information, "Found links to " +
-                    $"{LinkMap.CodeFileIndex.Count} code files, linked to from " +
-                    $"{LinkMap.DocFileIndex.Count} doc files.");
-
-                SaveDialog.Title = "Choose where to save the code link report:";
-                var result = SaveDialog.TrySave((writer) => { WriteReport(writer); });
-                Status.WriteLine(result.Sev, result.Message);
-                if (result.Reason == DialogResult.OK)
+                using (var docRepo = helper.GetRepository(DocPath))
+                using (var codeRepo = helper.GetRepository(CodePath))
                 {
-                    return true;
+                    FindRelevantCodeLinks(docRepo, codeRepo);
+                    BackfillCommitDates(LinkMap.DocFileIndex.Keys, docRepo, helper);
+                    BackfillCommitDates(LinkMap.CodeFileIndex.Keys, codeRepo, helper);
                 }
+
+                if (LinkMap.IsEmpty)
+                {
+                    Status.WriteLine(Severity.Warning, "No code links found in this repo.");
+                    return false;
+                }
+                else
+                {
+                    Status.WriteLine(Severity.Information, "Found links to " +
+                        $"{LinkMap.CodeFileIndex.Count} code files, linked to from " +
+                        $"{LinkMap.DocFileIndex.Count} doc files.");
+
+                    SaveDialog.Title = "Choose where to save the code link report:";
+                    var result = SaveDialog.TrySave((writer) => { WriteReport(writer); });
+                    Status.WriteLine(result.Sev, result.Message);
+                    if (result.Reason == DialogResult.OK)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Status.WriteLine(Severity.Error, $"{ex.GetType().Name}: {ex.Message}");
             }
             return false;
         }

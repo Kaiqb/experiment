@@ -47,10 +47,11 @@ namespace Utilities
                         reason = $"{statusCode} Redirect to {target} > ({r2.Status}) {r2.Reason}";
                     }
                     return new UrlTestResult(
-                        url.AbsoluteUri,
-                        response.RequestMessage.RequestUri.AbsoluteUri,
-                        statusCode.ToString(),
-                        reason);
+                        url: url.AbsoluteUri,
+                        //target: response.RequestMessage.RequestUri.AbsoluteUri,
+                        target: target.AbsoluteUri,
+                        status: statusCode.ToString(),
+                        reason: reason);
                 }
                 catch (Exception ex)
                 {
