@@ -192,6 +192,9 @@ namespace QueryRepoApp
                     break;
                 default:
                     // More than one to choose from.
+                    // TODO
+                    // - rework this as a loop where each is resolved or ignored.
+                    // - will require rewiring the report logic to work against multiple repos.
                     dlg_ItemPicker.SetItems(depRepos);
                     result = dlg_ItemPicker.ShowDialog();
                     if (result != DialogResult.OK)
